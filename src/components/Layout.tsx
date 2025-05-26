@@ -1,6 +1,9 @@
 import React from 'react';
 import { FaFacebookF } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import TruckLocationList from './TruckLocationList';
+
+import PizzaList from './PizzaList';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -70,6 +73,12 @@ export default function Layout({ children }: LayoutProps) {
               <p style={{ textAlign: 'center' ,  fontSize: '20px' }}> 
                 Her finder du os
               </p>
+               <p style={{ textAlign: 'center' ,  fontSize: '15px' }}> 
+               <TruckLocationList></TruckLocationList>
+               </p>
+                <p style={{ textAlign: 'center' ,  fontSize: '15px' }}> 
+               <PizzaList></PizzaList>
+               </p>
             </div>           
             <div style={{ background: '#c7a6ac', padding: '0rem',  fontSize: '34px' ,  margin: 0  }}>
             </div>
@@ -82,7 +91,7 @@ export default function Layout({ children }: LayoutProps) {
       </nav> */}
 
       <main style={{ padding: '1rem' }}>
-        {children}
+      
       </main>
 
       <footer style={{ background: '#f2f2f2', padding: '1rem', marginTop: '2rem', textAlign: 'center' }}>

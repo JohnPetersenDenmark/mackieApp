@@ -24,7 +24,7 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<p>Welcome to Pizza Planet!</p>} />
-          <Route path="/menu" element={<PizzaList onAddToCart={handleAddToCart} />} />
+          {/* <Route path="/menu" element={<PizzaList onAddToCart={handleAddToCart} />} /> */}
           <Route path="/cart" element={<Cart cartItems={cart} onRemove={handleRemoveFromCart} />} />
         </Routes>
       </Layout>

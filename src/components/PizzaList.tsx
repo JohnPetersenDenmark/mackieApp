@@ -1,39 +1,48 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
+// Define Pizza type matching your API data
 interface Pizza {
   id: number;
   name: string;
   description: string;
-  price: number;
+  //price: number;
 }
 
-interface PizzaListProps {
-  onAddToCart: (pizza: Pizza) => void;
-}
-
-export default function PizzaList({ onAddToCart }: PizzaListProps) {
+const PizzaList: React.FC = () => {
   const [pizzas, setPizzas] = useState<Pizza[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    axios.get<Pizza[]>('https://localhost:5001/api/pizza') // your backend API URL
-      .then(response => setPizzas(response.data))
-      .catch(error => console.error('Error fetching pizzas:', error));
+    axios.get<Pizza[]>('http://192.168.8.105:5000/Home/pizzalist')
+      .then(response => {
+        setPizzas(response.data);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError('Failed to load pizzas');
+        setLoading(false);
+        console.error(err);
+      });
   }, []);
 
+  if (loading) return <p>Loading pizzas...</p>;
+  if (error) return <p>{error}</p>;
+ 
   return (
     <div>
-      <h2>Pizza Menu</h2>
-      <ul style={{ listStyle: 'none', padding: 0 }}>
+      
+      <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
         {pizzas.map(pizza => (
-          <li key={pizza.id} style={{ marginBottom: '1rem', border: '1px solid #ccc', padding: '1rem' }}>
-            <h3>{pizza.name}</h3>
+          <li key={pizza.id} style={{ marginBottom: '1rem' }}>
+            <strong>{pizza.name}</strong> 
             <p>{pizza.description}</p>
-            <p><strong>Price:</strong> ${pizza.price.toFixed(2)}</p>
-            <button onClick={() => onAddToCart(pizza)}>Add to Cart</button>
           </li>
         ))}
       </ul>
     </div>
   );
-}
+};
+
+export default PizzaList;
