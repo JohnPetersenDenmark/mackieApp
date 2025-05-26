@@ -6,6 +6,7 @@ interface Pizza {
   id: number;
   name: string;
   description: string;
+  imageUrl: string;
   //price: number;
 }
 
@@ -31,17 +32,20 @@ const PizzaList: React.FC = () => {
   if (error) return <p>{error}</p>;
  
   return (
-    <div>
-      
-      <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
-        {pizzas.map(pizza => (
-          <li key={pizza.id} style={{ marginBottom: '1rem' }}>
-            <strong>{pizza.name}</strong> 
-            <p>{pizza.description}</p>
-          </li>
-        ))}
-      </ul>
+
+<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+  {pizzas.map(pizza => (
+    <div key={pizza.id} style={{ border: '1px solid #ccc', padding: '1rem', borderRadius: '8px' }}>
+       <h3>{pizza.name}</h3>
+      <img 
+        src={pizza.imageUrl }        
+        style={{ width: '100%', height: 'auto', borderRadius: '4px' }}
+      />
+     
+      <p>{pizza.description}</p>
     </div>
+  ))}
+</div>
   );
 };
 

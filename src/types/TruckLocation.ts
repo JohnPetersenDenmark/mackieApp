@@ -1,7 +1,6 @@
 export interface TruckLocation {
   id: number;
   locationname: string;
-  date: string;
-  starttime: string;
+  startdatetime: string;
   enddatetime: string;
 }

@@ -23,7 +23,7 @@ export default function Layout({ children }: LayoutProps) {
         <div style={{ display: 'grid', gridTemplateColumns: '4fr 8fr 1fr', gap: '1rem' }}>
             <div style={{ background: '#8d4a5b', padding: '1rem',  fontSize: '24px' ,  margin: 0  }}>Mackie's Pizza Truck</div>
             <div style={{ background: '#8d4a5b', padding: '1rem' }}>Se min bestilling</div>
-            <div><a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
+            <div><a href="https://www.facebook.com/profile.php?id=61570093418685" target="_blank" rel="noopener noreferrer">
                  <img
                     src="https://cdn-icons-png.flaticon.com/512/733/733547.png"
                     alt="Facebook"
@@ -70,13 +70,19 @@ export default function Layout({ children }: LayoutProps) {
                     Bestil og bag selv
                 </button>
               </p>
-              <p style={{ textAlign: 'center' ,  fontSize: '20px' }}> 
+              <p style={{ textAlign: 'center' ,  fontSize: '20px' ,  fontWeight : 700 }}> 
                 Her finder du os
               </p>
-               <p style={{ textAlign: 'center' ,  fontSize: '15px' }}> 
+               <p style={{background: '#c7a6ac', textAlign: 'left' ,  fontSize: '15px' , fontWeight : 700 }}> 
                <TruckLocationList></TruckLocationList>
                </p>
-                <p style={{ textAlign: 'center' ,  fontSize: '15px' }}> 
+               <p style={{ textAlign: 'center' ,  fontSize: '20px' ,  fontWeight : 700 , color: '#ffffff'}}> 
+                Den originale Mackie's Pizza
+              </p>
+               <p style={{ textAlign: 'center' ,  fontSize: '15px' ,  fontWeight : 700 , color: '#ffffff'}}> 
+                Det er nemt og originalt
+              </p>
+                <p style={{ textAlign: 'left' ,  fontSize: '15px', background: '#8d4a5b', color: '#ffffff'}}> 
                <PizzaList></PizzaList>
                </p>
             </div>           

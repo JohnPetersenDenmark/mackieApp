@@ -24,17 +24,15 @@ const TruckLocationList: React.FC = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div>
-      
-      <ul>
-        {locations.map(loc => (
-          <li key={loc.id} style={{ marginBottom: '1rem' , listStyle: 'none' }}>
-            <strong>{loc.locationname} </strong>
-             {loc.date}
-             {loc.starttime} – {loc.enddatetime}
-          </li>
-        ))}
-      </ul>
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+      {locations.map(loc => (
+         <>             
+               <div>{loc.startdatetime.split(" ").slice(0,2).join(" ")}</div>
+               <div>{loc.locationname}</div>
+               <div>{loc.startdatetime.slice(-5)} – {loc.enddatetime.slice(-5)}</div>
+          </>
+            
+        ))}                
     </div>
   );
 };
