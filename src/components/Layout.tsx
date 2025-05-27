@@ -1,23 +1,66 @@
-import React from 'react';
+
 import { FaFacebookF } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import TruckLocationList from './TruckLocationList';
-
+import React, { useEffect, useState } from 'react';
+import OrderModal from './OrderModal'; 
+import { Pizza } from '../types/Pizza';
+import axios from 'axios';
 import PizzaList from './PizzaList';
+import { TruckLocation } from '../types/TruckLocation';
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 
-  const handleClick = () => {
-    alert('Button clicked!');
-  }
+ 
 
 
 export default function Layout({ children }: LayoutProps) {
+ 
+const [pizzas, setPizzas] = useState<Pizza[]>([]);
+  const [locations, setLocations] = useState<TruckLocation[]>([]);
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState<string | null>(null);
+
+useEffect(() => {
+  axios.get<Pizza[]>('http://192.168.8.105:5000/Home/pizzalist')
+    .then(response => {
+      setPizzas(response.data);
+      setLoading(false);
+    })
+    .catch(err => {
+      setError('Failed to load pizzas');
+      setLoading(false);
+      console.error(err);
+    });
+
+ axios.get<TruckLocation[]>('http://192.168.8.105:5000/Home/locationlist')
+    .then(response => {
+      setLocations(response.data);
+      setLoading(false);
+    })
+    .catch(err => {
+      setError('Failed to load locations');
+      setLoading(false);
+      console.error(err);
+    });
+
+}, []);
+
+
+const [isOrderModalOpen, setIsOrderModalOpen] = React.useState(false);
+const handleOrderClick = () => {
+  setIsOrderModalOpen(true);
+};
+const handleCloseOrderModal = () => {
+  setIsOrderModalOpen(false);
+};
+ 
   return (
     <div style={{ fontFamily: 'Arial, sans-serif'}}>
+      <OrderModal locations={locations} pizzas={pizzas} isOpen={isOrderModalOpen} onClose={() => setIsOrderModalOpen(false)} />
       <header style={{   background: '#8d4a5b',   padding: '1rem',   color: '#22191b',   height: '50px',   display: 'flex',  alignItems: 'center' }}>
         
         <div style={{ display: 'grid', gridTemplateColumns: '4fr 8fr 1fr', gap: '1rem' }}>
@@ -57,7 +100,7 @@ export default function Layout({ children }: LayoutProps) {
 
               <p style={{ textAlign: 'center' ,  fontSize: '20px' }}> 
                <button
-                  onClick={handleClick}
+                 onClick={handleOrderClick}
                   style={{
                       padding: '0.5rem 1rem',
                       backgroundColor: '#8d4a5b',
@@ -74,7 +117,7 @@ export default function Layout({ children }: LayoutProps) {
                 Her finder du os
               </p>
                <p style={{background: '#c7a6ac', textAlign: 'left' ,  fontSize: '15px' , fontWeight : 700 }}> 
-               <TruckLocationList></TruckLocationList>
+               <TruckLocationList locations={locations}></TruckLocationList>
                </p>
                <p style={{ textAlign: 'center' ,  fontSize: '20px' ,  fontWeight : 700 , color: '#ffffff'}}> 
                 Den originale Mackie's Pizza
@@ -92,7 +135,7 @@ export default function Layout({ children }: LayoutProps) {
             <div style={{ background: '#8d4a5b', padding: '1rem',  fontSize: '24px' ,  margin: 0  }}></div>
             <div style={{ background: '#8d4a5b', padding: '1rem' }}>
                 <p style={{ textAlign: 'left' ,  fontSize: '15px', background: '#8d4a5b', color: '#ffffff'}}> 
-               <PizzaList></PizzaList>
+               <PizzaList pizzas={pizzas}></PizzaList>
                </p>
            
                </div>

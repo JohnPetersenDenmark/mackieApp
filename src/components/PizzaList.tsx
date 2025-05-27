@@ -1,38 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Pizza } from '../types/Pizza';
 
 // Define Pizza type matching your API data
-interface Pizza {
-  id: number;
-  name: string;
-  description: string;
-  imageurl: string;
-  price : number;
-  //price: number;
+interface PizzaListProps {
+  pizzas: Pizza[];
 }
 
-const PizzaList: React.FC = () => {
-  const [pizzas, setPizzas] = useState<Pizza[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    axios.get<Pizza[]>('http://192.168.8.105:5000/Home/pizzalist')
-      .then(response => {
-        setPizzas(response.data);
-        setLoading(false);
-      })
-      .catch(err => {
-        setError('Failed to load pizzas');
-        setLoading(false);
-        console.error(err);
-      });
-  }, []);
-
-  if (loading) return <p>Loading pizzas...</p>;
-  if (error) return <p>{error}</p>;
+const PizzaList: React.FC<PizzaListProps> = ({ pizzas }) => {
+  
  
-  return (
+  return ( 
 
 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
   {pizzas.map(pizza => (
