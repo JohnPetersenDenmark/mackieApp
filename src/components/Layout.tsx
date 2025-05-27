@@ -18,7 +18,7 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   return (
     <div style={{ fontFamily: 'Arial, sans-serif'}}>
-      <header style={{   background: '#8d4a5b',   padding: '1rem',   color: '#22191b',   height: '72px',   display: 'flex',  alignItems: 'center' }}>
+      <header style={{   background: '#8d4a5b',   padding: '1rem',   color: '#22191b',   height: '50px',   display: 'flex',  alignItems: 'center' }}>
         
         <div style={{ display: 'grid', gridTemplateColumns: '4fr 8fr 1fr', gap: '1rem' }}>
             <div style={{ background: '#8d4a5b', padding: '1rem',  fontSize: '24px' ,  margin: 0  }}>Mackie's Pizza Truck</div>
@@ -82,27 +82,83 @@ export default function Layout({ children }: LayoutProps) {
                <p style={{ textAlign: 'center' ,  fontSize: '15px' ,  fontWeight : 700 , color: '#ffffff'}}> 
                 Det er nemt og originalt
               </p>
-                <p style={{ textAlign: 'left' ,  fontSize: '15px', background: '#8d4a5b', color: '#ffffff'}}> 
-               <PizzaList></PizzaList>
-               </p>
+              
             </div>           
             <div style={{ background: '#c7a6ac', padding: '0rem',  fontSize: '34px' ,  margin: 0  }}>
             </div>
         </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '4fr 8fr 1fr', gap: '0rem' }}>
+            <div style={{ background: '#8d4a5b', padding: '1rem',  fontSize: '24px' ,  margin: 0  }}></div>
+            <div style={{ background: '#8d4a5b', padding: '1rem' }}>
+                <p style={{ textAlign: 'left' ,  fontSize: '15px', background: '#8d4a5b', color: '#ffffff'}}> 
+               <PizzaList></PizzaList>
+               </p>
+           
+               </div>
+                 <div style={{ background: '#8d4a5b', padding: '1rem',  fontSize: '24px' ,  margin: 0  }}></div>
+            </div>
  
-      {/* <nav style={{ background: '#c7a6ac', padding: '0.5rem' }}>
-        <Link to="/" style={{ marginRight: '1rem' }}>Home</Link>
-        <Link to="/menu" style={{ marginRight: '1rem' }}>Menu</Link>
-        <Link to="/cart">Cart</Link>
-      </nav> */}
-
-      <main style={{ padding: '1rem' }}>
+     <div style={{ display: 'grid', gridTemplateColumns: '4fr 8fr 1fr', gap: '0rem' ,  background: '#c7a6ac'}}>
+          <div style={{ padding: '1rem',  fontSize: '24px' ,  margin: 0  }}></div>
+          <div style={{  padding: '1rem',  fontSize: '24px' ,  margin: 0  }}>
+              <p style={{ textAlign: 'center' ,  fontSize: '25px',  color: '#22191b', fontWeight: 700}}> 
+               Du kan få det som du vil ha' det..
+              </p>
+               <p style={{ textAlign: 'center' ,  fontSize: '25px',  color: '#22191b'}}> 
+             <img 
+                src="http://192.168.8.105:5000/Uploads/PizzaTruck.png" 
+                alt="Pizza Truck" 
+                style={{ width: '400px', height: 'auto' }} 
+              />
+              </p>
+               <p style={{ textAlign: 'center' ,  fontSize: '15px',  color: '#22191b', fontWeight: 700}}> 
+               Mackie´s Pizza Bag-Selv
+              </p>
+                <p style={{ textAlign: 'center' ,  fontSize: '15px',  color: '#22191b', fontWeight: 700}}> 
+               Tag din velsmagende frisklavet pizza med hjem, bagen den og nyd den rygende varm.
+              </p>
+                <p style={{ textAlign: 'center' ,  fontSize: '15px',  color: '#22191b', fontWeight: 700}}> 
+               Kom forbi vores food truck eller bestil her på hjemmesiden.
+              </p>
+          </div>
       
-      </main>
+            <div style={{ padding: '1rem',  fontSize: '24px' ,  margin: 0  }}></div>
+     </div>
 
-      <footer style={{ background: '#f2f2f2', padding: '1rem', marginTop: '2rem', textAlign: 'center' }}>
-        <p>&copy; {new Date().getFullYear()} Mackie's Pizza. Alle rettigheder tilhører Mackie</p>
-      </footer>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr', gap: '0rem' ,  background: '#8d4a5b', color : '#ffffff'}}>
+        <div style={{ padding: '1rem',  fontSize: '15px' ,  margin: 0 , color : '#22191b' }}>
+           <p>Mackies Pizza Truck</p>
+             <p> {new Date().getFullYear()} Mackie's Pizza Truck</p>
+        </div>
+
+         <div style={{ padding: '1rem',  fontSize: '15px' ,  margin: 0 , color : '#ffffff' }}>
+           <p>Cvr nr.:</p>  
+            <p>15475285</p>          
+        </div>
+
+          <div style={{ padding: '1rem',  fontSize: '15px' ,  margin: 0 , color : '#ffffff' }}>
+           <p>Adresse:</p> 
+            <p>Østergade 10, 8983 Gjerlev J</p>               
+        </div>
+
+          <div style={{ padding: '1rem',  fontSize: '15px' ,  margin: 0 , color : 'ffffff#22191b' }}>
+           <p>Telefon:</p>    
+           <p>+45 5152 1216</p>       
+        </div>
+
+        <div style={{ padding: '1rem',  fontSize: '15px' ,  margin: 0 , color : '#ffffff' }}>
+           <p>Email:</p>  
+             <p>admin@mackies-pizza.dk</p>          
+        </div>
+
+         <div style={{ padding: '1rem',  fontSize: '15px' ,  margin: 0 , color : '#ffffff' }}>
+           <p>MobilePay:</p>  
+             <p>5152 1216</p>          
+        </div>
+
+      </div>
+
     </div>
   );
 }
