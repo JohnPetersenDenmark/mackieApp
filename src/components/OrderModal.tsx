@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';  // Make sure axios is installed and imported
 import { Pizza } from '../types/Pizza';
 import { OrderItem } from '../types/OrderItem';
 import { TruckLocation } from '../types/TruckLocation';
@@ -20,9 +21,15 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
 
   const [phone, setPhone] = useState<string>('');
   const [phoneTouched, setPhoneTouched] = useState(false);
-
+const [subscribeToNewsletter, setSubscribeToNewsletter] = useState<boolean>(false);
   const [email, setEmail] = useState<string>('');
   const [emailTouched, setEmailTouched] = useState(false);
+
+  const [comment, setComment] = useState<string>('');  // <-- Added comment state
+
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -42,6 +49,11 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
     setPhoneTouched(false);
     setEmail('');
     setEmailTouched(false);
+    setComment('');  // Reset comment on open
+    setSubmitError(null);
+    setSubmitSuccess(null);
+    setSubmitting(false);
+    setSubscribeToNewsletter(false);
   }, [isOpen, pizzaList]);
 
   const updateQuantity = (index: number, quantity: number) => {
@@ -71,7 +83,53 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const isEmailValid = emailRegex.test(email);
 
-  const isFormValid = isNameValid && isLocationValid && isPhoneValid && isEmailValid;
+  const isFormValid = isNameValid && isLocationValid && isPhoneValid && isEmailValid && pizzas.some(p => p.selected);
+
+  // Submit handler
+  const handleSubmit = async () => {
+    setLocationTouched(true);
+    setNameTouched(true);
+    setPhoneTouched(true);
+    setEmailTouched(true);
+
+    if (!isFormValid) {
+      return;
+    }
+
+    setSubmitting(true);
+    setSubmitError(null);
+    setSubmitSuccess(null);
+
+    const orderData = {
+      customerName: customerName.trim(),
+      phone,
+      email,
+      locationId: selectedLocationId,
+      subscribeToNewsletter,
+      comment: comment.trim(),  // <-- Include comment in submission
+      items: pizzas
+        .filter(p => p.selected)
+        .map(p => ({
+          pizzaId: p.pizza.id,
+          quantity: p.quantity,
+        })),
+      totalPrice: parseFloat(getTotal()),
+    };
+
+    try {
+      // Replace this URL with your actual API endpoint
+      const response = await axios.post('http://192.168.8.105:5000/Home/createorder', orderData);
+
+      setSubmitSuccess('Bestilling sendt! Tak for din ordre.');
+      // Optionally reset form or close modal after success:
+      // onClose();
+    } catch (error) {
+      setSubmitError('Kunne ikke sende bestillingen. Prøv igen senere.');
+      console.error(error);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -107,6 +165,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
               borderStyle: 'solid',
               borderRadius: '4px',
             }}
+            disabled={submitting}
           >
             <option value="" disabled>-- Vælg et sted --</option>
             {locations.map(loc => (
@@ -139,6 +198,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
               borderStyle: 'solid',
               borderRadius: '4px',
             }}
+            disabled={submitting}
           />
           {!isNameValid && nameTouched && (
             <p style={{ color: 'red', marginTop: '0.25rem' }}>Navn må ikke være tomt.</p>
@@ -165,6 +225,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
               borderRadius: '4px',
             }}
             maxLength={12}
+            disabled={submitting}
           />
           {!isPhoneValid && phoneTouched && (
             <p style={{ color: 'red', marginTop: '0.25rem' }}>
@@ -192,12 +253,14 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
               borderStyle: 'solid',
               borderRadius: '4px',
             }}
+            disabled={submitting}
           />
           {!isEmailValid && emailTouched && (
             <p style={{ color: 'red', marginTop: '0.25rem' }}>Indtast venligst en gyldig emailadresse.</p>
           )}
         </div>
 
+        {/* Pizza selection */}
         {pizzas.length === 0 ? (
           <p>Ingen pizzaer tilgængelige...</p>
         ) : (
@@ -209,6 +272,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
                   checked={item.selected}
                   onChange={() => toggleSelection(index)}
                   style={{ marginRight: '0.5rem' }}
+                  disabled={submitting}
                 />
                 <div style={{ flex: 1 }}>
                   <strong>{item.pizza.name}</strong> - {item.pizza.description} ({item.pizza.price.toFixed(2)} kr)
@@ -221,6 +285,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
                       value={item.quantity}
                       onChange={(e) => updateQuantity(index, parseInt(e.target.value) || 1)}
                       style={{ width: '50px', marginLeft: '1rem' }}
+                      disabled={submitting}
                     />
                     <span style={{ marginLeft: '1rem' }}>
                       {(item.pizza.price * item.quantity).toFixed(2)} kr
@@ -230,20 +295,74 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
               </div>
             ))}
 
+<div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+  <label style={{ display: 'flex', alignItems: 'center', fontSize: '14px' }}>
+    <input
+      type="checkbox"
+      checked={subscribeToNewsletter}
+      onChange={() => setSubscribeToNewsletter(!subscribeToNewsletter)}
+      disabled={submitting}
+      style={{ marginRight: '0.5rem' }}
+    />
+    Jeg vil gerne modtage nyhedsbrev fra Mackies Pizza Truck
+  </label>
+</div>
+
+            {/* Comment input added here */}
+            <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+              <label htmlFor="comment"><strong>Kommentar til bestillingen:</strong></label><br />
+              <textarea
+                id="comment"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="Skriv eventuelle ønsker eller bemærkninger her..."
+                rows={3}
+                style={{
+                  width: '100%',
+                  padding: '0.5rem',
+                  marginTop: '0.25rem',
+                  borderRadius: '4px',
+                  border: '1.5px solid #ccc',
+                  resize: 'vertical',
+                }}
+                disabled={submitting}
+              />
+            </div>
+
             <hr />
             <p><strong>Total: {getTotal()} kr</strong></p>
+
+            {submitError && <p style={{ color: 'red' }}>{submitError}</p>}
+            {submitSuccess && <p style={{ color: 'green' }}>{submitSuccess}</p>}
+
             <div style={{ textAlign: 'right' }}>
               <button
-                onClick={onClose}
-                disabled={!isFormValid}
+                onClick={handleSubmit}
+                disabled={!isFormValid || submitting}
                 style={{
                   marginTop: '1rem',
                   padding: '0.5rem 1rem',
-                  backgroundColor: isFormValid ? '#8d4a5b' : 'grey',
+                  backgroundColor: isFormValid && !submitting ? '#8d4a5b' : 'grey',
                   color: 'white',
                   border: 'none',
                   borderRadius: '4px',
-                  cursor: isFormValid ? 'pointer' : 'not-allowed',
+                  cursor: isFormValid && !submitting ? 'pointer' : 'not-allowed',
+                  marginRight: '0.5rem',
+                }}
+              >
+                {submitting ? 'Sender...' : 'Send Bestilling'}
+              </button>
+              <button
+                onClick={onClose}
+                disabled={submitting}
+                style={{
+                  marginTop: '1rem',
+                  padding: '0.5rem 1rem',
+                  backgroundColor: '#ccc',
+                  color: 'black',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: submitting ? 'not-allowed' : 'pointer',
                 }}
               >
                 Luk
