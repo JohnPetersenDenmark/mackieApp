@@ -18,7 +18,7 @@ const PizzaList: React.FC<PizzaListProps> = ({ pizzas }) => {
        <h3>{pizza.name}</h3>
       <img 
         src={'http://192.168.8.105:5000' + pizza.imageurl }        
-        style={{ width: '100%', height: 'auto', borderRadius: '4px' }}
+        style={{ width: '50%', height: 'auto', borderRadius: '4px' }}
       />
      
       <p>{pizza.description}</p>
