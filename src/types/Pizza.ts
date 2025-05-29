@@ -4,4 +4,7 @@ export interface Pizza {
   description: string;
   imageurl: string;
   price : number;
+  discountpercentage : number;
+  discountprice : number;
+  topping: boolean;
 }

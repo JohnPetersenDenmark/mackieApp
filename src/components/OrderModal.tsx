@@ -8,11 +8,17 @@ interface OrderModalProps {
   isOpen: boolean;
   onClose: () => void;
   pizzas: Pizza[];
+  toppings: Pizza[];
   locations: TruckLocation[];
 }
 
-const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaList, locations }) => {
+const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaList, toppings : toppingList , locations }) => {
   const [pizzas, setPizzas] = useState<OrderItem[]>([]);
+
+  const [orderItemsTopping, setOrderItemsTopping] = useState<OrderItem[]>([]);
+  const [orderItemsPizza, setOrderItemsPizza] = useState<OrderItem[]>([]);
+
+
   const [selectedLocationId, setSelectedLocationId] = useState<string>('');
   const [locationTouched, setLocationTouched] = useState(false);
 
@@ -21,7 +27,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
 
   const [phone, setPhone] = useState<string>('');
   const [phoneTouched, setPhoneTouched] = useState(false);
-const [subscribeToNewsletter, setSubscribeToNewsletter] = useState<boolean>(false);
+  const [subscribeToNewsletter, setSubscribeToNewsletter] = useState<boolean>(false);
   const [email, setEmail] = useState<string>('');
   const [emailTouched, setEmailTouched] = useState(false);
 
@@ -34,14 +40,25 @@ const [subscribeToNewsletter, setSubscribeToNewsletter] = useState<boolean>(fals
   useEffect(() => {
     if (!isOpen) return;
 
-    const orderItems = pizzaList.map(pizza => ({
+    const orderItemsPizza : OrderItem[]  = pizzaList.map(pizza => ({
       pizza,
       quantity: 1,
       selected: false,
     }));
+    setOrderItemsPizza(orderItemsPizza);
 
+     const orderItemsTopping : OrderItem[] = toppingList.map(pizza => ({
+      pizza,
+      quantity: 1,
+      selected: false,
+    }));
+    setOrderItemsTopping(orderItemsTopping);
+
+    const orderItems = [...orderItemsPizza, ... orderItemsTopping]
     setPizzas(orderItems);
-    setSelectedLocationId('');
+
+
+    setSelectedLocationId(''); 
     setLocationTouched(false);
     setCustomerName('');
     setNameTouched(false);
@@ -146,7 +163,7 @@ const [subscribeToNewsletter, setSubscribeToNewsletter] = useState<boolean>(fals
       }}
     >
       <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '8px', minWidth: '500px' }}>
-        <h2>Lav din bestilling</h2>
+        <h2>Bestil frisklavet pizza og bag-selv</h2>
 
         {/* Location selector */}
         <div style={{ marginBottom: '1rem' }}>
@@ -265,7 +282,8 @@ const [subscribeToNewsletter, setSubscribeToNewsletter] = useState<boolean>(fals
           <p>Ingen pizzaer tilgængelige...</p>
         ) : (
           <>
-            {pizzas.map((item, index) => (
+          Vælg pizza
+            {orderItemsPizza.map((item, index) => (
               <div key={item.pizza.id} style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
                 <input
                   type="checkbox"
@@ -294,19 +312,52 @@ const [subscribeToNewsletter, setSubscribeToNewsletter] = useState<boolean>(fals
                 )}
               </div>
             ))}
+            <div>
+               {/* Topping selection */}
+               Vælg tilbehør
+               {orderItemsTopping.map((item, index) => (
+              <div key={item.pizza.id} style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+                <input
+                  type="checkbox"
+                  checked={item.selected}
+                  onChange={() => toggleSelection(index + orderItemsPizza.length )}
+                  style={{ marginRight: '0.5rem' }}
+                  disabled={submitting}
+                />
+                <div style={{ flex: 1 }}>
+                  <strong>{item.pizza.name}</strong> - {item.pizza.description} ({item.pizza.price.toFixed(2)} kr)
+                </div>
+                {item.selected && (
+                  <>
+                    <input
+                      type="number"
+                      min={1}
+                      value={item.quantity}
+                      onChange={(e) => updateQuantity(index + orderItemsPizza.length , parseInt(e.target.value) || 1)}
+                      style={{ width: '50px', marginLeft: '1rem' }}
+                      disabled={submitting}
+                    />
+                    <span style={{ marginLeft: '1rem' }}>
+                      {(item.pizza.price * item.quantity).toFixed(2)} kr
+                    </span>
+                  </>
+                )}
+              </div>
+                 ))}
+            </div>
 
-<div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
-  <label style={{ display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-    <input
-      type="checkbox"
-      checked={subscribeToNewsletter}
-      onChange={() => setSubscribeToNewsletter(!subscribeToNewsletter)}
-      disabled={submitting}
-      style={{ marginRight: '0.5rem' }}
-    />
-    Jeg vil gerne modtage nyhedsbrev fra Mackies Pizza Truck
-  </label>
-</div>
+            <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+              <label style={{ display: 'flex', alignItems: 'center', fontSize: '14px' }}>
+                <input
+                  type="checkbox"
+                  checked={subscribeToNewsletter}
+                  onChange={() => setSubscribeToNewsletter(!subscribeToNewsletter)}
+                  disabled={submitting}
+                  style={{ marginRight: '0.5rem' }}
+                />
+                Jeg vil gerne modtage nyhedsbrev fra Mackies Pizza Truck
+              </label>
+            </div>
 
             {/* Comment input added here */}
             <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
