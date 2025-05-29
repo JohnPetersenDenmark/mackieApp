@@ -9,6 +9,7 @@ import axios from 'axios';
 import PizzaList from './PizzaList';
 import PizzaToppingList from './PizzaToppingList';
 import { TruckLocation } from '../types/TruckLocation';
+import CheckMyOrder from './CheckMyOrder';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -61,15 +62,34 @@ const handleOrderClick = () => {
 const handleCloseOrderModal = () => {
   setIsOrderModalOpen(false);
 };
+
+const [isCheckOrderModalOpen, setIsCheckOrderModalOpen] = React.useState(false);
+const handleCheckOrderClick = () => {
+  setIsCheckOrderModalOpen(true);
+};
+const handleCheckCloseOrderModal = () => {
+  setIsCheckOrderModalOpen(false);
+};
  
   return (
     <div style={{ fontFamily: 'Arial, sans-serif'}}>
       <OrderModal locations={locations} pizzas={pizzas} toppings={toppings} isOpen={isOrderModalOpen} onClose={() => setIsOrderModalOpen(false)} />
+
+       <CheckMyOrder isOpen={isCheckOrderModalOpen}></CheckMyOrder>
+
       <header style={{   background: '#8d4a5b',   padding: '1rem',   color: '#22191b',   height: '50px',   display: 'flex',  alignItems: 'center' }}>
         
         <div style={{ display: 'grid', gridTemplateColumns: '4fr 8fr 1fr', gap: '1rem' }}>
             <div style={{ background: '#8d4a5b', padding: '1rem',  fontSize: '24px' ,  margin: 0  }}>Mackie's Pizza Truck</div>
-            <div style={{ background: '#8d4a5b', padding: '1rem' }}>Se min bestilling</div>
+            <div style={{ background: '#8d4a5b', padding: '1rem' }}>
+            <p>
+ 
+            </p>
+              <span onClick={ handleCheckOrderClick} style={{ cursor: 'pointer', color: 'blue' }}>
+                  Se min bestilling
+            </span>
+              
+            </div>
             <div><a href="https://www.facebook.com/profile.php?id=61570093418685" target="_blank" rel="noopener noreferrer">
                  <img
                     src="https://cdn-icons-png.flaticon.com/512/733/733547.png"

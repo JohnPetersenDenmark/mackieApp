@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';  // Make sure axios is installed and imported
 import { Pizza } from '../types/Pizza';
 import { OrderItem } from '../types/OrderItem';
+import { Order } from '../types/Order';
 import { TruckLocation } from '../types/TruckLocation';
 
 interface OrderModalProps {
@@ -41,22 +42,21 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
     if (!isOpen) return;
 
     const orderItemsPizza : OrderItem[]  = pizzaList.map(pizza => ({
-      pizza,
+      pizza : pizza,
       quantity: 1,
       selected: false,
     }));
     setOrderItemsPizza(orderItemsPizza);
 
      const orderItemsTopping : OrderItem[] = toppingList.map(pizza => ({
-      pizza,
+      pizza : pizza,
       quantity: 1,
       selected: false,
     }));
     setOrderItemsTopping(orderItemsTopping);
 
-    const orderItems = [...orderItemsPizza, ... orderItemsTopping]
+    const orderItems = [...orderItemsPizza, ...orderItemsTopping]
     setPizzas(orderItems);
-
 
     setSelectedLocationId(''); 
     setLocationTouched(false);
@@ -71,7 +71,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
     setSubmitSuccess(null);
     setSubmitting(false);
     setSubscribeToNewsletter(false);
-  }, [isOpen, pizzaList]);
+  }, [isOpen, pizzaList, toppingList]);
 
   const updateQuantity = (index: number, quantity: number) => {
     const updated = [...pizzas];
@@ -117,19 +117,20 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
     setSubmitError(null);
     setSubmitSuccess(null);
 
-    const orderData = {
+    const orderData : Order = {
       customerName: customerName.trim(),
+      customerOrderNumber : "",
       phone,
       email,
       locationId: selectedLocationId,
       subscribeToNewsletter,
       comment: comment.trim(),  // <-- Include comment in submission
       items: pizzas
-        .filter(p => p.selected)
-        .map(p => ({
-          pizzaId: p.pizza.id,
+        .filter(p => p.selected) ,
+      /*   .map(p => ({
+          pizzaid: p.pizzaid,
           quantity: p.quantity,
-        })),
+        })), */
       totalPrice: parseFloat(getTotal()),
     };
 

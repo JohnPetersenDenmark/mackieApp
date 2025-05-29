@@ -1,7 +1,7 @@
 import { Pizza } from '../types/Pizza';
 
 export interface OrderItem {
-  pizza: Pizza;
+   pizza: Pizza;
   quantity: number;
   selected: boolean;
 }
