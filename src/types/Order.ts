@@ -1,13 +1,14 @@
 import { OrderItem } from '../types/OrderItem';
 
 export interface Order {
+    id : number,
  customerName: string,
-  customerOrderNumber: string,
+  customerorderCode: string,
       phone : string
       email : string
       locationId: string,
-      subscribeToNewsletter : boolean,
+     // subscribeToNewsletter : boolean,
       comment: string
-      items: OrderItem[],        
+      orderlines: OrderItem[],        
       totalPrice: number
 }

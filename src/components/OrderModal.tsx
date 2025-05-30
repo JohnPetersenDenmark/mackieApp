@@ -42,20 +42,31 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
   useEffect(() => {
     if (!isOpen) return;
 
-    const orderItemsPizza : OrderItem[]  = pizzaList.map(pizza => ({
-      product : pizza,
+    const orderItemsPizza : OrderItem[]  = pizzaList.map(pizza => ({     
       quantity: 1,
+      productid : pizza.id,
+      producttype : pizza.producttype,
+       productname : pizza.name,
+      productdescription : pizza.description,
       unitdiscountpercentage : pizza.discountpercentage,
       discountedunitprice : pizza.discountprice,
+      unitprice : pizza.price,
+      orderid : 0,
       selected: false,
     }));
     setOrderItemsPizza(orderItemsPizza);
 
      const orderItemsTopping : OrderItem[] = toppingList.map(topping => ({
-      product : topping,
+  
       quantity: 1,
-        unitdiscountpercentage : 0,
+      productid : topping.id,
+      producttype : topping.producttype,
+      productdescription : topping.description,
+      productname : topping.name,
+      unitdiscountpercentage : 0,
       discountedunitprice : 0,
+      unitprice : topping.price,
+      orderid : 0,
       selected: false,
     }));
     setOrderItemsTopping(orderItemsTopping);
@@ -93,7 +104,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
   const getTotal = () => {
     return allOrderItems
       .filter(p => p.selected)
-      .reduce((sum, item) => sum + item.product.price * item.quantity, 0)
+      .reduce((sum, item) => sum + item.unitprice * item.quantity, 0)
       .toFixed(2);
   };
 
@@ -123,14 +134,15 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
     setSubmitSuccess(null);
 
     const orderData : Order = {
+      id : 0,
       customerName: customerName.trim(),
-      customerOrderNumber : "",
+      customerorderCode : "",
       phone,
       email,
       locationId: selectedLocationId,
-      subscribeToNewsletter,
-      comment: comment.trim(),  // <-- Include comment in submission
-      items: allOrderItems
+     // subscribeToNewsletter,
+      comment: comment.trim(), 
+      orderlines: allOrderItems
         .filter(p => p.selected) ,
       /*   .map(p => ({
           pizzaid: p.pizzaid,
@@ -139,8 +151,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
       totalPrice: parseFloat(getTotal()),
     };
 
-    try {
-      // Replace this URL with your actual API endpoint
+    try {    
       const response = await axios.post('http://192.168.8.105:5000/Home/createorder', orderData);
 
       setSubmitSuccess('Bestilling sendt! Tak for din ordre.');
@@ -290,7 +301,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
           <>
           Vælg pizza
             {orderItemsPizza.map((item, index) => (
-              <div key={item.product.id} style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+              <div key={item.productid} style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
                 <input
                   type="checkbox"
                   checked={item.selected}
@@ -299,7 +310,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
                   disabled={submitting}
                 />
                 <div style={{ flex: 1 }}>
-                  <strong>{item.product.name}</strong> - {item.product.description} ({item.product.price.toFixed(2)} kr)
+                  <strong>{item.productname}</strong> - {item.productdescription} ({item.unitprice.toFixed(2)} kr)
                 </div>
                 {item.selected && (
                   <>
@@ -312,7 +323,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
                       disabled={submitting}
                     />
                     <span style={{ marginLeft: '1rem' }}>
-                      {(item.product.price * item.quantity).toFixed(2)} kr
+                      {(item.unitprice * item.quantity).toFixed(2)} kr
                     </span>
                   </>
                 )}
@@ -322,7 +333,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
                {/* Topping selection */}
                Vælg tilbehør
                {orderItemsTopping.map((item, index) => (
-              <div key={item.product.id} style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+              <div key={item.productid} style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
                 <input
                   type="checkbox"
                   checked={item.selected}
@@ -331,7 +342,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
                   disabled={submitting}
                 />
                 <div style={{ flex: 1 }}>
-                  <strong>{item.product.name}</strong> - {item.product.description} ({item.product.price.toFixed(2)} kr)
+                  <strong>{item.productname}</strong> - {item.productdescription} ({item.unitprice.toFixed(2)} kr)
                 </div>
                 {item.selected && (
                   <>
@@ -344,7 +355,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
                       disabled={submitting}
                     />
                     <span style={{ marginLeft: '1rem' }}>
-                      {(item.product.price * item.quantity).toFixed(2)} kr
+                      {(item.unitprice * item.quantity).toFixed(2)} kr
                     </span>
                   </>
                 )}

@@ -4,4 +4,5 @@ export interface Topping {
   description: string;
   imageurl: string;
   price : number; 
+  producttype : number;
 }
