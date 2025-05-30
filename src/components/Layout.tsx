@@ -5,6 +5,7 @@ import TruckLocationList from './TruckLocationList';
 import React, { useEffect, useState } from 'react';
 import OrderModal from './OrderModal'; 
 import { Pizza } from '../types/Pizza';
+import { Topping } from '../types/Topping';
 import axios from 'axios';
 import PizzaList from './PizzaList';
 import PizzaToppingList from './PizzaToppingList';
@@ -17,8 +18,8 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
  
-const [pizzaItems, setPizzaItems] = useState<Pizza[]>([]);
-const [toppings, setToppings] = useState<Pizza[]>([]);
+
+const [toppings, setToppings] = useState<Topping[]>([]);
 const [pizzas, setPizzas] = useState<Pizza[]>([]);
 
 
@@ -29,10 +30,20 @@ const [error, setError] = useState<string | null>(null);
 useEffect(() => {
   axios.get<Pizza[]>('http://192.168.8.105:5000/Home/pizzalist')
     .then(response => {
-      const allPizzaItems = response.data;
-      setPizzaItems(allPizzaItems);
-      setToppings(allPizzaItems.filter(pizza => pizza.topping));
-      setPizzas(allPizzaItems.filter(pizza => !pizza.topping));
+      const allPizzas = response.data;
+      setPizzas(allPizzas);     
+      setLoading(false);
+    })
+    .catch(err => {
+      setError('Failed to load pizzas');
+      setLoading(false);
+      console.error(err);
+    });
+
+     axios.get<Topping[]>('http://192.168.8.105:5000/Home/toppinglist')
+    .then(response => {
+      const allToppings = response.data;
+      setToppings(allToppings);     
       setLoading(false);
     })
     .catch(err => {

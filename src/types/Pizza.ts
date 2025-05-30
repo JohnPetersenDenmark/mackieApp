@@ -6,5 +6,4 @@ export interface Pizza {
   price : number;
   discountpercentage : number;
   discountprice : number;
-  topping: boolean;
 }

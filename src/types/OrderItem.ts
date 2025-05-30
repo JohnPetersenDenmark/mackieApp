@@ -1,7 +1,9 @@
 import { Pizza } from '../types/Pizza';
 
 export interface OrderItem {
-   pizza: Pizza;
+   product: any;
   quantity: number;
   selected: boolean;
+  unitdiscountpercentage : number,
+  discountedunitprice : number
 }

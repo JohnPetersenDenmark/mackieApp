@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';  // Make sure axios is installed and imported
 import { Pizza } from '../types/Pizza';
 import { OrderItem } from '../types/OrderItem';
+import { Topping } from '../types/Topping';
 import { Order } from '../types/Order';
 import { TruckLocation } from '../types/TruckLocation';
 
@@ -9,12 +10,12 @@ interface OrderModalProps {
   isOpen: boolean;
   onClose: () => void;
   pizzas: Pizza[];
-  toppings: Pizza[];
+  toppings: Topping[];
   locations: TruckLocation[];
 }
 
 const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaList, toppings : toppingList , locations }) => {
-  const [pizzas, setPizzas] = useState<OrderItem[]>([]);
+  const [allOrderItems, setAllOrderItems] = useState<OrderItem[]>([]);
 
   const [orderItemsTopping, setOrderItemsTopping] = useState<OrderItem[]>([]);
   const [orderItemsPizza, setOrderItemsPizza] = useState<OrderItem[]>([]);
@@ -42,21 +43,25 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
     if (!isOpen) return;
 
     const orderItemsPizza : OrderItem[]  = pizzaList.map(pizza => ({
-      pizza : pizza,
+      product : pizza,
       quantity: 1,
+      unitdiscountpercentage : pizza.discountpercentage,
+      discountedunitprice : pizza.discountprice,
       selected: false,
     }));
     setOrderItemsPizza(orderItemsPizza);
 
-     const orderItemsTopping : OrderItem[] = toppingList.map(pizza => ({
-      pizza : pizza,
+     const orderItemsTopping : OrderItem[] = toppingList.map(topping => ({
+      product : topping,
       quantity: 1,
+        unitdiscountpercentage : 0,
+      discountedunitprice : 0,
       selected: false,
     }));
     setOrderItemsTopping(orderItemsTopping);
 
     const orderItems = [...orderItemsPizza, ...orderItemsTopping]
-    setPizzas(orderItems);
+    setAllOrderItems(orderItems);
 
     setSelectedLocationId(''); 
     setLocationTouched(false);
@@ -74,21 +79,21 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
   }, [isOpen, pizzaList, toppingList]);
 
   const updateQuantity = (index: number, quantity: number) => {
-    const updated = [...pizzas];
+    const updated = [...allOrderItems];
     updated[index].quantity = quantity;
-    setPizzas(updated);
+    setAllOrderItems(updated);
   };
 
   const toggleSelection = (index: number) => {
-    const updated = [...pizzas];
+    const updated = [...allOrderItems];
     updated[index].selected = !updated[index].selected;
-    setPizzas(updated);
+    setAllOrderItems(updated);
   };
 
   const getTotal = () => {
-    return pizzas
+    return allOrderItems
       .filter(p => p.selected)
-      .reduce((sum, item) => sum + item.pizza.price * item.quantity, 0)
+      .reduce((sum, item) => sum + item.product.price * item.quantity, 0)
       .toFixed(2);
   };
 
@@ -100,7 +105,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const isEmailValid = emailRegex.test(email);
 
-  const isFormValid = isNameValid && isLocationValid && isPhoneValid && isEmailValid && pizzas.some(p => p.selected);
+  const isFormValid = isNameValid && isLocationValid && isPhoneValid && isEmailValid && allOrderItems.some(p => p.selected);
 
   // Submit handler
   const handleSubmit = async () => {
@@ -125,7 +130,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
       locationId: selectedLocationId,
       subscribeToNewsletter,
       comment: comment.trim(),  // <-- Include comment in submission
-      items: pizzas
+      items: allOrderItems
         .filter(p => p.selected) ,
       /*   .map(p => ({
           pizzaid: p.pizzaid,
@@ -279,13 +284,13 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
         </div>
 
         {/* Pizza selection */}
-        {pizzas.length === 0 ? (
+        {orderItemsPizza.length === 0 ? (
           <p>Ingen pizzaer tilgængelige...</p>
         ) : (
           <>
           Vælg pizza
             {orderItemsPizza.map((item, index) => (
-              <div key={item.pizza.id} style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+              <div key={item.product.id} style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
                 <input
                   type="checkbox"
                   checked={item.selected}
@@ -294,7 +299,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
                   disabled={submitting}
                 />
                 <div style={{ flex: 1 }}>
-                  <strong>{item.pizza.name}</strong> - {item.pizza.description} ({item.pizza.price.toFixed(2)} kr)
+                  <strong>{item.product.name}</strong> - {item.product.description} ({item.product.price.toFixed(2)} kr)
                 </div>
                 {item.selected && (
                   <>
@@ -307,7 +312,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
                       disabled={submitting}
                     />
                     <span style={{ marginLeft: '1rem' }}>
-                      {(item.pizza.price * item.quantity).toFixed(2)} kr
+                      {(item.product.price * item.quantity).toFixed(2)} kr
                     </span>
                   </>
                 )}
@@ -317,7 +322,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
                {/* Topping selection */}
                Vælg tilbehør
                {orderItemsTopping.map((item, index) => (
-              <div key={item.pizza.id} style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+              <div key={item.product.id} style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
                 <input
                   type="checkbox"
                   checked={item.selected}
@@ -326,7 +331,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
                   disabled={submitting}
                 />
                 <div style={{ flex: 1 }}>
-                  <strong>{item.pizza.name}</strong> - {item.pizza.description} ({item.pizza.price.toFixed(2)} kr)
+                  <strong>{item.product.name}</strong> - {item.product.description} ({item.product.price.toFixed(2)} kr)
                 </div>
                 {item.selected && (
                   <>
@@ -339,7 +344,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
                       disabled={submitting}
                     />
                     <span style={{ marginLeft: '1rem' }}>
-                      {(item.pizza.price * item.quantity).toFixed(2)} kr
+                      {(item.product.price * item.quantity).toFixed(2)} kr
                     </span>
                   </>
                 )}
