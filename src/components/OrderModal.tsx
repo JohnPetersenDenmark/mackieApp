@@ -14,7 +14,7 @@ interface OrderModalProps {
   locations: TruckLocation[];
 }
 
-const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaList, toppings : toppingList , locations }) => {
+const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaList, toppings: toppingList, locations }) => {
   const [allOrderItems, setAllOrderItems] = useState<OrderItem[]>([]);
 
   const [orderItemsTopping, setOrderItemsTopping] = useState<OrderItem[]>([]);
@@ -38,35 +38,36 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
+  const [submittedOrderSuccessfully, setSubmittedOrderSuccessfully] = useState(false);
 
   useEffect(() => {
     if (!isOpen) return;
 
-    const orderItemsPizza : OrderItem[]  = pizzaList.map(pizza => ({     
+    const orderItemsPizza: OrderItem[] = pizzaList.map(pizza => ({
       quantity: 1,
-      productid : pizza.id,
-      producttype : pizza.producttype,
-       productname : pizza.name,
-      productdescription : pizza.description,
-      unitdiscountpercentage : pizza.discountpercentage,
-      discountedunitprice : pizza.discountprice,
-      unitprice : pizza.price,
-      orderid : 0,
+      productid: pizza.id,
+      producttype: pizza.producttype,
+      productname: pizza.name,
+      productdescription: pizza.description,
+      unitdiscountpercentage: pizza.discountpercentage,
+      discountedunitprice: pizza.discountprice,
+      unitprice: pizza.price,
+      orderid: 0,
       selected: false,
     }));
     setOrderItemsPizza(orderItemsPizza);
 
-     const orderItemsTopping : OrderItem[] = toppingList.map(topping => ({
-  
+    const orderItemsTopping: OrderItem[] = toppingList.map(topping => ({
+
       quantity: 1,
-      productid : topping.id,
-      producttype : topping.producttype,
-      productdescription : topping.description,
-      productname : topping.name,
-      unitdiscountpercentage : 0,
-      discountedunitprice : 0,
-      unitprice : topping.price,
-      orderid : 0,
+      productid: topping.id,
+      producttype: topping.producttype,
+      productdescription: topping.description,
+      productname: topping.name,
+      unitdiscountpercentage: 0,
+      discountedunitprice: 0,
+      unitprice: topping.price,
+      orderid: 0,
       selected: false,
     }));
     setOrderItemsTopping(orderItemsTopping);
@@ -74,7 +75,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
     const orderItems = [...orderItemsPizza, ...orderItemsTopping]
     setAllOrderItems(orderItems);
 
-    setSelectedLocationId(''); 
+    setSelectedLocationId('');
     setLocationTouched(false);
     setCustomerName('');
     setNameTouched(false);
@@ -85,6 +86,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
     setComment('');  // Reset comment on open
     setSubmitError(null);
     setSubmitSuccess(null);
+    setSubmittedOrderSuccessfully(false)
     setSubmitting(false);
     setSubscribeToNewsletter(false);
   }, [isOpen, pizzaList, toppingList]);
@@ -133,17 +135,17 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
     setSubmitError(null);
     setSubmitSuccess(null);
 
-    const orderData : Order = {
-      id : 0,
+    const orderData: Order = {
+      id: 0,
       customerName: customerName.trim(),
-      customerorderCode : "",
+      customerorderCode: "",
       phone,
       email,
       locationId: selectedLocationId,
-     // subscribeToNewsletter,
-      comment: comment.trim(), 
+      // subscribeToNewsletter,
+      comment: comment.trim(),
       orderlines: allOrderItems
-        .filter(p => p.selected) ,
+        .filter(p => p.selected),
       /*   .map(p => ({
           pizzaid: p.pizzaid,
           quantity: p.quantity,
@@ -151,10 +153,11 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
       totalPrice: parseFloat(getTotal()),
     };
 
-    try {    
+    try {
       const response = await axios.post('http://192.168.8.105:5000/Home/createorder', orderData);
 
       setSubmitSuccess('Bestilling sendt! Tak for din ordre.');
+      setSubmittedOrderSuccessfully(true);
       // Optionally reset form or close modal after success:
       // onClose();
     } catch (error) {
@@ -172,18 +175,22 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
       style={{
         position: 'fixed',
         top: 0, left: 0, right: 0, bottom: 0,
-        backgroundColor: 'rgba(0,0,0,0.5)',
+        backgroundColor: '#8d4a5b',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         zIndex: 1000,
       }}
     >
-      <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '8px', minWidth: '500px' }}>
-        <h2>Bestil frisklavet pizza og bag-selv</h2>
+      <div style={{ backgroundColor: '#c7a6ac', padding: '2rem', borderRadius: '8px', minWidth: '500px' }}>
+
+        <div style={{ backgroundColor: '#8d4a5b', color: 'white', height: '80px' }}>
+          <p style={{ fontSize: '50px', paddingTop: '10px', paddingLeft: '10px' }}>Bestil frisklavet pizza og bag-selv</p>
+        </div>
+
 
         {/* Location selector */}
-        <div style={{ marginBottom: '1rem' }}>
+        <div style={{ marginBottom: '1rem', marginTop: '20px' }}>
           <label htmlFor="locationSelect"><strong>Vælg afhentningssted:</strong></label><br />
           <select
             id="locationSelect"
@@ -191,13 +198,15 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
             onChange={(e) => setSelectedLocationId(e.target.value)}
             onBlur={() => setLocationTouched(true)}
             style={{
+              backgroundColor: '#c7a6ac',
+              fontSize: '20px',
               width: '100%',
               padding: '0.5rem',
               marginTop: '0.25rem',
-              borderColor: !isLocationValid && locationTouched ? 'red' : undefined,
-              borderWidth: '1.5px',
+              borderColor: !isLocationValid && locationTouched ? 'red' : '#22191b',
+              border: '1.5px',
               borderStyle: 'solid',
-              borderRadius: '4px',
+              borderRadius: '4px'
             }}
             disabled={submitting}
           >
@@ -224,12 +233,13 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
             onBlur={() => setNameTouched(true)}
             placeholder="Indtast dit navn"
             style={{
+              fontSize: '20px',
+              backgroundColor: '#c7a6ac',
               width: '100%',
               padding: '0.5rem',
               marginTop: '0.25rem',
-              borderColor: !isNameValid && nameTouched ? 'red' : undefined,
-              borderWidth: '1.5px',
-              borderStyle: 'solid',
+              borderColor: !isNameValid && nameTouched ? 'red' : '#22191b',
+              border: '1.5px solid',
               borderRadius: '4px',
             }}
             disabled={submitting}
@@ -250,12 +260,13 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
             onBlur={() => setPhoneTouched(true)}
             placeholder="+451234567890 eller 12345678"
             style={{
+              backgroundColor: '#c7a6ac',
+              fontSize: '20px',
               width: '100%',
               padding: '0.5rem',
               marginTop: '0.25rem',
               borderColor: !isPhoneValid && phoneTouched ? 'red' : undefined,
-              borderWidth: '1.5px',
-              borderStyle: 'solid',
+              border: '1.5px solid #22191b',
               borderRadius: '4px',
             }}
             maxLength={12}
@@ -279,12 +290,13 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
             onBlur={() => setEmailTouched(true)}
             placeholder="Indtast din email"
             style={{
+              backgroundColor: '#c7a6ac',
+              fontSize: '20px',
               width: '100%',
               padding: '0.5rem',
               marginTop: '0.25rem',
               borderColor: !isEmailValid && emailTouched ? 'red' : undefined,
-              borderWidth: '1.5px',
-              borderStyle: 'solid',
+              border: '1.5px solid #22191b',
               borderRadius: '4px',
             }}
             disabled={submitting}
@@ -299,98 +311,150 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
           <p>Ingen pizzaer tilgængelige...</p>
         ) : (
           <>
-          Vælg pizza
+            <div style={{ marginBottom: '1rem', marginTop: '3rem', fontSize: '25px' }}>
+              Vælg pizza
+            </div>
+
             {orderItemsPizza.map((item, index) => (
-              <div key={item.productid} style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+              <div
+                key={item.productid}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  marginBottom: '0.5rem',
+                  fontSize: '20px'
+                }}
+              >
+                {/* 1) Checkbox (native size + scaled) */}
                 <input
                   type="checkbox"
                   checked={item.selected}
                   onChange={() => toggleSelection(index)}
-                  style={{ marginRight: '0.5rem' }}
                   disabled={submitting}
+                  style={{
+                   accentColor : '#8d4a5b',
+                    marginRight: '0.5rem',
+                    transform: 'scale(1.5)',
+                    transformOrigin: 'center center',
+                    alignSelf: 'center'
+                  }}
                 />
-                <div style={{ flex: 1 }}>
-                  <strong>{item.productname}</strong> - {item.productdescription} ({item.unitprice.toFixed(2)} kr)
+
+                {/* 2) Product info — fixed width */}
+                <div
+                  style={{
+                    flex: '0 0 500px',    // no grow, no shrink, basis = 300px
+                    overflow: 'hidden',   // if text too long, hide it
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  <strong>{item.productname}</strong>{' '}
+                  (Pris før rabat {item.discountedunitprice.toFixed(2)} kr)
                 </div>
+
+                {/* 3) Quantity & line total — only when selected, fixed width */}
                 {item.selected && (
-                  <>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flex: '0 0 200px',  // no grow, no shrink, basis = 150px
+                      alignItems: 'center',
+                      marginLeft: '1rem'
+                    }}
+                  >
                     <input
-                      type="number"
+                      type='text'
                       min={1}
                       value={item.quantity}
-                      onChange={(e) => updateQuantity(index, parseInt(e.target.value) || 1)}
-                      style={{ width: '50px', marginLeft: '1rem' }}
+                      onChange={(e) =>
+                        updateQuantity(index, parseInt(e.target.value) || 1)
+                      }
                       disabled={submitting}
+                      style={{
+                        width: '50px',
+                        height: '25px',
+                        fontSize: '15px',
+                        marginRight: '0.5rem'
+                      }}
                     />
-                    <span style={{ marginLeft: '1rem' }}>
+                    <span>
                       {(item.unitprice * item.quantity).toFixed(2)} kr
                     </span>
-                  </>
+                  </div>
                 )}
               </div>
             ))}
+
+
+
             <div>
-               {/* Topping selection */}
-               Vælg tilbehør
-               {orderItemsTopping.map((item, index) => (
-              <div key={item.productid} style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
-                <input
-                  type="checkbox"
-                  checked={item.selected}
-                  onChange={() => toggleSelection(index + orderItemsPizza.length )}
-                  style={{ marginRight: '0.5rem' }}
-                  disabled={submitting}
-                />
-                <div style={{ flex: 1 }}>
-                  <strong>{item.productname}</strong> - {item.productdescription} ({item.unitprice.toFixed(2)} kr)
-                </div>
-                {item.selected && (
-                  <>
-                    <input
-                      type="number"
-                      min={1}
-                      value={item.quantity}
-                      onChange={(e) => updateQuantity(index + orderItemsPizza.length , parseInt(e.target.value) || 1)}
-                      style={{ width: '50px', marginLeft: '1rem' }}
-                      disabled={submitting}
-                    />
-                    <span style={{ marginLeft: '1rem' }}>
-                      {(item.unitprice * item.quantity).toFixed(2)} kr
-                    </span>
-                  </>
-                )}
+              {/* Topping selection */}
+              <div style={{ marginBottom: '1rem', marginTop: '3rem', fontSize: '25px' }}>
+                Vælg tilbehør
               </div>
-                 ))}
+
+              {orderItemsTopping.map((item, index) => (
+                <div key={item.productid} style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem', fontSize: '20px' }}>
+                  <input
+                    type="checkbox"
+                    checked={item.selected}
+                    onChange={() => toggleSelection(index + orderItemsPizza.length)}
+                    style={{ accentColor : '#8d4a5b', marginRight: '0.5rem', transform: 'scale(1.5)', transformOrigin: 'center center' }}
+                    disabled={submitting}
+                  />
+                  <div style={{ flex: 1 }}>
+                    <strong>{item.productname}</strong> - {item.productdescription} ({item.unitprice.toFixed(2)} kr)
+                  </div>
+                  {item.selected && (
+                    <>
+                      <input
+                        type="number"
+                        min={1}
+                        value={item.quantity}
+                        onChange={(e) => updateQuantity(index + orderItemsPizza.length, parseInt(e.target.value) || 1)}
+                        style={{ width: '50px', marginLeft: '1rem' }}
+                        disabled={submitting}
+                      />
+                      <span style={{ marginLeft: '1rem' }}>
+                        {(item.unitprice * item.quantity).toFixed(2)} kr
+                      </span>
+                    </>
+                  )}
+                </div>
+              ))}
             </div>
 
             <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
-              <label style={{ display: 'flex', alignItems: 'center', fontSize: '14px' }}>
+              <label style={{ display: 'flex', alignItems: 'center', fontSize: '20px' }}>
                 <input
                   type="checkbox"
                   checked={subscribeToNewsletter}
                   onChange={() => setSubscribeToNewsletter(!subscribeToNewsletter)}
                   disabled={submitting}
-                  style={{ marginRight: '0.5rem' }}
+                  style={{ marginRight: '0.5rem', transform: 'scale(1.5)', transformOrigin: 'top left' }}
                 />
                 Jeg vil gerne modtage nyhedsbrev fra Mackies Pizza Truck
               </label>
             </div>
 
             {/* Comment input added here */}
-            <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
-              <label htmlFor="comment"><strong>Kommentar til bestillingen:</strong></label><br />
+            <div style={{ marginTop: '1rem', marginBottom: '3rem' }}>
+              <label htmlFor="comment" style={{ fontSize: '20px' }} ><strong>Kommentar til bestillingen:</strong></label><br />
               <textarea
                 id="comment"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="Skriv eventuelle ønsker eller bemærkninger her..."
+                spellCheck='false'
                 rows={3}
                 style={{
+                  backgroundColor: '#c7a6ac',
                   width: '100%',
                   padding: '0.5rem',
                   marginTop: '0.25rem',
                   borderRadius: '4px',
-                  border: '1.5px solid #ccc',
+                  border: '1.5px solid #22191b',
                   resize: 'vertical',
                 }}
                 disabled={submitting}
@@ -406,11 +470,11 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
             <div style={{ textAlign: 'right' }}>
               <button
                 onClick={handleSubmit}
-                disabled={!isFormValid || submitting}
+                disabled={!isFormValid || submitting || submittedOrderSuccessfully}
                 style={{
                   marginTop: '1rem',
                   padding: '0.5rem 1rem',
-                  backgroundColor: isFormValid && !submitting ? '#8d4a5b' : 'grey',
+                  backgroundColor: isFormValid && !submitting && !submittedOrderSuccessfully ? '#8d4a5b' : 'grey',
                   color: 'white',
                   border: 'none',
                   borderRadius: '4px',
@@ -426,8 +490,9 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
                 style={{
                   marginTop: '1rem',
                   padding: '0.5rem 1rem',
-                  backgroundColor: '#ccc',
-                  color: 'black',
+                  backgroundColor: '#8d4a5b',
+                  color: 'white',
+
                   border: 'none',
                   borderRadius: '4px',
                   cursor: submitting ? 'not-allowed' : 'pointer',
