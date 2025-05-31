@@ -13,9 +13,10 @@ interface Pizza {
 
 interface CheckOrderModalProps {
     isOpen: boolean;
+    onOrderFetched: (order: Order) => void;
 }
 
-const CheckMyOrder: React.FC<CheckOrderModalProps> = ({ isOpen }) => {
+const CheckMyOrder: React.FC<CheckOrderModalProps> = ({ isOpen , onOrderFetched}) => {
 
     const [submitting, setSubmitting] = useState(false);
 
@@ -71,9 +72,9 @@ const CheckMyOrder: React.FC<CheckOrderModalProps> = ({ isOpen }) => {
       const response = await axios.post('http://192.168.8.105:5000/Home/getorderbyid', orderData);
 
       var curOrder : Order = response.data;
-      setSubmitSuccess('Bestilling sendt! Tak for din ordre.');
+    //  setSubmitSuccess('Ordren er fundet');
+       onOrderFetched(response.data);
       
-      // onClose();
     } catch (error) {
       setSubmitError('Kunne ikke sende bestillingen. Prøv igen senere.');
       console.error(error);

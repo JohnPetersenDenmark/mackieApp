@@ -12,14 +12,16 @@ interface OrderModalProps {
   pizzas: Pizza[];
   toppings: Topping[];
   locations: TruckLocation[];
+  existingOrder: Order | null;
 }
 
-const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaList, toppings: toppingList, locations }) => {
+const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose, pizzas: pizzaList, toppings: toppingList, locations }) => {
   const [allOrderItems, setAllOrderItems] = useState<OrderItem[]>([]);
 
   const [orderItemsTopping, setOrderItemsTopping] = useState<OrderItem[]>([]);
   const [orderItemsPizza, setOrderItemsPizza] = useState<OrderItem[]>([]);
 
+  const [orderId, setOrderId] = useState<number>(0);
 
   const [selectedLocationId, setSelectedLocationId] = useState<string>('');
   const [locationTouched, setLocationTouched] = useState(false);
@@ -55,10 +57,29 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
       orderid: 0,
       selected: false,
     }));
+
+    if (existingOrder !== null) {
+      existingOrder.orderlines.forEach(orderLine => {
+        if (orderLine.producttype == 0)  // pizzas
+        {
+          const orderItem = orderItemsPizza.find(orderItem => orderItem.productid === orderLine.productid);
+          if (orderItem) {
+            orderItem.quantity = orderLine.quantity;
+            orderItem.unitprice = orderLine.unitprice;
+            orderItem.discountedunitprice = orderLine.discountedunitprice;
+            orderItem.orderid = orderLine.orderid;
+           // orderItem.productdescription = orderLine.productdescription;
+           // orderItem.productname = orderLine.productname;
+            orderItem.selected = true;
+            orderItem.unitdiscountpercentage = orderLine.unitdiscountpercentage;
+          }
+        }
+      });
+    }
+
     setOrderItemsPizza(orderItemsPizza);
 
     const orderItemsTopping: OrderItem[] = toppingList.map(topping => ({
-
       quantity: 1,
       productid: topping.id,
       producttype: topping.producttype,
@@ -70,25 +91,63 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
       orderid: 0,
       selected: false,
     }));
+
+     if (existingOrder !== null) {
+      existingOrder.orderlines.forEach(orderLine => {
+        if (orderLine.producttype == 1)  // toppings
+        {
+          const orderItem = orderItemsTopping.find(orderItem => orderItem.productid === orderLine.productid);
+          if (orderItem) {
+            orderItem.quantity = orderLine.quantity;
+            orderItem.unitprice = orderLine.unitprice;
+            orderItem.discountedunitprice = orderLine.discountedunitprice;
+            orderItem.orderid = orderLine.orderid;
+           // orderItem.productdescription = orderLine.productdescription;
+           // orderItem.productname = orderLine.productname;
+            orderItem.selected = true;
+            orderItem.unitdiscountpercentage = orderLine.unitdiscountpercentage;
+          }
+        }
+      });
+    }
+
     setOrderItemsTopping(orderItemsTopping);
 
     const orderItems = [...orderItemsPizza, ...orderItemsTopping]
     setAllOrderItems(orderItems);
 
-    setSelectedLocationId('');
-    setLocationTouched(false);
-    setCustomerName('');
-    setNameTouched(false);
-    setPhone('');
-    setPhoneTouched(false);
-    setEmail('');
-    setEmailTouched(false);
-    setComment('');  // Reset comment on open
-    setSubmitError(null);
-    setSubmitSuccess(null);
-    setSubmittedOrderSuccessfully(false)
-    setSubmitting(false);
-    setSubscribeToNewsletter(false);
+
+    if (existingOrder !== null) {
+      setSelectedLocationId(existingOrder.locationId);
+      setCustomerName(existingOrder.customerName);
+      setPhone(existingOrder.phone);
+      setEmail(existingOrder.email);
+      setComment(existingOrder.comment)
+      setSubmitError(null);
+      setOrderId(existingOrder.id)
+      setSubmitSuccess(null);
+      setSubmittedOrderSuccessfully(false)
+      setSubmitting(false);
+      setSubscribeToNewsletter(false);
+
+    }
+
+    else {
+      setSelectedLocationId('');
+      setLocationTouched(false);
+      setCustomerName('');
+      setNameTouched(false);
+      setPhone('');
+      setPhoneTouched(false);
+      setEmail('');
+      setEmailTouched(false);
+      setComment('');  // Reset comment on open
+      setSubmitError(null);
+      setSubmitSuccess(null);
+      setSubmittedOrderSuccessfully(false)
+      setSubmitting(false);
+      setSubscribeToNewsletter(false);
+    }
   }, [isOpen, pizzaList, toppingList]);
 
   const updateQuantity = (index: number, quantity: number) => {
@@ -136,7 +195,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
     setSubmitSuccess(null);
 
     const orderData: Order = {
-      id: 0,
+      id: orderId,
       customerName: customerName.trim(),
       customerorderCode: "",
       phone,
@@ -154,7 +213,13 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
     };
 
     try {
-      const response = await axios.post('http://192.168.8.105:5000/Home/createorder', orderData);
+      let response;
+      if (existingOrder === null) {
+        response = await axios.post('http://192.168.8.105:5000/Home/createorder', orderData);
+      }
+      else{
+          response = await axios.post('http://192.168.8.105:5000/Home/updateorder', orderData);
+      }
 
       setSubmitSuccess('Bestilling sendt! Tak for din ordre.');
       setSubmittedOrderSuccessfully(true);
@@ -299,7 +364,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
               border: '1.5px solid #22191b',
               borderRadius: '4px',
             }}
-            disabled={submitting}
+            disabled={submitting || (existingOrder !== null)}
           />
           {!isEmailValid && emailTouched && (
             <p style={{ color: 'red', marginTop: '0.25rem' }}>Indtast venligst en gyldig emailadresse.</p>
