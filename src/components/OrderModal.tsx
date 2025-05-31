@@ -332,7 +332,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
                   onChange={() => toggleSelection(index)}
                   disabled={submitting}
                   style={{
-                   accentColor : '#8d4a5b',
+                    accentColor: '#8d4a5b',
                     marginRight: '0.5rem',
                     transform: 'scale(1.5)',
                     transformOrigin: 'center center',
@@ -386,40 +386,78 @@ const OrderModal: React.FC<OrderModalProps> = ({ isOpen, onClose, pizzas: pizzaL
               </div>
             ))}
 
-
-
             <div>
               {/* Topping selection */}
               <div style={{ marginBottom: '1rem', marginTop: '3rem', fontSize: '25px' }}>
                 Vælg tilbehør
               </div>
-
               {orderItemsTopping.map((item, index) => (
-                <div key={item.productid} style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem', fontSize: '20px' }}>
+                <div
+                  key={item.productid}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    marginBottom: '0.5rem',
+                    fontSize: '20px'
+                  }}
+                >
+                  {/* 1) Checkbox (native size + scaled) */}
                   <input
                     type="checkbox"
                     checked={item.selected}
                     onChange={() => toggleSelection(index + orderItemsPizza.length)}
-                    style={{ accentColor : '#8d4a5b', marginRight: '0.5rem', transform: 'scale(1.5)', transformOrigin: 'center center' }}
                     disabled={submitting}
+                    style={{
+                      accentColor: '#8d4a5b',
+                      marginRight: '0.5rem',
+                      transform: 'scale(1.5)',
+                      transformOrigin: 'center center',
+                      alignSelf: 'center'
+                    }}
                   />
-                  <div style={{ flex: 1 }}>
-                    <strong>{item.productname}</strong> - {item.productdescription} ({item.unitprice.toFixed(2)} kr)
+
+                  {/* 2) Product info — fixed width */}
+                  <div
+                    style={{
+                      flex: '0 0 500px',    // no grow, no shrink, basis = 300px
+                      overflow: 'hidden',   // if text too long, hide it
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    <strong>{item.productname}</strong>{' '}
+                    (Pris før rabat {item.discountedunitprice.toFixed(2)} kr)
                   </div>
+
+                  {/* 3) Quantity & line total — only when selected, fixed width */}
                   {item.selected && (
-                    <>
+                    <div
+                      style={{
+                        display: 'flex',
+                        flex: '0 0 200px',  // no grow, no shrink, basis = 150px
+                        alignItems: 'center',
+                        marginLeft: '1rem'
+                      }}
+                    >
                       <input
-                        type="number"
+                        type='text'
                         min={1}
                         value={item.quantity}
-                        onChange={(e) => updateQuantity(index + orderItemsPizza.length, parseInt(e.target.value) || 1)}
-                        style={{ width: '50px', marginLeft: '1rem' }}
+                        onChange={(e) =>
+                          updateQuantity(index + orderItemsPizza.length, parseInt(e.target.value) || 1)
+                        }
                         disabled={submitting}
+                        style={{
+                          width: '50px',
+                          height: '25px',
+                          fontSize: '15px',
+                          marginRight: '0.5rem'
+                        }}
                       />
-                      <span style={{ marginLeft: '1rem' }}>
+                      <span>
                         {(item.unitprice * item.quantity).toFixed(2)} kr
                       </span>
-                    </>
+                    </div>
                   )}
                 </div>
               ))}
