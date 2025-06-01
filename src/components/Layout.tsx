@@ -67,6 +67,8 @@ export default function Layout({ children }: LayoutProps) {
 
   }, []);
 
+
+
   const handleOrderFetched = (orderData: Order) => {
     setOrder(orderData);
      setIsCheckOrderModalOpen(false);
@@ -76,7 +78,14 @@ export default function Layout({ children }: LayoutProps) {
   const handleOrderClick = () => {
     setIsOrderModalOpen(true);
   };
+
+  
   const handleCloseOrderModal = () => {
+    setIsOrderModalOpen(false);
+    setOrder(null);
+  };
+
+   const handleCloseCheckOrder = () => {
     setIsOrderModalOpen(false);
     setOrder(null);
   };
@@ -87,6 +96,7 @@ export default function Layout({ children }: LayoutProps) {
   };
   const handleCheckCloseOrderModal = () => {
     setIsCheckOrderModalOpen(false);
+    setOrder(null);
   };
 
   return (
@@ -94,7 +104,7 @@ export default function Layout({ children }: LayoutProps) {
       
 
       {!order && ( 
-        <CheckMyOrder isOpen={isCheckOrderModalOpen} onOrderFetched={handleOrderFetched} ></CheckMyOrder>
+        <CheckMyOrder isOpen={isCheckOrderModalOpen} onOrderFetched={handleOrderFetched} onClose={() => handleCheckCloseOrderModal()} ></CheckMyOrder>
       )}
 
       {order && (
