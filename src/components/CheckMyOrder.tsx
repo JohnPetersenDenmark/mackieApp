@@ -4,12 +4,7 @@ import axios from 'axios';
 import { Order } from '../types/Order';
 
 
-interface Pizza {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-}
+
 
 interface CheckOrderModalProps {
   isOpen: boolean;
