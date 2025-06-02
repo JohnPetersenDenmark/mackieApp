@@ -1,32 +1,46 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-//import { useNavigate } from 'react-router-dom';
-import { SaleLocation } from '../../types/SaleLocation';
+import { TruckLocation } from '../../types/TruckLocation';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { format } from "date-fns";
+import { da } from "date-fns/locale";
+import CustomInput from "./CustomInput"; // adjust path as needed
 
-interface LocationModalProps {
+
+
+interface TruckLocationModalProps {
     isOpen: boolean;
-    locationToEdit: SaleLocation | null;
+    truckLocationToEdit: TruckLocation | null;
     onClose: () => void;
 }
 
-const AdminPlaceCreateEdit: React.FC<LocationModalProps> = ({ isOpen, onClose, locationToEdit }) => {
+const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, onClose, truckLocationToEdit }) => {
 
     const [submitting, setSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState<string | null>(null);
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
     const [placeName, setPlaceName] = useState<string>('');
     const [placeNameTouched, setPlaceNameTouched] = useState(false);
 
     const isPlaceNameValid = placeName.length > 0;
-    const isFormValid = isPlaceNameValid
+    const isDateValid = selectedDate ? true : false;
 
-    //const navigate = useNavigate();
+    const isFormValid = isPlaceNameValid && isDateValid
+
+
+
+    const handleDateChange = (date: any) => {
+        setSelectedDate(date);
+
+    };
 
     useEffect(() => {
         if (!isOpen) return;
 
-        if (locationToEdit !== null) {
-            setPlaceName(locationToEdit.locationname);
+        if (truckLocationToEdit !== null) {
+            setPlaceName(truckLocationToEdit.locationname);
         }
         else {
             setPlaceName('');
@@ -41,13 +55,17 @@ const AdminPlaceCreateEdit: React.FC<LocationModalProps> = ({ isOpen, onClose, l
 
     const handleSubmit = async () => {
 
+        const formattedDate = selectedDate
+            ? format(selectedDate, "dd-MM-yyyy HH:mm", { locale: da })
+            : ""; // or some fallback string
+
         const placeData = {
-            id: locationToEdit !== null ? locationToEdit.id : 0,
+            id: truckLocationToEdit !== null ? truckLocationToEdit.id : 0,
             locationname: placeName.trim(),
         }
 
         const webApiBaseUrl = process.env.REACT_APP__BASE_API_URL;
-        const url = webApiBaseUrl + '/Admin/addorupdatelocation'
+        const url = webApiBaseUrl + '/Admin/atelocation'
         try {
             const response = await axios.post(url, placeData);
             onClose();
@@ -77,11 +95,26 @@ const AdminPlaceCreateEdit: React.FC<LocationModalProps> = ({ isOpen, onClose, l
         >
 
             <div style={{ backgroundColor: '#c7a6ac', padding: '2rem', borderRadius: '8px', minWidth: '500px' }}>
-                <h2 style={{ backgroundColor: '#8d4a5b', padding: '2rem', color: 'white', borderRadius: '8px' }} >Pladsnavn</h2>
+                <h2 style={{ backgroundColor: '#8d4a5b', padding: '2rem', color: 'white', borderRadius: '8px' }} >Ny aftale</h2>
 
+
+                <div>
+                    <label htmlFor="date-picker">Select a date:</label>
+                    <DatePicker
+                        id="date-picker"
+                        selected={selectedDate}
+                        onChange={handleDateChange}
+                        dateFormat="dd-MM-yyyy"
+                        placeholderText="MM-DD-YYYY"
+                        locale={da}
+                        showPopperArrow={true}
+                        customInput={<CustomInput />}
+                        
+                    />
+                </div>
 
                 <div style={{ marginBottom: '1rem' }}>
-                    {/* <label htmlFor="email"><strong>Pladsnavn:</strong></label><br /> */}
+                    <label htmlFor="email"><strong>Stadeplads:</strong></label><br />
                     <input
                         id="placename"
                         type="text"
@@ -138,4 +171,5 @@ const AdminPlaceCreateEdit: React.FC<LocationModalProps> = ({ isOpen, onClose, l
     )
 };
 
-export default AdminPlaceCreateEdit;
+
+export default AdminCalendarCreateEdit
