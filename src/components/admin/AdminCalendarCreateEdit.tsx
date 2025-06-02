@@ -19,22 +19,39 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
 
     const [submitting, setSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState<string | null>(null);
-    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+    const [startDateTime, setSelectedStartDate] = useState<Date | null>(null);
+
+    const [endDateTime, setSelectedEndDate] = useState<Date | null>(null);
 
     const [placeName, setPlaceName] = useState<string>('');
     const [placeNameTouched, setPlaceNameTouched] = useState(false);
 
     const isPlaceNameValid = placeName.length > 0;
-    const isDateValid = selectedDate ? true : false;
+    const isDateValid = startDateTime ? true : false;
 
     const isFormValid = isPlaceNameValid && isDateValid
 
 
 
-    const handleDateChange = (date: any) => {
-        setSelectedDate(date);
+    const handleStartDateChange = (date: any) => {
+        setSelectedStartDate(date);
+
+        if (date && endDateTime && endDateTime <= date) {
+            const adjustedEndTime = new Date(date.getTime() + 15 * 60 * 1000);
+            setSelectedEndDate(adjustedEndTime);
+        }
+    };
+
+    const handleEndDateChange = (date: any) => {
+        if (startDateTime && date && date <= startDateTime) {
+            alert("Sluttidspunktet skal være efter starttidspunktet!");
+            return;
+        }
+        setSelectedEndDate(date);
 
     };
+
+
 
     useEffect(() => {
         if (!isOpen) return;
@@ -55,8 +72,8 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
 
     const handleSubmit = async () => {
 
-        const formattedDate = selectedDate
-            ? format(selectedDate, "dd-MM-yyyy HH:mm", { locale: da })
+        const formattedDate = startDateTime
+            ? format(startDateTime, "dd-MM-yyyy HH:mm", { locale: da })
             : ""; // or some fallback string
 
         const placeData = {
@@ -99,17 +116,45 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
 
 
                 <div>
-                    <label htmlFor="date-picker">Select a date:</label>
+                    <label htmlFor="startDateTime"><strong>Start:</strong></label><br />
                     <DatePicker
-                        id="date-picker"
-                        selected={selectedDate}
-                        onChange={handleDateChange}
-                        dateFormat="dd-MM-yyyy"
-                        placeholderText="MM-DD-YYYY"
+                    id='startDateTime'
+                        selected={startDateTime}
+                        onChange={handleStartDateChange}
+                        showTimeSelect
+                        timeCaption="Tid"
+                        timeIntervals={15}
+                        dateFormat="dd-MM-yyyy HH:mm"
+                        timeFormat="HH:mm"
                         locale={da}
-                        showPopperArrow={true}
+                        placeholderText="Vælg startdato og tid"
                         customInput={<CustomInput />}
-                        
+                    />
+                </div>
+                <div>
+                    <label htmlFor="endDateTime"><strong>Slut:</strong></label><br />
+                    <DatePicker
+                    id='endDateTime'
+                        selected={endDateTime}
+                        onChange={handleEndDateChange}
+                        timeCaption="Tid"
+                        showTimeSelect
+                        timeIntervals={15}
+                        dateFormat="dd-MM-yyyy HH:mm"
+                        timeFormat="HH:mm"
+                        locale={da}
+                        placeholderText="Vælg slutdato og tid"
+                        // Restrict end date to the same day as start
+                        minDate={startDateTime ? startDateTime : undefined}
+                        maxDate={startDateTime ? startDateTime : undefined}
+                        // Restrict time to after start time on same day
+                        minTime={
+                            startDateTime
+                                ? startDateTime
+                                : new Date(new Date().setHours(0, 0, 0, 0)) // fallback to midnight
+                        }
+                        maxTime={new Date(new Date().setHours(23, 59, 59, 999))}
+                        customInput={<CustomInput />}
                     />
                 </div>
 
