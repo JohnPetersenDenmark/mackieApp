@@ -57,7 +57,7 @@ export default function Layout({ children }: LayoutProps) {
         console.error(err);
       });
 
-    axios.get<TruckLocation[]>('http://192.168.8.105:5000/Home/truckcalendarlocationlis')
+    axios.get<TruckLocation[]>('http://192.168.8.105:5000/Home/truckcalendarlocationlist')
       .then(response => {
         setLocations(response.data);
         setLoading(false);

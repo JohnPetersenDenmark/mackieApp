@@ -50,7 +50,7 @@ const AdminDashBoard: React.FC = () => {
                 display: 'grid',
                 gridTemplateColumns: 'repeat(1, 1fr)',
                 gap: '0rem',
-                fontSize: '40px',
+                fontSize: '30px',
                 color: '#8d4a5b',
                 fontWeight: 700,
                 marginLeft : '100px',
