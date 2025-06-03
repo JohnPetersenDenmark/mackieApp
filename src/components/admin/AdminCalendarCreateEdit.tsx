@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { TruckLocation } from '../../types/TruckLocation';
+import { SaleLocation } from '../../types/SaleLocation';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
 import { da } from "date-fns/locale";
+import { parse } from "date-fns";
 import CustomInput from "./CustomInput"; // adjust path as needed
 
 
@@ -21,15 +23,103 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
     const [submitError, setSubmitError] = useState<string | null>(null);
     const [startDateTime, setSelectedStartDate] = useState<Date | null>(null);
 
+    const [saleLocations, setSaleLocations] = useState<SaleLocation[]>([]);
+
+    const [selectedSaleLocationId, setSelectedSaleLocationId] = useState<number | null>(null);
+
     const [endDateTime, setSelectedEndDate] = useState<Date | null>(null);
 
-    const [placeName, setPlaceName] = useState<string>('');
-    const [placeNameTouched, setPlaceNameTouched] = useState(false);
+    // const [placeName, setPlaceName] = useState<string>('');
+    //const [placeNameTouched, setPlaceNameTouched] = useState(false);
 
-    const isPlaceNameValid = placeName.length > 0;
-    const isDateValid = startDateTime ? true : false;
+    //const isPlaceNameValid = placeName.length > 0;
+    const isStartDateTimeValid = startDateTime ? true : false;
+    const isEndDateTimeValid = endDateTime ? true : false;
+    const isSaleLocationIdValid = selectedSaleLocationId ? true : false;
 
-    const isFormValid = isPlaceNameValid && isDateValid
+
+    const isFormValid = isStartDateTimeValid && isEndDateTimeValid && isSaleLocationIdValid
+
+    const webApiBaseUrl = process.env.REACT_APP__BASE_API_URL;
+
+    /* useEffect(() => {
+        if (!isOpen) return;
+
+        const url: string = webApiBaseUrl + '/Home/locationlist'
+
+        axios.get<SaleLocation[]>(url)
+            .then(response => {
+                setSaleLocations(response.data);
+                //  setLoading(false);
+            })
+            .catch(err => {
+                //  setError('Failed to load locations');
+                // setLoading(false);
+                console.error(err);
+            });
+
+        if (truckLocationToEdit !== null) {
+            setSelectedSaleLocationId(truckLocationToEdit.locationid);
+
+          
+
+            const parsedStartDateTime = parse(truckLocationToEdit.startdatetime, "dd-MM-yyyy HH:mm", new Date(), { locale: da });
+            setSelectedStartDate(parsedStartDateTime);
+            const parsedEndDateTime = parse(truckLocationToEdit.enddatetime, "dd-MM-yyyy HH:mm", new Date(), { locale: da });
+            setSelectedEndDate(parsedEndDateTime)
+
+        }
+        else {
+            setSelectedSaleLocationId(null);
+            setSelectedStartDate(null);
+            setSelectedEndDate(null)
+        }
+
+
+
+    }, [isOpen, selectedSaleLocationId]); */
+
+    useEffect(() => {
+        const url = webApiBaseUrl + '/Home/locationlist';
+        axios
+            .get<SaleLocation[]>(url)
+            .then(response => {
+                setSaleLocations(response.data);
+                /* if (truckLocationToEdit && saleLocations.length > 0) {
+                    setSelectedSaleLocationId(truckLocationToEdit.locationid);
+                } */
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    }, []); // Only fetch once on mount
+
+    // 2️⃣ Set selected sale location after data is loaded:
+    useEffect(() => {
+        if (truckLocationToEdit && saleLocations.length > 0) {
+            setSelectedSaleLocationId(truckLocationToEdit.locationid);
+
+            const parsedStartDateTime = parse(
+                truckLocationToEdit.startdatetime,
+                "dd-MM-yyyy HH:mm",
+                new Date(),
+                { locale: da }
+            );
+            setSelectedStartDate(parsedStartDateTime);
+
+            const parsedEndDateTime = parse(
+                truckLocationToEdit.enddatetime,
+                "dd-MM-yyyy HH:mm",
+                new Date(),
+                { locale: da }
+            );
+            setSelectedEndDate(parsedEndDateTime);
+        } else {
+            setSelectedSaleLocationId(null);
+            setSelectedStartDate(null);
+            setSelectedEndDate(null);
+        }
+    }, [truckLocationToEdit, saleLocations]); // Wait until both are ready
 
 
 
@@ -48,41 +138,30 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
             return;
         }
         setSelectedEndDate(date);
-
     };
 
 
-
-    useEffect(() => {
-        if (!isOpen) return;
-
-        if (truckLocationToEdit !== null) {
-            setPlaceName(truckLocationToEdit.locationname);
-        }
-        else {
-            setPlaceName('');
-        }
-
-        setPlaceNameTouched(false);
-
-
-        setSubmitting(false);
-
-    }, [isOpen]);
-
     const handleSubmit = async () => {
 
-        const formattedDate = startDateTime
+        const formattedStartDateTime = startDateTime
             ? format(startDateTime, "dd-MM-yyyy HH:mm", { locale: da })
+            : ""; // or some fallback string
+
+        const formattedEndDateTime = endDateTime
+            ? format(endDateTime, "dd-MM-yyyy HH:mm", { locale: da })
             : ""; // or some fallback string
 
         const placeData = {
             id: truckLocationToEdit !== null ? truckLocationToEdit.id : 0,
-            locationname: placeName.trim(),
+            locationid: selectedSaleLocationId,
+            locationname: "hhh",
+            startdatetime: formattedStartDateTime,
+            enddatetime: formattedEndDateTime
+
         }
 
         const webApiBaseUrl = process.env.REACT_APP__BASE_API_URL;
-        const url = webApiBaseUrl + '/Admin/atelocation'
+        const url = webApiBaseUrl + '/Admin/addorupdatetruckcalendarlocation'
         try {
             const response = await axios.post(url, placeData);
             onClose();
@@ -116,9 +195,9 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
 
 
                 <div>
-                    <label htmlFor="startDateTime"><strong>Start:</strong></label><br />
+                    <label htmlFor="startDateTimePicker"><strong>Start:</strong></label><br />
                     <DatePicker
-                    id='startDateTime'
+                        id='startDateTimePicker'
                         selected={startDateTime}
                         onChange={handleStartDateChange}
                         showTimeSelect
@@ -132,9 +211,9 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
                     />
                 </div>
                 <div>
-                    <label htmlFor="endDateTime"><strong>Slut:</strong></label><br />
+                    <label htmlFor="endDateTimePicker"><strong>Slut:</strong></label><br />
                     <DatePicker
-                    id='endDateTime'
+                        id='endDateTimePicker'
                         selected={endDateTime}
                         onChange={handleEndDateChange}
                         timeCaption="Tid"
@@ -159,30 +238,26 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
                 </div>
 
                 <div style={{ marginBottom: '1rem' }}>
-                    <label htmlFor="email"><strong>Stadeplads:</strong></label><br />
-                    <input
-                        id="placename"
-                        type="text"
-                        value={placeName}
-                        onChange={(e) => setPlaceName(e.target.value)}
-                        onBlur={() => setPlaceNameTouched(true)}
-                        placeholder="Indtast pladsnavn"
-                        style={{
-                            width: '100%',
-                            padding: '0.5rem',
-                            marginTop: '0.25rem',
-                            borderColor: !isPlaceNameValid && placeNameTouched ? 'red' : undefined,
-                            borderWidth: '1.5px',
-                            borderStyle: 'solid',
-                            borderRadius: '4px',
-                        }}
-                        disabled={submitting}
-                    />
+                    <label htmlFor="selectSaleLocation"><strong>Vælg stadeplads:</strong></label><br />
+                    <select
+                        id='selectSaleLocation'
+                        value={selectedSaleLocationId ?? ""}
+                        onChange={(e) => setSelectedSaleLocationId(Number(e.target.value))}
+                    >
+                        <option value="" disabled>
+                            Vælg en lokation
+                        </option>
+                        {saleLocations.map((saleLocation) => (
+                            <option key={saleLocation.id} value={saleLocation.id}>
+                                {saleLocation.locationname}
+                            </option>
+                        ))}
+                    </select>
                 </div>
 
                 <button
                     onClick={handleSubmit}
-                    disabled={!isFormValid || submitting}
+                    disabled={!isFormValid}
                     style={{
                         marginTop: '1rem',
                         padding: '0.5rem 1rem',

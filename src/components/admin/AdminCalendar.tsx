@@ -62,6 +62,7 @@ const AdminCalendar: React.FC = () => {
 };
 
     const handleNewLocation = () => {
+      setTruckLocationToEdit(null);
         setIsCreateEditCalendarModalOpen(true);
     };
 
