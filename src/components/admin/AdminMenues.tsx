@@ -126,22 +126,32 @@ const AdminMenues: React.FC = () => {
         textAlign: 'center'
 
       }}>
-        <div style={{
-          textAlign: 'center',
-          fontSize: '36px',
-
-        }}>
+        <div style={{ textAlign: 'center',  fontSize: '36px', }}>
           Menu
         </div>
-        <div style={{
-          textAlign: 'left'
-        }}>
 
-          Pizza
 
-        </div>
-      
-        <div style={{ marginTop: '20px', textAlign: 'left' }}>
+        <div style={{ marginTop: '20px', textAlign: 'left', backgroundColor: 'cornsilk' }}>
+          <div
+            style={{
+              border: '1px solid #ccc',    // Border around each row
+              padding: '10px',             // Optional: Adds spacing inside each row
+              marginBottom: '5px',         // Optional: Adds spacing between rows
+              display: 'grid',
+              fontWeight: 700,
+              fontSize: 'px',
+              gridTemplateColumns: '1fr 2fr 4fr 1fr 1fr 1fr 1fr 1fr', // Adjust column sizes as needed
+              alignItems: 'center',
+              marginBlockEnd: 30
+            }}
+          >
+            <div>Pizza nr.</div>
+            <div>Pizzanavn</div>
+            <div>Beskrivelse</div>
+            <div>Pris før rabat</div>
+            <div>Rabat i %</div>
+            <div>Pris efter rabat</div>
+          </div>
           {pizzas.map((curPizza, index) => (
             <div
               key={index}
@@ -150,21 +160,20 @@ const AdminMenues: React.FC = () => {
                 padding: '10px',             // Optional: Adds spacing inside each row
                 marginBottom: '5px',         // Optional: Adds spacing between rows
                 display: 'grid',
-                gridTemplateColumns: '3fr 4fr 3fr 3fr 3fr 3fr 3fr', // Adjust column sizes as needed
+                gridTemplateColumns: '1fr 2fr 4fr 1fr 1fr 1fr 1fr 1fr', // Adjust column sizes as needed
                 alignItems: 'center'
               }}
             >
-              {/* Name + Image Column */}
               <div>
-                <div>{curPizza.pizzanumber + " " + curPizza.name}</div>
-                <div>
-                 
-                  <img
-                     src={webApiBaseUrl + curPizza.imageurl }    
-                   
-                    style={{ maxWidth: '100px', height: 'auto', marginTop: '5px' }}
-                  />
-                </div>
+                <div>{curPizza.pizzanumber}</div>
+                <img
+                  src={webApiBaseUrl + curPizza.imageurl}
+
+                  style={{ maxWidth: '100px', height: 'auto', marginTop: '5px' }}
+                />
+              </div>
+              <div>
+                <div>{curPizza.name}</div>
               </div>
 
               {/* The rest of the columns remain unchanged */}
@@ -204,23 +213,45 @@ const AdminMenues: React.FC = () => {
               </div>
             </div>
           ))}
-        </div>
 
-        <div>
-          <button
-            onClick={handleNewPizza}
+          <div
             style={{
-              padding: '0.5rem 1rem',
-              backgroundColor: '#8d4a5b',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
+              border: '1px solid #ccc',    // Border around each row
+              padding: '10px',             // Optional: Adds spacing inside each row
+              marginBottom: '5px',         // Optional: Adds spacing between rows
+              display: 'grid',
+              fontWeight: 700,
+              fontSize: 'px',
+              gridTemplateColumns: '1fr 2fr 4fr 1fr 1fr 1fr 1fr 1fr', // Adjust column sizes as needed
+              alignItems: 'center',
+              marginBlockEnd: 30
             }}
           >
-            Ny
-          </button>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div>
+              <button
+                onClick={handleNewPizza}
+                style={{
+                  padding: '0.5rem 1rem',
+                  backgroundColor: '#8d4a5b',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                }}
+              >
+                Ny
+              </button>
+            </div>
+          </div>
         </div>
+
 
         <div style={{
           textAlign: 'left'
@@ -229,7 +260,7 @@ const AdminMenues: React.FC = () => {
           Tilbehør
 
         </div>
-        <div style={{ marginTop: '20px', textAlign: 'left' }}>
+        <div style={{ marginTop: '20px', textAlign: 'left', backgroundColor: 'beige' }}>
           {toppings.map((curTopping, index) => (
             <div
               key={index}
