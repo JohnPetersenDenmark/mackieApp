@@ -178,9 +178,10 @@ const AdminMenues: React.FC = () => {
 
               {/* The rest of the columns remain unchanged */}
               <div>{curPizza.description}</div>
-              <div>{curPizza.discountprice}</div>
+              <div>{curPizza.discountprice.toFixed(2).replaceAll('.', ',')}</div>
               <div>{curPizza.discountpercentage}</div>
-              <div>{curPizza.price}</div>
+              
+              <div>{curPizza.price.toFixed(2).replaceAll('.', ',')}</div>
               <div>
                 <button
                   onClick={() => handleEditPizza(curPizza)}

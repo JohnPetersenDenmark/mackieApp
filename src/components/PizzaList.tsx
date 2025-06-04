@@ -22,7 +22,7 @@ const PizzaList: React.FC<PizzaListProps> = ({ pizzas }) => {
       />
      
       <p>{pizza.description}</p>
-      <p>{pizza.price},-</p>
+      <p>{pizza.price.toFixed(2).replaceAll('.', ',')}</p>
     </div>
   ))}
 </div>

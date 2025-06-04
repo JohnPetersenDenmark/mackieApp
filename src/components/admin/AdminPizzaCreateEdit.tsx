@@ -94,25 +94,24 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
 
     const handleSubmit = async () => {
 
-        if (!isFormValid)
-        {
+        if (!isFormValid) {
             return;
         }
 
         const pizzaData = {
             id: pizzaToEdit !== null ? pizzaToEdit.id : 0,
             name: pizzaName,
-            pizzanumber : pizzaNumber,
+            pizzanumber: pizzaNumber,
             description: pizzaDescription,
             imageurl: pizzaImageurl,
             price: pizzaPriceAfterDiscount,
             discountpercentage: pizzaDiscountPercentage,
-            discountprice: pizzaPriceAfterDiscount,
+            discountprice: pizzaPriceBeforeDiscount,
             producttype: 0
         }
 
-        if ( selectedFile) {
-                await handleUpload();
+        if (selectedFile) {
+            await handleUpload();
         }
         const url = webApiBaseUrl + '/Admin/addorupdatepizza'
         try {
@@ -127,7 +126,7 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
 
     };
 
-    const handlePriceBeforeDiscount = (e: React.ChangeEvent<HTMLInputElement>) => {
+    /* const handlePriceBeforeDiscount = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value;
         if (newValue === '') {
             setPizzaPriceBeforeDiscount('');
@@ -138,6 +137,31 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
                 let finalNumber = parseFloat(fixedWith2Decimals);
                 setPizzaPriceBeforeDiscount(finalNumber);
             }
+        }
+    }; */
+
+    function processPriceInput(input: string): number {
+        if (input === '') {
+            return 0;
+        }
+
+        const parsed = parseFloat(input);
+        if (isNaN(parsed)) {
+            return 0; // or handle it differently if needed
+        }
+
+        // Round to 2 decimal places
+        const rounded = parseFloat(parsed.toFixed(2));
+        return rounded;
+    }
+
+    const handlePriceBeforeDiscount = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = e.target.value;
+        if (newValue === '') {
+            setPizzaPriceBeforeDiscount('');
+        } else {
+            const roundedValue = processPriceInput(newValue);
+            setPizzaPriceBeforeDiscount(roundedValue);
         }
     };
 
@@ -160,17 +184,15 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
         if (newValue === '') {
             setPizzaPriceAfterDiscount('');
         } else {
-            const parsedValue = parseFloat(newValue);
-            if (!isNaN(parsedValue)) {
-                let fixedWith2Decimals = parsedValue.toFixed(2);
-                let finalNumber = parseFloat(fixedWith2Decimals);
-                setPizzaPriceAfterDiscount(finalNumber);
-            }
+            const roundedValue = processPriceInput(newValue);
+            setPizzaPriceAfterDiscount(roundedValue);
+
         }
     };
 
+
     const handleUpload = async () => {
-        if (!selectedFile) {            
+        if (!selectedFile) {
             return;
         }
 
@@ -204,7 +226,7 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
     const handleFileSelect = (file: File) => {
         console.log("Parent got file:", file);
         setSelectedFile(file);
-        setPizzaImageurl( '/Uploads/' + file.name)
+        setPizzaImageurl('/Uploads/' + file.name)
     };
 
     if (!isOpen) return null;
@@ -297,6 +319,7 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
                     <input
                         id="pricebeforediscount"
                         type="number"
+                        // value={pizzaPriceBeforeDiscount !== '' ? pizzaPriceBeforeDiscount.toFixed(2) : ''}
                         value={pizzaPriceBeforeDiscount}
                         onChange={handlePriceBeforeDiscount}
                         onBlur={() => setPizzaPriceBeforeDiscountTouched(true)}
