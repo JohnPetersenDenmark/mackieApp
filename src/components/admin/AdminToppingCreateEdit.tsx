@@ -1,55 +1,53 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-//import { useNavigate } from 'react-router-dom';
-import { SaleLocation } from '../../types/SaleLocation';
+import { Topping } from '../../types/Topping';
 
-interface LocationModalProps {
+
+interface ToppingModalProps {
     isOpen: boolean;
-    locationToEdit: SaleLocation | null;
+    toppingToEdit: Topping | null;
     onClose: () => void;
 }
 
-const AdminPlaceCreateEdit: React.FC<LocationModalProps> = ({ isOpen, onClose, locationToEdit }) => {
+const AdminToppingCreateEdit: React.FC<ToppingModalProps> = ({ isOpen, onClose, toppingToEdit }) => {
 
+    const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
     const [submitting, setSubmitting] = useState(false);
-    const [submitError, setSubmitError] = useState<string | null>(null);
 
-    const [placeName, setPlaceName] = useState<string>('');
-    const [placeNameTouched, setPlaceNameTouched] = useState(false);
+    const [toppingName, setToppingName] = useState<string>('');
+    const [submitError, setSubmitError] = useState<string>('');
 
-    const isPlaceNameValid = placeName.length > 0;
-    const isFormValid = isPlaceNameValid
+    const [toppingNameTouched, setToppingNameTouched] = useState(false);
 
-    //const navigate = useNavigate();
+    const isToppingNameValid = toppingName.length > 0;
+    const isFormValid = isToppingNameValid
 
     useEffect(() => {
         if (!isOpen) return;
 
-        if (locationToEdit !== null) {
-            setPlaceName(locationToEdit.locationname);
+        if (toppingToEdit !== null) {
+            setToppingName(toppingToEdit.name);
         }
         else {
-            setPlaceName('');
+            setToppingName('');
         }
-
-        setPlaceNameTouched(false);
-
+        setToppingNameTouched(false)
 
         setSubmitting(false);
 
     }, [isOpen]);
 
     const handleSubmit = async () => {
+        const toppingData = {
+            id: toppingToEdit !== null ? toppingToEdit.id : 0,
 
-        const placeData = {
-            id: locationToEdit !== null ? locationToEdit.id : 0,
-            locationname: placeName.trim(),
+
+
         }
-
-        const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
-        const url = webApiBaseUrl + '/Admin/addorupdatelocation'
+       
+        const url = webApiBaseUrl + '/Admin/XXXXXXXXXXXXXXXXX'
         try {
-            const response = await axios.post(url, placeData);
+            const response = await axios.post(url, toppingData);
             onClose();
         } catch (error) {
             setSubmitError('Fejl');
@@ -60,8 +58,7 @@ const AdminPlaceCreateEdit: React.FC<LocationModalProps> = ({ isOpen, onClose, l
 
     };
 
-
-    if (!isOpen) return null;
+  if (!isOpen) return null;
 
     return (
         <div
@@ -85,15 +82,15 @@ const AdminPlaceCreateEdit: React.FC<LocationModalProps> = ({ isOpen, onClose, l
                     <input
                         id="placename"
                         type="text"
-                        value={placeName}
-                        onChange={(e) => setPlaceName(e.target.value)}
-                        onBlur={() => setPlaceNameTouched(true)}
+                        value={toppingName}
+                        onChange={(e) => setToppingName(e.target.value)}
+                        onBlur={() => setToppingNameTouched(true)}
                         placeholder="Indtast pladsnavn"
                         style={{
                             width: '100%',
                             padding: '0.5rem',
                             marginTop: '0.25rem',
-                            borderColor: !isPlaceNameValid && placeNameTouched ? 'red' : undefined,
+                            borderColor: !isToppingNameValid && toppingNameTouched ? 'red' : undefined,
                             borderWidth: '1.5px',
                             borderStyle: 'solid',
                             borderRadius: '4px',
@@ -136,6 +133,7 @@ const AdminPlaceCreateEdit: React.FC<LocationModalProps> = ({ isOpen, onClose, l
             </div>
         </div>
     )
-};
 
-export default AdminPlaceCreateEdit;
+}
+
+export default AdminToppingCreateEdit

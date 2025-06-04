@@ -1,55 +1,53 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-//import { useNavigate } from 'react-router-dom';
-import { SaleLocation } from '../../types/SaleLocation';
+import { QuantityItem } from '../../types/QuantityItem';
 
-interface LocationModalProps {
+
+interface QuantityModalProps {
     isOpen: boolean;
-    locationToEdit: SaleLocation | null;
+    quantityItemToEdit: QuantityItem | null;
     onClose: () => void;
 }
 
-const AdminPlaceCreateEdit: React.FC<LocationModalProps> = ({ isOpen, onClose, locationToEdit }) => {
+const AdminQuantityItemCreateEdit: React.FC<QuantityModalProps> = ({ isOpen, onClose, quantityItemToEdit }) => {
 
+    const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
     const [submitting, setSubmitting] = useState(false);
-    const [submitError, setSubmitError] = useState<string | null>(null);
 
-    const [placeName, setPlaceName] = useState<string>('');
-    const [placeNameTouched, setPlaceNameTouched] = useState(false);
+    const [quantityItemName, setQuantityItemName] = useState<string>('');
+    const [submitError, setSubmitError] = useState<string>('');
 
-    const isPlaceNameValid = placeName.length > 0;
-    const isFormValid = isPlaceNameValid
+    const [quantityItemNameTouched, setQuantityItemNameTouched] = useState(false);
 
-    //const navigate = useNavigate();
+    const iQuantityItemNameValid = quantityItemName.length > 0;
+    const isFormValid = iQuantityItemNameValid
 
     useEffect(() => {
         if (!isOpen) return;
 
-        if (locationToEdit !== null) {
-            setPlaceName(locationToEdit.locationname);
+        if (quantityItemToEdit !== null) {
+            setQuantityItemName(quantityItemToEdit.name);
         }
         else {
-            setPlaceName('');
+            setQuantityItemName('');
         }
-
-        setPlaceNameTouched(false);
-
+        setQuantityItemNameTouched(false)
 
         setSubmitting(false);
 
     }, [isOpen]);
 
     const handleSubmit = async () => {
+        const quantityData = {
+            id: quantityItemToEdit !== null ? quantityItemToEdit.id : 0,
 
-        const placeData = {
-            id: locationToEdit !== null ? locationToEdit.id : 0,
-            locationname: placeName.trim(),
+
+
         }
-
-        const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
-        const url = webApiBaseUrl + '/Admin/addorupdatelocation'
+       
+        const url = webApiBaseUrl + '/Admin/XXXXXXXXXXXXXXXXX'
         try {
-            const response = await axios.post(url, placeData);
+            const response = await axios.post(url, quantityData);
             onClose();
         } catch (error) {
             setSubmitError('Fejl');
@@ -60,8 +58,7 @@ const AdminPlaceCreateEdit: React.FC<LocationModalProps> = ({ isOpen, onClose, l
 
     };
 
-
-    if (!isOpen) return null;
+  if (!isOpen) return null;
 
     return (
         <div
@@ -85,15 +82,15 @@ const AdminPlaceCreateEdit: React.FC<LocationModalProps> = ({ isOpen, onClose, l
                     <input
                         id="placename"
                         type="text"
-                        value={placeName}
-                        onChange={(e) => setPlaceName(e.target.value)}
-                        onBlur={() => setPlaceNameTouched(true)}
+                        value={quantityItemName}
+                        onChange={(e) => setQuantityItemName(e.target.value)}
+                        onBlur={() => setQuantityItemNameTouched(true)}
                         placeholder="Indtast pladsnavn"
                         style={{
                             width: '100%',
                             padding: '0.5rem',
                             marginTop: '0.25rem',
-                            borderColor: !isPlaceNameValid && placeNameTouched ? 'red' : undefined,
+                            borderColor: !iQuantityItemNameValid && quantityItemNameTouched ? 'red' : undefined,
                             borderWidth: '1.5px',
                             borderStyle: 'solid',
                             borderRadius: '4px',
@@ -136,6 +133,7 @@ const AdminPlaceCreateEdit: React.FC<LocationModalProps> = ({ isOpen, onClose, l
             </div>
         </div>
     )
-};
 
-export default AdminPlaceCreateEdit;
+}
+
+export default AdminQuantityItemCreateEdit

@@ -19,7 +19,7 @@ const AdminCalendar: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const webApiBaseUrl = process.env.REACT_APP__BASE_API_URL;
+    const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL
 
     useEffect(() => {
         const url: string = webApiBaseUrl + '/Home/truckcalendarlocationlist'

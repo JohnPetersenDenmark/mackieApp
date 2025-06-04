@@ -40,7 +40,7 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
 
     const isFormValid = isStartDateTimeValid && isEndDateTimeValid && isSaleLocationIdValid
 
-    const webApiBaseUrl = process.env.REACT_APP__BASE_API_URL;
+    const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL
 
     /* useEffect(() => {
         if (!isOpen) return;
@@ -160,7 +160,7 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
 
         }
 
-        const webApiBaseUrl = process.env.REACT_APP__BASE_API_URL;
+        const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
         const url = webApiBaseUrl + '/Admin/addorupdatetruckcalendarlocation'
         try {
             const response = await axios.post(url, placeData);
