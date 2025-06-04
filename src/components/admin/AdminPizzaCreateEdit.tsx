@@ -51,19 +51,19 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
     const isImageurlValid = pizzaImageurl.length > 0;
     const isFormValid = isPizzaNameValid && isPizzaNumberValid && isPizzaDescriptionValid && isPriceBeforeDiscountValid && isPizzaDiscountValid && isPriceAfterDiscountValid
 
-    let myImageUrl: string = '';
+
     useEffect(() => {
         if (!isOpen) return;
 
         if (pizzaToEdit !== null) {
             setPizzaName(pizzaToEdit.name);
-            setPizzaNumber(pizzaToEdit.description)
+            setPizzaNumber(pizzaToEdit.pizzanumber)
             setPizzaDescription(pizzaToEdit.description)
             setPizzaPriceBeforeDiscount(pizzaToEdit.discountprice)
             setPizzaDiscountPercentage(pizzaToEdit.discountpercentage)
             setPizzaPriceAfterDiscount(pizzaToEdit.price)
             setPizzaImageurl(pizzaToEdit.imageurl)
-            myImageUrl = pizzaToEdit.imageurl
+
         }
         else {
             setPizzaName('');
@@ -74,7 +74,7 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
             setPizzaPriceAfterDiscount('')
             setPizzaImageurl('')
             setSelectedFile(null)
-            myImageUrl = ''
+
 
         }
 
@@ -93,17 +93,27 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
 
 
     const handleSubmit = async () => {
+
+        if (!isFormValid)
+        {
+            return;
+        }
+
         const pizzaData = {
             id: pizzaToEdit !== null ? pizzaToEdit.id : 0,
             name: pizzaName,
+            pizzanumber : pizzaNumber,
             description: pizzaDescription,
             imageurl: pizzaImageurl,
             price: pizzaPriceAfterDiscount,
             discountpercentage: pizzaDiscountPercentage,
             discountprice: pizzaPriceAfterDiscount,
-            producttype : 0
+            producttype: 0
         }
 
+        if ( selectedFile) {
+                await handleUpload();
+        }
         const url = webApiBaseUrl + '/Admin/addorupdatepizza'
         try {
             const response = await axios.post(url, pizzaData);
@@ -160,8 +170,7 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
     };
 
     const handleUpload = async () => {
-        if (!selectedFile) {
-            alert('Vælg at billede');
+        if (!selectedFile) {            
             return;
         }
 
@@ -176,11 +185,16 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
                 }
             });
 
-            setPizzaImageurl(response.data)
+            if (typeof response.data.imageUrl === 'string') {
+                setPizzaImageurl(response.data.imageUrl)
+                setImageurlTouchedTouched(true);
+            }
 
-            //const x = pizzaImageurl;
-            //myImageUrl = 'http://192.168.8.105:5000' + pizzaImageurl;
-            myImageUrl = webApiBaseUrl + pizzaImageurl;
+            else {
+                setPizzaImageurl('/Uploads/dummy.png')
+                setImageurlTouchedTouched(true);
+            }
+
             console.log('Upload success:', response.data);
         } catch (error) {
             console.error('Error uploading file:', error);
@@ -190,11 +204,10 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
     const handleFileSelect = (file: File) => {
         console.log("Parent got file:", file);
         setSelectedFile(file);
+        setPizzaImageurl( '/Uploads/' + file.name)
     };
 
     if (!isOpen) return null;
-
-
 
     return (
         <div
@@ -361,7 +374,7 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
                        
                         onChange={handleImageFileChange}
                     /> */}
-                    <button
+                    {/* <button
                         onClick={handleUpload}
                         disabled={false}
                         style={{
@@ -377,7 +390,7 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
                         }}
                     >
                         Upload billede
-                    </button>
+                    </button> */}
                 </div>
 
                 <button

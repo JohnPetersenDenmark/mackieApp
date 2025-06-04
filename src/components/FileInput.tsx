@@ -2,7 +2,7 @@ import React, { useRef, useState, ChangeEvent } from "react";
 import "./FileInput.css";
 
 interface FileInputProps {
-  onFileSelect: (file: File) => void;  // Callback to pass the file up
+    onFileSelect: (file: File) => void;  // Callback to pass the file up
 }
 
 const FileInput: React.FC<FileInputProps> = ({ onFileSelect }) => {
@@ -40,17 +40,24 @@ const FileInput: React.FC<FileInputProps> = ({ onFileSelect }) => {
                 className="file-btn"
                 onClick={triggerFileInput}
             >
-               <span className="material-symbols-rounded">upload</span>
-                
+                <span className="material-symbols-rounded">upload</span>
+
             </button>
 
             {/* Display selected file name */}
             <div className="selected-file">
-                <p>{selectedFile ? selectedFile.name : "File Name Here"}</p>
+                <p>{selectedFile ? selectedFile.name : "Filnavn"}</p>
+            </div>
+            <div className="selected-file">
+                <p>{selectedFile ? selectedFile.size : "Filstørrelse"}</p>
+            </div>
+
+             <div className="selected-file">
+                <p>{selectedFile ? selectedFile.type : "Filtype"}</p>
             </div>
 
             {/* Another button (example functionality) */}
-           {/*  <button>
+            {/*  <button>
                 <span className="material-symbols-rounded">more_vert</span>
             </button> */}
         </div>

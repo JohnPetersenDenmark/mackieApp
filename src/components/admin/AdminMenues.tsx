@@ -47,6 +47,7 @@ const AdminMenues: React.FC = () => {
   }, [isCreateEditPizzaModalOpen, submitting]);
 
   const handleNewPizza = () => {
+    setPizzaToEdit(null);
     setIsCreateEditPizzaModalOpen(true);
   };
 
@@ -64,7 +65,7 @@ const AdminMenues: React.FC = () => {
       const deletePizza = async () => {
         try {
           setSubmitting(true);
-          const url = webApiBaseUrl + '/Admin/removecation/' + pizza.id;
+          const url = webApiBaseUrl + '/Admin/removepizza/' + pizza.id;
           await axios.delete(url);
         } catch (error) {
           setError('Fejl');
@@ -155,7 +156,7 @@ const AdminMenues: React.FC = () => {
             >
               {/* Name + Image Column */}
               <div>
-                <div>{curPizza.name}</div>
+                <div>{curPizza.pizzanumber + " " + curPizza.name}</div>
                 <div>
                  
                   <img
@@ -204,11 +205,6 @@ const AdminMenues: React.FC = () => {
             </div>
           ))}
         </div>
-
-
-
-
-
 
         <div>
           <button
