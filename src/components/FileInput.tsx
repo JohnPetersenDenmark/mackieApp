@@ -45,7 +45,7 @@ const FileInput: React.FC<FileInputProps> = ({ onFileSelect }) => {
             </button>
 
             {/* Display selected file name */}
-            <div className="selected-file">
+          {/*   <div className="selected-file">
                 <p>{selectedFile ? selectedFile.name : "Filnavn"}</p>
             </div>
             <div className="selected-file">
@@ -54,7 +54,7 @@ const FileInput: React.FC<FileInputProps> = ({ onFileSelect }) => {
 
              <div className="selected-file">
                 <p>{selectedFile ? selectedFile.type : "Filtype"}</p>
-            </div>
+            </div> */}
 
             {/* Another button (example functionality) */}
             {/*  <button>

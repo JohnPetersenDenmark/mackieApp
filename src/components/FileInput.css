@@ -11,8 +11,8 @@
 
 
 .file-btn {
-  width: 250px;
-  height: 150px;
+  width: 100px;
+  height: 100px;
   font-size: 18px;
   font-weight: 500;
   display: flex;
@@ -20,9 +20,9 @@
   align-items: center;
   justify-content: center;
   gap: 15px;
-  color: #8a3ffc;
-  background-color: #fff;
-  border: 1.5px dashed #8a3ffc;
+  color: #8d4a5b;
+  background-color: #c7a6ac;
+  border: 1.5px solid #8d4a5b;
   border-radius: 20px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -31,7 +31,7 @@
 .file-btn:hover {
 	/* color: #8a3ffc; */
     color : green;
-    background-color: red; 
+    background-color: #8d4a5b; 
 	/* background-color: #f3ecff; */
 }
 
@@ -40,7 +40,7 @@ width: 50px;
 height: 50px;
 font-size: 30px;
 display : flex;
-color: #8a3ffc; display: flex;
+color: #8d4a5b; display: flex;
 align-items: center; 
 justify-content: center;
 border-radius: 25px;

@@ -415,7 +415,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
                   }}
                 >
                   <strong>{item.productname}</strong>{' '}
-                  (Pris før rabat {item.discountedunitprice.toFixed(2)} kr)
+                  (Pris før rabat {item.discountedunitprice.toFixed(2).replaceAll('.', ',')} kr)
                 </div>
 
                 {/* 3) Quantity & line total — only when selected, fixed width */}
@@ -444,7 +444,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
                       }}
                     />
                     <span>
-                      {(item.unitprice * item.quantity).toFixed(2)} kr
+                      {(item.unitprice * item.quantity).toFixed(2).replaceAll('.', ',')} kr
                     </span>
                   </div>
                 )}
@@ -491,7 +491,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
                     }}
                   >
                     <strong>{item.productname}</strong>{' '}
-                    (Pris før rabat {item.discountedunitprice.toFixed(2)} kr)
+                    (Pris før rabat {item.discountedunitprice.toFixed(2).replaceAll('.', ',')} kr)
                   </div>
 
                   {/* 3) Quantity & line total — only when selected, fixed width */}
@@ -520,7 +520,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
                         }}
                       />
                       <span>
-                        {(item.unitprice * item.quantity).toFixed(2)} kr
+                        {(item.unitprice * item.quantity).toFixed(2).replaceAll('.', ',')} kr
                       </span>
                     </div>
                   )}
