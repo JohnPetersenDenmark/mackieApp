@@ -3,5 +3,7 @@ export interface TruckLocation {
   locationid : number;
   locationname: string;
   startdatetime: string;
+  locationbeautifiedstartdatetime : string,
+  locationbeautifiedTimeInterval : string
   enddatetime: string;
 }

@@ -6,15 +6,16 @@ interface TruckLocationListProps {
 
 }
 
-const TruckLocationList: React.FC<TruckLocationListProps> = ({ locations}) => {
- 
+const TruckLocationList: React.FC<TruckLocationListProps> = ({ locations }) => {
+
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
       {locations.map((loc, index) => (
         <React.Fragment key={index}>
-          <div>{loc.startdatetime.split(" ").slice(0, 2).join(" ")}</div>
+
+          {loc.locationbeautifiedstartdatetime.slice(0, -5)}         
           <div>{loc.locationname}</div>
-          <div>{loc.startdatetime.slice(-5)} – {loc.enddatetime.slice(-5)}</div>
+          <div>{loc.locationbeautifiedTimeInterval}</div>
         </React.Fragment>
       ))}
     </div>
