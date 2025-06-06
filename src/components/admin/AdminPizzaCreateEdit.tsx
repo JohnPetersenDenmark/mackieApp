@@ -126,21 +126,7 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
         }
 
     };
-
-    /* const handlePriceBeforeDiscount = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newValue = e.target.value;
-        if (newValue === '') {
-            setPizzaPriceBeforeDiscount('');
-        } else {
-            const parsedValue = parseFloat(newValue);
-            if (!isNaN(parsedValue)) {
-                let fixedWith2Decimals = parsedValue.toFixed(2);
-                let finalNumber = parseFloat(fixedWith2Decimals);
-                setPizzaPriceBeforeDiscount(finalNumber);
-            }
-        }
-    }; */
-
+ 
     const handlePriceBeforeDiscount = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value.replaceAll(',', '.');
         if (newValue === '') {
@@ -177,10 +163,8 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
     };
 
     const handleDiscountPercentage = (e: React.ChangeEvent<HTMLInputElement>) => {
-        //const newValue = e.target.value.replaceAll(',', '.');
         const inputValue = e.target.value;
-       
-        
+               
             if (inputValue === '') {
                setPizzaDiscountPercentage('');
            } else {
@@ -190,20 +174,18 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
                if (isNaN(newValueAsNumber)) {
                    return;
                }
-   
-               let fixedWith1Decimals = newValueAsNumber.toString().replaceAll('.', ',');
-               setPizzaDiscountPercentage(fixedWith1Decimals);
+                normalizeNumber = normalizeNumber.replaceAll('.', ',')
+               
+               //let fixedWith1Decimals = newValueAsNumber.toString().replaceAll('.', ',');
+               setPizzaDiscountPercentage(normalizeNumber);
            } 
-
-               /*  const normalizedValue = inputValue.replace(',', '.');
-                setPizzaDiscountPercentage(normalizedValue); */
     };
 
     const handleOnBlurDiscount = (e: React.ChangeEvent<HTMLInputElement>) => {
 
         const newValue = e.target.value.replaceAll(',', '.');
 
-        /* if (newValue === '') {
+        if (newValue === '') {
             setPizzaDiscountPercentage('');
         } else {
             let newValueAsNumber = Number(newValue);
@@ -225,14 +207,9 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
             let tmpVal = (newValueAsNumber * pizzaPriceAfterDiscountNumber) / 100
             let tmpVal1 = pizzaPriceAfterDiscountNumber + tmpVal;
             let PriceBeforeDiscountAsString = tmpVal1.toFixed(2).replaceAll('.', ',');
-            setPizzaPriceBeforeDiscount(PriceBeforeDiscountAsString);
-            //   }
-            //  else {
-            // setPizzaPriceBeforeDiscount(newValueAsString);
-            //  }
-
+            setPizzaPriceBeforeDiscount(PriceBeforeDiscountAsString);          
             setPizzaDiscountPercentage(newValueAsString);
-        } */
+        } 
     };
 
     const handlePriceAfterDiscount = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -246,13 +223,7 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
                 return;
             }
 
-            /* 
-                    if (pizzaDiscountPercentage)
-                    {
-                        let tmpVal = (newValueAsNumber * pizzaDiscountPercentage) / 100
-                        let tmpVal1 = newValueAsNumber - tmpVal;
-                        newValue = tmpVal1.toString().replaceAll('.', ',');;
-                    } */
+          
             setPizzaPriceAfterDiscount(newValue);
             setPizzaPriceAfterDiscountTouched(true);
         }
@@ -326,7 +297,7 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
     };
 
     const handleFileSelect = (file: File) => {
-        console.log("Parent got file:", file);
+        console.log("Parent got file:", file); 
         setSelectedFile(file);
         setPizzaImageurl('/Uploads/' + file.name)
     };
@@ -446,10 +417,10 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
                     <input
                         id="xyz"
                         type="text"
-                        value={pizzaDiscountPercentage.replaceAll('.', ',')}
-                        //value={pizzaDiscountPercentage}
+                        //value={pizzaDiscountPercentage.replaceAll('.', ',')}
+                        value={pizzaDiscountPercentage}
                         onChange={handleDiscountPercentage}
-                        /* onBlur={handleOnBlurDiscount} */
+                         onBlur={handleOnBlurDiscount} 
                         placeholder="Rabat i %"
                         style={{
                             width: '100%',
@@ -509,28 +480,7 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
                     <div>
                         <FileInput onFileSelect={handleFileSelect} />
                     </div>
-                </div>                {/*  <input
-                        type="file"
-                       
-                        onChange={handleImageFileChange}
-                    /> */}
-                {/* <button
-                        onClick={handleUpload}
-                        disabled={false}
-                        style={{
-                            marginTop: '1rem',
-                            padding: '0.5rem 1rem',
-                            backgroundColor: '#8d4a5b',
-                            // backgroundColor: isFormValid && !submitting ? '#8d4a5b' : 'grey',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '4px',
-                            cursor: isFormValid && !submitting ? 'pointer' : 'not-allowed',
-                            marginRight: '0.5rem',
-                        }}
-                    >
-                        Upload billede
-                    </button> */}
+                </div>               
 
 
                 <button

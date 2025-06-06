@@ -68,8 +68,8 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
             orderItem.unitprice = orderLine.unitprice;
             orderItem.discountedunitprice = orderLine.discountedunitprice;
             orderItem.orderid = orderLine.orderid;
-           // orderItem.productdescription = orderLine.productdescription;
-           // orderItem.productname = orderLine.productname;
+            // orderItem.productdescription = orderLine.productdescription;
+            // orderItem.productname = orderLine.productname;
             orderItem.selected = true;
             orderItem.unitdiscountpercentage = orderLine.unitdiscountpercentage;
           }
@@ -92,7 +92,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
       selected: false,
     }));
 
-     if (existingOrder !== null) {
+    if (existingOrder !== null) {
       existingOrder.orderlines.forEach(orderLine => {
         if (orderLine.producttype == 1)  // toppings
         {
@@ -102,8 +102,8 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
             orderItem.unitprice = orderLine.unitprice;
             orderItem.discountedunitprice = orderLine.discountedunitprice;
             orderItem.orderid = orderLine.orderid;
-           // orderItem.productdescription = orderLine.productdescription;
-           // orderItem.productname = orderLine.productname;
+            // orderItem.productdescription = orderLine.productdescription;
+            // orderItem.productname = orderLine.productname;
             orderItem.selected = true;
             orderItem.unitdiscountpercentage = orderLine.unitdiscountpercentage;
           }
@@ -118,7 +118,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
 
 
     if (existingOrder !== null) {
-      setSelectedLocationId(existingOrder.locationId);
+      setSelectedLocationId(existingOrder.locationId.toString());
       setCustomerName(existingOrder.customerName);
       setPhone(existingOrder.phone);
       setEmail(existingOrder.email);
@@ -194,13 +194,24 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
     setSubmitError(null);
     setSubmitSuccess(null);
 
+    let LocationIdAsNumber = Number(selectedLocationId);
+    if (isNaN(LocationIdAsNumber)) {
+      LocationIdAsNumber = 0;
+    }
+
     const orderData: Order = {
       id: orderId,
       customerName: customerName.trim(),
       customerorderCode: "",
-      phone,
-      email,
-      locationId: selectedLocationId,
+      phone : phone,
+      email : email,
+      locationId: LocationIdAsNumber,
+      locationname: 'aaaa',
+      locatiostartdatetime : 'aaaaa',
+      locationenddatetime : 'aaaa',
+       locationbeautifiedstartdatetime : 'aaa' ,
+     locationbeautifiedTimeInterval : 'aaaa' ,
+
       // subscribeToNewsletter,
       comment: comment.trim(),
       orderlines: allOrderItems
@@ -217,8 +228,8 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
       if (existingOrder === null) {
         response = await axios.post('http://192.168.8.105:5000/Home/createorder', orderData);
       }
-      else{
-          response = await axios.post('http://192.168.8.105:5000/Home/updateorder', orderData);
+      else {
+        response = await axios.post('http://192.168.8.105:5000/Home/updateorder', orderData);
       }
 
       setSubmitSuccess('Bestilling sendt! Tak for din ordre.');
