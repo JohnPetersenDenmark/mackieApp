@@ -7,14 +7,13 @@ export interface Order {
     phone: string
     email: string
     locationId: Number,
-    locationname : string,
-    locatiostartdatetime : string,    
-    locationenddatetime : string ,
-     locationbeautifiedstartdatetime : string ,
-     locationbeautifiedTimeInterval : string ,
-      
-
-    // subscribeToNewsletter : boolean,
+    locationname: string,
+    locationstartdatetime: string,
+    locationenddatetime: string,
+    locationbeautifiedstartdatetime: string,
+    locationbeautifiedTimeInterval: string,
+    createddatetime: string   ,
+    modifieddatetime: string ,
     comment: string
     orderlines: OrderItem[],
     totalPrice: number

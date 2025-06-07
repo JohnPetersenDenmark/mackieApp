@@ -24,6 +24,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
   const [orderId, setOrderId] = useState<number>(0);
 
   const [selectedLocationId, setSelectedLocationId] = useState<string>('');
+  const [selectedLocation, setSelectedLocation] = useState<TruckLocation | null>(null);
   const [locationTouched, setLocationTouched] = useState(false);
 
   const [customerName, setCustomerName] = useState<string>('');
@@ -150,6 +151,18 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
     }
   }, [isOpen, pizzaList, toppingList]);
 
+
+
+  const handleLocationChanged = (locationId: string) => {
+
+    setSelectedLocationId(locationId);
+
+    let location = locations.find(tmpLocation => tmpLocation.id === Number(locationId));
+    if (location) {
+      setSelectedLocation(location);
+    }
+  };
+
   const updateQuantity = (index: number, quantity: number) => {
     const updated = [...allOrderItems];
     updated[index].quantity = quantity;
@@ -203,24 +216,22 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
       id: orderId,
       customerName: customerName.trim(),
       customerorderCode: "",
-      phone : phone,
-      email : email,
+      phone: phone,
+      email: email,
       locationId: LocationIdAsNumber,
+      createddatetime: new Date().toISOString(),
+      modifieddatetime: new Date().toISOString(),
       locationname: 'aaaa',
-      locatiostartdatetime : 'aaaaa',
-      locationenddatetime : 'aaaa',
-       locationbeautifiedstartdatetime : 'aaa' ,
-     locationbeautifiedTimeInterval : 'aaaa' ,
+      locationstartdatetime: '',
+      locationenddatetime: '',
+      locationbeautifiedstartdatetime: 'aaa',
+      locationbeautifiedTimeInterval: 'aaaa',
+      totalPrice: parseFloat(getTotal()),
 
       // subscribeToNewsletter,
       comment: comment.trim(),
       orderlines: allOrderItems
         .filter(p => p.selected),
-      /*   .map(p => ({
-          pizzaid: p.pizzaid,
-          quantity: p.quantity,
-        })), */
-      totalPrice: parseFloat(getTotal()),
     };
 
     try {
@@ -271,7 +282,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
           <select
             id="locationSelect"
             value={selectedLocationId}
-            onChange={(e) => setSelectedLocationId(e.target.value)}
+            onChange={(e) => handleLocationChanged(e.target.value)}
             onBlur={() => setLocationTouched(true)}
             style={{
               backgroundColor: '#c7a6ac',
@@ -554,7 +565,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
 
             {/* Comment input added here */}
             <div style={{ marginTop: '1rem', marginBottom: '3rem' }}>
-              <label htmlFor="comment" style={{ fontSize: '20px' }} ><strong>Kommentar til bestillingen:</strong></label><br />
+              <label htmlFor="comment" style={{ fontSize: '20px' }} ><strong>Kommentarer til bestillingen:</strong></label><br />
               <textarea
                 id="comment"
                 value={comment}
@@ -574,7 +585,15 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
                 disabled={submitting}
               />
             </div>
+            <div style={{
 
+              fontSize: '25px',
+              color: 'white',
+              fontWeight: 400,
+              textAlign: 'left',
+            }}>
+              Afhentning:  {selectedLocation?.locationname} d. {selectedLocation?.locationbeautifiedstartdatetime} mellem {selectedLocation?.locationbeautifiedTimeInterval}
+            </div>
             <hr />
             <p><strong>Total: {getTotal()} kr</strong></p>
 

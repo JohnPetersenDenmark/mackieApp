@@ -191,7 +191,7 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
         >
 
             <div style={{ backgroundColor: '#c7a6ac', padding: '2rem', borderRadius: '8px', minWidth: '500px' }}>
-                <h2 style={{ backgroundColor: '#8d4a5b', padding: '2rem', color: 'white', borderRadius: '8px' }} >Ny aftale</h2>
+                <h2 style={{ backgroundColor: '#8d4a5b', padding: '2rem', color: 'white', borderRadius: '8px' }} >Aftale</h2>
 
 
                 <div>
@@ -239,20 +239,29 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
 
                 <div style={{ marginBottom: '1rem' }}>
                     <label htmlFor="selectSaleLocation"><strong>Vælg stadeplads:</strong></label><br />
-                    <select
-                        id='selectSaleLocation'
-                        value={selectedSaleLocationId ?? ""}
-                        onChange={(e) => setSelectedSaleLocationId(Number(e.target.value))}
-                    >
-                        <option value="" disabled>
-                            Vælg en lokation
-                        </option>
-                        {saleLocations.map((saleLocation) => (
-                            <option key={saleLocation.id} value={saleLocation.id}>
-                                {saleLocation.locationname}
+                    <div style={{ height: 20 }}>
+                        <select
+                            style={{
+                                width: '100%',          // Make it fill the container
+                                height: '40px',         // Increase the height
+                                fontSize: '16px',       // Make text bigger
+                                padding: '0.5rem',      // Add some padding
+                                borderRadius: '4px'     // Optional: rounded corners
+                            }}
+                            id='selectSaleLocation'
+                            value={selectedSaleLocationId ?? ""}
+                            onChange={(e) => setSelectedSaleLocationId(Number(e.target.value))}
+                        >
+                            <option value="" disabled>
+                                Vælg en lokation
                             </option>
-                        ))}
-                    </select>
+                            {saleLocations.map((saleLocation) => (
+                                <option key={saleLocation.id} value={saleLocation.id}>
+                                    {saleLocation.locationname}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
 
                 <button

@@ -21,6 +21,7 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
 
+  
 
   const [toppings, setToppings] = useState<Topping[]>([]);
   const [pizzas, setPizzas] = useState<Pizza[]>([]);
@@ -69,6 +70,8 @@ export default function Layout({ children }: LayoutProps) {
       });
 
   }, []);
+
+  
 
   const handleLoggedIn = (loggedIn: boolean) => {
     setLoggedIn(loggedIn)
