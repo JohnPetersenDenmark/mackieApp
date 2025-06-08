@@ -50,6 +50,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
       quantity: 1,
       productid: pizza.id,
       producttype: pizza.producttype,
+      pizzanumber: pizza.pizzanumber,
       productname: pizza.name,
       productdescription: pizza.description,
       unitdiscountpercentage: pizza.discountpercentage,
@@ -84,6 +85,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
       quantity: 1,
       productid: topping.id,
       producttype: topping.producttype,
+       pizzanumber: '',
       productdescription: topping.description,
       productname: topping.name,
       unitdiscountpercentage: 0,
@@ -436,7 +438,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
                     whiteSpace: 'nowrap'
                   }}
                 >
-                  <strong>{item.productname}</strong>{' '}
+                  <strong>{item.pizzanumber + ' ' + item.productname}</strong>{' '}
                   (Pris før rabat {item.discountedunitprice.toFixed(2).replaceAll('.', ',')} kr)
                 </div>
 

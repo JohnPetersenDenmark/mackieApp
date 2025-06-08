@@ -283,7 +283,7 @@ const displayedOrders = searchQuery.trim() === '' ? orders : filteredOrders;
                   }}
                 >
                   <div>{curOrderLine.quantity} stk.</div>
-                  <div>{highlightText(curOrderLine.productname, searchQuery) }</div>
+                  <div>{curOrderLine.pizzanumber + ' ' + highlightText(curOrderLine.productname, searchQuery) }</div>
                   <div>{curOrderLine.unitprice.toFixed(2).replace('.', ',')}</div>
                   <div>
                     {(curOrderLine.unitprice * curOrderLine.quantity)

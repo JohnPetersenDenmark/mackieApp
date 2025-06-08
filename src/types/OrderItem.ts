@@ -4,6 +4,7 @@ export interface OrderItem {
   orderid: number,
   productid: number,
   productname: string,
+   pizzanumber: string,
   productdescription: string
   quantity: number;
   selected: boolean;
