@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Order } from '../../types/Order';
+import TestRealTimeUpdate from '../TestRealTimeUpdate';
 
 interface AdminOrdersProps {
   isOpen: boolean;
@@ -104,8 +105,10 @@ const displayedOrders = searchQuery.trim() === '' ? orders : filteredOrders;
 
 
 
-  return (
-    <div
+  return (   
+    <div>
+    <TestRealTimeUpdate />
+    <div    
       style={{
         border: '1px solid grey',
         padding: '10px',
@@ -313,7 +316,9 @@ const displayedOrders = searchQuery.trim() === '' ? orders : filteredOrders;
         );
       })}
     </div>
+    </div>
   );
+  
 };
 
 export default AdminOrders;

@@ -2,7 +2,7 @@
 import { FaFacebookF } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import TruckLocationList from './TruckLocationList';
-import TestRealTimeUpdate from './TestRealTimeUpdate';
+
 import React, { useEffect, useState } from 'react';
 import OrderModal from './OrderModal';
 import { Pizza } from '../types/Pizza';
@@ -120,7 +120,7 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <div style={{ fontFamily: 'Arial, sans-serif' }}>
-<TestRealTimeUpdate />
+
 
       {loggedIn ? (
         <AdminDashBoard />

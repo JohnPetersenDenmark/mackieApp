@@ -3,11 +3,18 @@ import * as signalR from '@microsoft/signalr';
 import axios from 'axios';
 import { Order } from '../types/Order';
 
+
 const TestRealTimeUpdate: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
+  const [signalmessage, setSignalmessage] = useState<string>('');
+
   const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
 
+
+
   useEffect(() => {
+
+    
     const fetchOrders = async () => {
       try {
         const url = webApiBaseUrl + '/Home/orderlist';
@@ -23,26 +30,41 @@ const TestRealTimeUpdate: React.FC = () => {
 
     fetchOrders();
 
+    const playSound = () => {
+      const url: string = webApiBaseUrl + '/Uploads/PistolShot.mp3';
+      const audio = new Audio(url);
+      audio.play().catch(err => {
+        console.warn("Autoplay blocked, user interaction required:", err);
+      });
+    };
+
     const connection = new signalR.HubConnectionBuilder()
-      .withUrl("http://192.168.8.105:5000/ordersHub")
-      .withHubProtocol(signalR.JsonHubProtocol)
-      .withAutomaticReconnect()
+      .withUrl("http://192.168.8.105:5000/ordersHub", {
+        withCredentials: true
+      })
       .build();
+
+    connection.on('NewOrder', (order) => {
+      // var x = order;
+      setSignalmessage(order);
+       playSound();
+      console.log("New order");
+    });
 
     connection.start()
       .then(() => {
-        console.log('SignalR Connected');
-        connection.on('NewOrder', (order) => {
-          setOrders(prev => [order, ...prev]);
-        });
+        console.log("SignalR connected!");
+        //  connection.invoke("SendMessage", "user1", "Hello from plain JS!");
       })
-      .catch(err => console.error('SignalR Connection Error: ', err));
+      .catch(err => console.error(err));
 
-    connection.onclose(error => {
-      if (error) {
-        console.error('SignalR connection closed with error:', error);
-      } else {
-        console.log('SignalR connection closed.');
+    connection.onclose(async () => {
+      console.warn("Disconnected. Reconnecting...");
+      try {
+        await connection.start();
+        console.log("Reconnected!");
+      } catch (err) {
+        console.error("Reconnect failed:", err);
       }
     });
 
@@ -52,8 +74,10 @@ const TestRealTimeUpdate: React.FC = () => {
   }, []);
 
   return (
-    <div className="p-4">
+    <></>
+   /*  <div className="p-4">
       <h1 className="text-2xl mb-4">Orders</h1>
+      {signalmessage}
       <ul>
         {orders.map(order => (
           <li key={order.id} className="border-b py-2">
@@ -61,7 +85,7 @@ const TestRealTimeUpdate: React.FC = () => {
           </li>
         ))}
       </ul>
-    </div>
+    </div> */
   );
 };
 
