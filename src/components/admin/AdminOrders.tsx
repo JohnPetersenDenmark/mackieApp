@@ -25,13 +25,13 @@ const AdminOrders: React.FC = () => {
 
     axios
       .get<Order[]>(url)
- 
+
       .then((response) => {
         const sortedOrders1 = response.data.map(order => ({
 
         }));
 
-        const sortedOrders = response.data.sort((a, b) => {    
+        const sortedOrders = response.data.sort((a, b) => {
           const timeDiffInMilliSeconds = new Date(b.modifieddatetime).getTime() - new Date(a.modifieddatetime).getTime();
           return timeDiffInMilliSeconds;
         });
@@ -57,18 +57,18 @@ const AdminOrders: React.FC = () => {
     );
 
     return orderIdMatches || customerNameMatches || orderLineMatches || truckLocationMatches;
-  }); 
+  });
 
   const highlightText = (text: string, query: string) => {
-  if (!query) return text;
-  const regex = new RegExp(`(${query})`, 'gi');
-  const parts = text.split(regex);
-  return parts.map((part, i) =>
-    regex.test(part) ? <mark key={i}>{part}</mark> : part
-  );
-};
+    if (!query) return text;
+    const regex = new RegExp(`(${query})`, 'gi');
+    const parts = text.split(regex);
+    return parts.map((part, i) =>
+      regex.test(part) ? <mark key={i}>{part}</mark> : part
+    );
+  };
 
-const displayedOrders = searchQuery.trim() === '' ? orders : filteredOrders;
+  const displayedOrders = searchQuery.trim() === '' ? orders : filteredOrders;
 
   function formatDateToDanish(date: Date) {
     return `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1)
@@ -105,220 +105,243 @@ const displayedOrders = searchQuery.trim() === '' ? orders : filteredOrders;
 
 
 
-  return (   
+  return (
     <div>
-    <TestRealTimeUpdate />
-    <div    
-      style={{
-        border: '1px solid grey',
-        padding: '10px',
-        borderRadius: '5px',
-        fontSize: '20px',
-        color: '#22191b',
-        fontWeight: 200,
-        textAlign: 'center',
-      }}
-    >
-      <div>
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr',
-            alignItems: 'center',
-          }}
-        >
-          <div style={{ textAlign: 'center', fontSize: '36px' }}>
-            <input
-              type="text"
-              placeholder="Søg"
-                style={{
-                            width: '100%',
-                            padding: '0.5rem',
-                            marginTop: '0.25rem',
-                            marginBottom: '1rem',
-                            borderWidth: '1.0px',
-                            borderStyle: 'solid',
-                            borderRadius: '4px',
-                        }}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="p-2 border rounded"
-            />
-          </div>
-          <div style={{ textAlign: 'center', fontSize: '36px' }}>
-            Bestillinger
-          </div>
-        </div>
-      </div>
-
-
-      {displayedOrders.map((curOrder, index) => {
-        // Calculate total price subtotal for order
-        const subtotal = curOrder.orderlines.reduce(
-          (sum, line) => sum + line.unitprice * line.quantity,
-          0
-        );
-
-        // Calculate quantity subtotal for producttype 0  Pizza
-        const subtotalPizzas = curOrder.orderlines
-          .filter((line) => line.producttype === 0)
-          .reduce((sum, line) => sum + line.quantity, 0);
-
-        // Calculate quantity subtotal for producttype 1  Topping
-        const subtotalToppings = curOrder.orderlines
-          .filter((line) => line.producttype === 1)
-          .reduce((sum, line) => sum + line.quantity, 0);
-
-        return (
+      <TestRealTimeUpdate />
+      <div
+        style={{
+          border: '1px solid grey',
+          padding: '10px',
+          borderRadius: '5px',
+          fontSize: '20px',
+          color: '#22191b',
+          fontWeight: 200,
+          textAlign: 'center',
+        }}
+      >
+        <div>
           <div
-            key={curOrder.id}
             style={{
-              border: '1px solid #ccc',
-              padding: '10px',
-              marginBottom: '30px',
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr',
+              alignItems: 'center',
             }}
           >
+            <div style={{ textAlign: 'center', fontSize: '36px' }}>
+              <input
+                type="text"
+                placeholder="Søg"
+                style={{
+                  width: '100%',
+                  padding: '0.5rem',
+                  marginTop: '0.25rem',
+                  marginBottom: '1rem',
+                  borderWidth: '1.0px',
+                  borderStyle: 'solid',
+                  borderRadius: '4px',
+                }}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="p-2 border rounded"
+              />
+            </div>
+            <div style={{ textAlign: 'center', fontSize: '36px' }}>
+              Bestillinger
+            </div>
+          </div>
+        </div>
+
+
+        {displayedOrders.map((curOrder, index) => {
+          // Calculate total price subtotal for order
+          const subtotal = curOrder.orderlines.reduce(
+            (sum, line) => sum + line.unitprice * line.quantity,
+            0
+          );
+
+          // Calculate quantity subtotal for producttype 0  Pizza
+          const subtotalPizzas = curOrder.orderlines
+            .filter((line) => line.producttype === 0)
+            .reduce((sum, line) => sum + line.quantity, 0);
+
+          // Calculate quantity subtotal for producttype 1  Topping
+          const subtotalToppings = curOrder.orderlines
+            .filter((line) => line.producttype === 1)
+            .reduce((sum, line) => sum + line.quantity, 0);
+
+          return (
             <div
+              key={curOrder.id}
               style={{
+                border: '1px solid #ccc',
+                padding: '10px',
                 marginBottom: '30px',
-                padding: 10,
-                textAlign: 'left',
-                fontSize: '25px',
-                backgroundColor: '#8d4a5b',
-                color: 'white',
               }}
             >
-              {curOrder.locationbeautifiedstartdatetime} - {curOrder.locationname}
-            </div>
-
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr',
-                alignItems: 'center',
-              }}
-            >
-              <div>
-                <div style={{ marginBottom: '30px', textAlign: 'left' }}>
-                  Bestillingsnummer: {curOrder.customerorderCode}
-                </div>
-              </div>
-              <div>
-                {/* <div>{curOrder.customerName}</div> */}
-                <div>{highlightText(curOrder.customerName, searchQuery)}</div>
-              </div>
-              <div>
-                <div>{curOrder.phone}</div>
-              </div>
-              <div>
-                <div>{curOrder.email}</div>
-              </div>
-
-
-              {/* <div> */}
-              <div>{'Oprettet: ' + formatDateToDanish(new Date(curOrder.createddatetime))}</div>
-              <div>{'Ændret: ' + formatDateToDanish(new Date(curOrder.modifieddatetime))}</div>
-              {/* </div> */}
-
-
-              <div>
-                <button
-                  onClick={() => handleEditOrder(curOrder)}
-                  style={{
-                    padding: '5px 10px',
-                    backgroundColor: '#8d4a5b',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                  }}
-                >
-                  Rediger
-                </button>
-              </div>
-              <div>
-                <button
-                  onClick={() => handleDeleteOrder(curOrder)}
-                  style={{
-                    padding: '5px 10px',
-                    backgroundColor: '#8d4a5b',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                  }}
-                >
-                  Slet
-                </button>
-              </div>
-            </div>
-            <div>
-              {curOrder.comment.trim().length > 0 ?
-                <div style={{
-                  display: 'flex',
+              <div
+                style={{
+                  marginBottom: '30px',
+                  padding: 10,
                   textAlign: 'left',
-                  alignItems: 'center',
-                  height: 60,
-                  backgroundColor: '#17db4e',
-                  paddingLeft: 20,
-                  marginBottom: '30px'
-                }}>
-                  {curOrder.comment}
-                </div>
-                : ''}
-            </div>
+                  fontSize: '25px',
+                  backgroundColor: '#8d4a5b',
+                  color: 'white',
+                }}
+              >
+                {curOrder.locationbeautifiedstartdatetime} - {curOrder.locationname}
+              </div>
 
-            <div style={{ textAlign: 'left' }}>
-              {curOrder.orderlines.map((curOrderLine, lineIndex) => (
-                <div
-                  key={lineIndex}
-                  style={{
-                    border: '1px solid #ccc',
-                    padding: '10px',
-                    marginBottom: '10px',
-                    textAlign: 'left',
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr 1fr 1fr',
-                    alignItems: 'center',
-                  }}
-                >
-                  <div>{curOrderLine.quantity} stk.</div>
-                  <div>{curOrderLine.pizzanumber + ' ' + highlightText(curOrderLine.productname, searchQuery) }</div>
-                  <div>{curOrderLine.unitprice.toFixed(2).replace('.', ',')}</div>
-                  <div>
-                    {(curOrderLine.unitprice * curOrderLine.quantity)
-                      .toFixed(2)
-                      .replace('.', ',')}
-                  </div>
-                </div>
-              ))}
-
-              {/* Display all subtotals */}
               <div
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: '1fr 1fr 1fr 1fr ',
+                  gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr',
                   alignItems: 'center',
-                  textAlign: 'left',
-                  fontWeight: 'bold',
-                  fontSize: '18px',
-                  marginTop: '30px',
+                  marginLeft : '0px',
+                  fontWeight: 700
                 }}
               >
-                <div>Antal pizzaer: {subtotalPizzas}</div>
-                <div>Antal tilbehør: {subtotalToppings}</div>
-                <div></div>
+                <div>
+                  Best nr.:
+                </div>
+                <div>
+                  Kunde
+                </div>
+                <div>
+                  Telefon
+                </div>
+                <div>
+                  Email
+                </div>
+                <div>
+                  Oprettet:
+                  </div>
+                <div>
+                  Ændret:
+                  </div>
+              </div>
+              <div
+                style={{
+                  marginTop : '30px',
+                    marginBottom : '30px',
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1f',
+                  alignItems: 'left',
+                }}
+              >
+                <div>
+                  {curOrder.customerorderCode}
+                </div>
+                <div>
+                  {highlightText(curOrder.customerName, searchQuery)}
+                </div>
+                <div>{curOrder.phone}</div>
+                <div>
+                  {curOrder.email}
+                </div>
 
-                <div>Ordrebeløb: {subtotal.toFixed(2).replace('.', ',')}</div>
+
+                {/* <div> */}
+                <div>{formatDateToDanish(new Date(curOrder.createddatetime))}</div>
+                <div>{formatDateToDanish(new Date(curOrder.modifieddatetime))}</div>
+
+                <div>
+                  <button
+                    onClick={() => handleEditOrder(curOrder)}
+                    style={{
+                      padding: '5px 10px',
+                      backgroundColor: '#8d4a5b',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Rediger
+                  </button>
+                </div>
+                <div>
+                  <button
+                    onClick={() => handleDeleteOrder(curOrder)}
+                    style={{
+                      padding: '5px 10px',
+                      backgroundColor: '#8d4a5b',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Slet
+                  </button>
+                </div>
+              </div>
+              <div>
+                {curOrder.comment.trim().length > 0 ?
+                  <div style={{
+                    display: 'flex',
+                    textAlign: 'left',
+                    alignItems: 'center',
+                    height: 60,
+                    backgroundColor: '#17db4e',
+                    paddingLeft: 20,
+                    marginBottom: '30px'
+                  }}>
+                    {curOrder.comment}
+                  </div>
+                  : ''}
+              </div>
+
+              <div style={{ textAlign: 'left' }}>
+                {curOrder.orderlines.map((curOrderLine, lineIndex) => (
+                  <div
+                    key={lineIndex}
+                    style={{
+                      border: '1px solid #ccc',
+                      padding: '10px',
+                      marginBottom: '10px',
+                      textAlign: 'left',
+                      display: 'grid',
+                      gridTemplateColumns: '1fr 1fr 3fr 1fr',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <div>{curOrderLine.quantity} stk.</div>
+                    <div>{curOrderLine.pizzanumber + ' ' + highlightText(curOrderLine.productname, searchQuery)}</div>
+                    <div style={{ textAlign: 'right' }}>{curOrderLine.unitprice.toFixed(2).replace('.', ',') + ' kr.'}</div>
+                    <div style={{ textAlign: 'right' }}>
+                      {(curOrderLine.unitprice * curOrderLine.quantity)
+                        .toFixed(2)
+                        .replace('.', ',') + ' kr.'}
+                    </div>
+                  </div>
+                ))}
+
+                {/* Display all subtotals */}
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr 3fr 1fr',
+                    alignItems: 'center',
+                    textAlign: 'left',
+                    fontWeight: 'bold',
+                    fontSize: '18px',
+                    marginTop: '30px',
+                  }}
+                >
+                  <div>Antal pizzaer: {subtotalPizzas}</div>
+                  <div>Antal tilbehør: {subtotalToppings}</div>
+                  <div></div>
+
+                  <div style={{ textAlign: 'right' }}>Ialt: {subtotal.toFixed(2).replace('.', ',')}</div>
+                </div>
               </div>
             </div>
-          </div>
-        );
-      })}
-    </div>
+          );
+        })}
+      </div>
     </div>
   );
-  
+
 };
 
 export default AdminOrders;

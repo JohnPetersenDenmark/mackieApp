@@ -14,11 +14,11 @@ const PizzaList: React.FC<PizzaListProps> = ({ pizzas }) => {
 
 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
   {pizzas.map(pizza => (
-    <div key={pizza.id} style={{ border: '1px solid #ccc', padding: '1rem', borderRadius: '8px' }}>
+    <div key={pizza.id} >
        <h3>{pizza.pizzanumber + " " + pizza.name}</h3>
       <img 
         src={'http://192.168.8.105:5000' + pizza.imageurl }        
-        style={{ width: '50%', height: 'auto', borderRadius: '4px' }}
+        style={{ width: '30%', height: 'auto', borderRadius: '4px' }}
       />
      
       <p>{pizza.description}</p>

@@ -161,14 +161,12 @@ export default function Layout({ children }: LayoutProps) {
           />
 
           {/* HEADER */}
-          <header style={{ background: '#8d4a5b', padding: '1rem', color: '#22191b', height: '50px', display: 'flex', alignItems: 'center' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '4fr 8fr 1fr', gap: '1rem' }}>
+        {/*   <header style={{ background: '#8d4a5b', padding: '1rem', color: '#22191b', height: '50px', display: 'flex', alignItems: 'center' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr', gap: '1rem' }}>
               <div style={{ background: '#8d4a5b', padding: '1rem', fontSize: '24px', margin: 0 }}>Mackie's Pizza Truck</div>
               <div style={{ background: '#8d4a5b', padding: '1rem' }}>
-                <p>
-
-                </p>
-                <span onClick={handleCheckOrderClick} style={{ cursor: 'pointer', color: 'blue' }}>
+                
+                <span onClick={handleCheckOrderClick} style={{   cursor: 'pointer', color: '#22191b' }}>
                   Se min bestilling
                 </span>
 
@@ -182,10 +180,66 @@ export default function Layout({ children }: LayoutProps) {
               </a>
               </div>
             </div>
-          </header>
+          </header> */}
+
+          {/* HEADER */}
+<header
+  style={{
+    background: '#8d4a5b',
+    padding: '1rem',
+    color: '#22191b',
+    height: '50px',
+    display: 'flex',
+    alignItems: 'center',
+  }}
+>
+  <div
+    style={{
+      display: 'grid',
+      gridTemplateColumns: '1fr 2fr 1fr',
+      gap: '1rem',
+      alignItems: 'center', // Added this line to center content vertically
+    }}
+  >
+    <div
+      style={{
+        background: '#8d4a5b',
+        padding: '1rem',
+        fontSize: '24px',
+        margin: 0,
+      }}
+    >
+      Mackie's Pizza Truck
+    </div>
+
+    <div style={{ background: '#8d4a5b', padding: '1rem' }}>
+      <span
+        onClick={handleCheckOrderClick}
+        style={{ cursor: 'pointer', color: '#22191b' }}
+      >
+        Se min bestilling
+      </span>
+    </div>
+
+    <div>
+      <a
+        href="https://www.facebook.com/profile.php?id=61570093418685"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/733/733547.png"
+          alt="Facebook"
+          style={{ height: '24px', width: '24px' }}
+        />
+      </a>
+    </div>
+  </div>
+</header>
+
 
           {/* MAIN GRID SECTION */}
-          <div style={{ display: 'grid', gridTemplateColumns: '4fr 8fr 1fr', gap: '0rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0rem' }}>
             <div style={{ background: '#c7a6ac', padding: '0rem' }}>
             </div>
             <div style={{ background: '#c7a6ac', padding: '0rem', fontSize: '34px', margin: 0 }}>
@@ -271,7 +325,7 @@ export default function Layout({ children }: LayoutProps) {
                 <img
                   src="http://192.168.8.105:5000/Uploads/PizzaTruck.png"
                   alt="Pizza Truck"
-                  style={{ width: '400px', height: 'auto' }}
+                  style={{ width: '500px', height: 'auto' }}
                 />
               </p>
               <p style={{ textAlign: 'center', fontSize: '15px', color: '#22191b', fontWeight: 700 }}>
@@ -296,7 +350,7 @@ export default function Layout({ children }: LayoutProps) {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr', gap: '0rem', background: '#8d4a5b', color: '#ffffff' }}>
             <div style={{ padding: '1rem', fontSize: '15px', margin: 0, color: '#ffffff' }}>
               <p>
-                <span onClick={handleLoginClick} style={{ cursor: 'pointer', color: 'blue' }}>
+                <span onClick={handleLoginClick} style={{ cursor: 'pointer', color: '#ffffff' }}>
                   Mackies Pizza Truck
                 </span>
               </p>
