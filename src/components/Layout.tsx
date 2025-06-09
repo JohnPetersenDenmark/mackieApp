@@ -34,8 +34,10 @@ export default function Layout({ children }: LayoutProps) {
   const [error, setError] = useState<string | null>(null);
   const [loggedIn, setLoggedIn] = useState(false);
 
+  const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
+
   useEffect(() => {
-    axios.get<Pizza[]>('http://192.168.8.105:5000/Home/pizzalist')
+    axios.get<Pizza[]>(webApiBaseUrl + '/Home/pizzalist')
       .then(response => {
         const allPizzas = response.data;
         setPizzas(allPizzas);
@@ -47,7 +49,7 @@ export default function Layout({ children }: LayoutProps) {
         console.error(err);
       });
 
-    axios.get<Topping[]>('http://192.168.8.105:5000/Home/toppinglist')
+    axios.get<Topping[]>(webApiBaseUrl +'/Home/toppinglist')
       .then(response => {
         const allToppings = response.data;
         setToppings(allToppings);
@@ -59,7 +61,7 @@ export default function Layout({ children }: LayoutProps) {
         console.error(err);
       });
 
-    axios.get<TruckLocation[]>('http://192.168.8.105:5000/Home/truckcalendarlocationlist')
+    axios.get<TruckLocation[]>(webApiBaseUrl + '/Home/truckcalendarlocationlist')
       .then(response => {
         setLocations(response.data);
         setLoading(false);
@@ -322,8 +324,8 @@ export default function Layout({ children }: LayoutProps) {
                 Du kan få det som du vil ha' det..
               </p>
               <p style={{ textAlign: 'center', fontSize: '25px', color: '#22191b' }}>
-                <img
-                  src="http://192.168.8.105:5000/Uploads/PizzaTruck.png"
+                <img                
+                  src={webApiBaseUrl  + '/Uploads/PizzaTruck.png' }     
                   alt="Pizza Truck"
                   style={{ width: '500px', height: 'auto' }}
                 />

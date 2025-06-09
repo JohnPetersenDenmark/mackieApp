@@ -64,8 +64,9 @@ const CheckMyOrder: React.FC<CheckOrderModalProps> = ({ isOpen, onOrderFetched ,
 
     };
 
+     const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
     try {
-      const response = await axios.post('http://192.168.8.105:5000/Home/getorderbyid', orderData);
+      const response = await axios.post(webApiBaseUrl + '/Home/getorderbyid', orderData);
 
       var curOrder: Order = response.data;
       //  setSubmitSuccess('Ordren er fundet');

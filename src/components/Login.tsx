@@ -26,6 +26,8 @@ const Login: React.FC<LoginModalProps> = ({ isOpen, onLoggedIn, onClose }) => {
 
     const isFormValid = isPasswordValid && isUserNameValid;
 
+      const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
+
 const navigate = useNavigate();
 
     useEffect(() => {
@@ -49,7 +51,7 @@ const navigate = useNavigate();
         }
 
         try {
-            const response = await axios.post('http://192.168.8.105:5000/Login/login', userData);
+            const response = await axios.post(webApiBaseUrl + '/Login/login', userData);
 
             var token = response.data;
              localStorage.setItem('authToken', token);

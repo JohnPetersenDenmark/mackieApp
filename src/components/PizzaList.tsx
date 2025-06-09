@@ -9,6 +9,7 @@ interface PizzaListProps {
 
 const PizzaList: React.FC<PizzaListProps> = ({ pizzas }) => {
   
+      const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
  
   return ( 
 
@@ -17,7 +18,7 @@ const PizzaList: React.FC<PizzaListProps> = ({ pizzas }) => {
     <div key={pizza.id} >
        <h3>{pizza.pizzanumber + " " + pizza.name}</h3>
       <img 
-        src={'http://192.168.8.105:5000' + pizza.imageurl }        
+        src={webApiBaseUrl  + pizza.imageurl }        
         style={{ width: '30%', height: 'auto', borderRadius: '4px' }}
       />
      

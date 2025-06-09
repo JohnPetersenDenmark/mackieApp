@@ -3,10 +3,13 @@ import * as signalR from '@microsoft/signalr';
 import axios from 'axios';
 import { Order } from '../types/Order';
 
+interface ChildComponentProps {
+  doNotify: (data: Order) => void;
+}
 
-const TestRealTimeUpdate: React.FC = () => {
+const TestRealTimeUpdate: React.FC<ChildComponentProps> = ({doNotify}) => {
   const [orders, setOrders] = useState<Order[]>([]);
-  const [signalmessage, setSignalmessage] = useState<string>('');
+  const [signalmessage, setSignalmessage] = useState<Order | ''>('');
 
   const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
 
@@ -39,7 +42,7 @@ const TestRealTimeUpdate: React.FC = () => {
     };
 
     const connection = new signalR.HubConnectionBuilder()
-      .withUrl("http://192.168.8.105:5000/ordersHub", {
+      .withUrl( webApiBaseUrl + "/ordersHub", {
         withCredentials: true
       })
       .build();
@@ -47,6 +50,7 @@ const TestRealTimeUpdate: React.FC = () => {
     connection.on('NewOrder', (order) => {
       // var x = order;
       setSignalmessage(order);
+      doNotify(order);
        playSound();
       console.log("New order");
     });

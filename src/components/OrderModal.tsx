@@ -43,6 +43,8 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const [submittedOrderSuccessfully, setSubmittedOrderSuccessfully] = useState(false);
 
+    const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -239,10 +241,10 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
     try {
       let response;
       if (existingOrder === null) {
-        response = await axios.post('http://192.168.8.105:5000/Home/createorder', orderData);
+        response = await axios.post(webApiBaseUrl + '/Home/createorder', orderData);
       }
       else {
-        response = await axios.post('http://192.168.8.105:5000/Home/updateorder', orderData);
+        response = await axios.post(webApiBaseUrl + '/Home/updateorder', orderData);
       }
 
       setSubmitSuccess('Bestilling sendt! Tak for din ordre.');

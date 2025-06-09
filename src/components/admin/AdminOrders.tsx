@@ -10,6 +10,7 @@ interface AdminOrdersProps {
 
 const AdminOrders: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
+   const [newOrderArrived, setNewOrderArrived] = useState(false);
   const [isEditOrderModalOpen, setsEditOrderModalOpen] = useState(false);
   const [orderToEdit, setOrderToEdit] = useState<Order | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -26,19 +27,12 @@ const AdminOrders: React.FC = () => {
     axios
       .get<Order[]>(url)
 
-      .then((response) => {
-        const sortedOrders1 = response.data.map(order => ({
-
-        }));
-
+      .then((response) => {       
         const sortedOrders = response.data.sort((a, b) => {
           const timeDiffInMilliSeconds = new Date(b.modifieddatetime).getTime() - new Date(a.modifieddatetime).getTime();
           return timeDiffInMilliSeconds;
         });
-
         setOrders(sortedOrders);
-
-
         setLoading(false);
       })
       .catch((err) => {
@@ -46,17 +40,23 @@ const AdminOrders: React.FC = () => {
         setLoading(false);
         console.error(err);
       });
-  }, []);
+  }, [newOrderArrived]);
+
+const handleNewOrderArrived = (data : Order) => {
+    
+  setNewOrderArrived(true);
+    // Do something with the data
+  };
 
   const filteredOrders = orders.filter(order => {
     const orderIdMatches = order.customerorderCode.toString().includes(searchQuery);
     const customerNameMatches = order.customerName?.toLowerCase().includes(searchQuery.toLowerCase());
-    const truckLocationMatches = order.phone?.toLowerCase().includes(searchQuery.toLowerCase());
+    //const truckLocationMatches = order.phone?.toLowerCase().includes(searchQuery.toLowerCase());
     const orderLineMatches = order.orderlines?.some(line =>
       line.productname.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    return orderIdMatches || customerNameMatches || orderLineMatches || truckLocationMatches;
+    return orderIdMatches || customerNameMatches || orderLineMatches // || truckLocationMatches;
   });
 
   const highlightText = (text: string, query: string) => {
@@ -89,7 +89,7 @@ const AdminOrders: React.FC = () => {
       const deleteOrder = async () => {
         try {
           setSubmitting(true);
-          const url = webApiBaseUrl + '/Admin/removecation/' + order.id;
+          const url = webApiBaseUrl + '/Admin/removeorder/' + order.id;
           await axios.delete(url);
         } catch (error) {
           setError('Failed to delete order');
@@ -107,7 +107,7 @@ const AdminOrders: React.FC = () => {
 
   return (
     <div>
-      <TestRealTimeUpdate />
+      <TestRealTimeUpdate doNotify={handleNewOrderArrived}/>
       <div
         style={{
           border: '1px solid grey',
@@ -224,7 +224,7 @@ const AdminOrders: React.FC = () => {
                   marginTop : '30px',
                     marginBottom : '30px',
                   display: 'grid',
-                  gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1f',
+                  gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr',
                   alignItems: 'left',
                 }}
               >
@@ -234,7 +234,9 @@ const AdminOrders: React.FC = () => {
                 <div>
                   {highlightText(curOrder.customerName, searchQuery)}
                 </div>
-                <div>{curOrder.phone}</div>
+                <div>
+                  {curOrder.phone}
+                </div>
                 <div>
                   {curOrder.email}
                 </div>
@@ -306,7 +308,9 @@ const AdminOrders: React.FC = () => {
                     }}
                   >
                     <div>{curOrderLine.quantity} stk.</div>
-                    <div>{curOrderLine.pizzanumber + ' ' + highlightText(curOrderLine.productname, searchQuery)}</div>
+                    <div>
+                      {curOrderLine.pizzanumber} { highlightText(curOrderLine.productname, searchQuery)}
+                      </div>
                     <div style={{ textAlign: 'right' }}>{curOrderLine.unitprice.toFixed(2).replace('.', ',') + ' kr.'}</div>
                     <div style={{ textAlign: 'right' }}>
                       {(curOrderLine.unitprice * curOrderLine.quantity)
