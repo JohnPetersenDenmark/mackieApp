@@ -10,7 +10,7 @@ interface AdminOrdersProps {
 
 const AdminOrders: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
-   const [newOrderArrived, setNewOrderArrived] = useState(false);
+  const [newOrderArrived, setNewOrderArrived] = useState(false);
   const [isEditOrderModalOpen, setsEditOrderModalOpen] = useState(false);
   const [orderToEdit, setOrderToEdit] = useState<Order | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -21,13 +21,15 @@ const AdminOrders: React.FC = () => {
 
   const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
 
+  let NewOrder: Order | null;
+
   useEffect(() => {
     const url: string = webApiBaseUrl + '/Home/orderlist';
 
     axios
       .get<Order[]>(url)
 
-      .then((response) => {       
+      .then((response) => {
         const sortedOrders = response.data.sort((a, b) => {
           const timeDiffInMilliSeconds = new Date(b.modifieddatetime).getTime() - new Date(a.modifieddatetime).getTime();
           return timeDiffInMilliSeconds;
@@ -42,10 +44,16 @@ const AdminOrders: React.FC = () => {
       });
   }, [newOrderArrived]);
 
-const handleNewOrderArrived = (data : Order) => {
-    
-  setNewOrderArrived(true);
-    // Do something with the data
+  const handleNewOrderArrived = (data: Order) => {
+    setNewOrderArrived(true);
+    if (data !== null && data !== undefined)
+    {
+        NewOrder = data;
+    }
+    else{
+      NewOrder = null;
+    }
+   
   };
 
   const filteredOrders = orders.filter(order => {
@@ -91,9 +99,11 @@ const handleNewOrderArrived = (data : Order) => {
           setSubmitting(true);
           const url = webApiBaseUrl + '/Admin/removeorder/' + order.id;
           await axios.delete(url);
+
         } catch (error) {
           setError('Failed to delete order');
           console.error(error);
+
         } finally {
           setSubmitting(false);
         }
@@ -103,11 +113,9 @@ const handleNewOrderArrived = (data : Order) => {
     }
   };
 
-
-
   return (
     <div>
-      <TestRealTimeUpdate doNotify={handleNewOrderArrived}/>
+      <TestRealTimeUpdate doNotify={handleNewOrderArrived} />
       <div
         style={{
           border: '1px solid grey',
@@ -190,13 +198,29 @@ const handleNewOrderArrived = (data : Order) => {
               >
                 {curOrder.locationbeautifiedstartdatetime} - {curOrder.locationname}
               </div>
-
-              <div
+              { NewOrder == null ? <div              
                 style={{
                   display: 'grid',
                   gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr',
                   alignItems: 'center',
-                  marginLeft : '0px',
+                  marginLeft: '0px',
+                  fontWeight: 700
+                }}
+              ></div> : <div              
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr',
+                  alignItems: 'center',
+                  marginLeft: '0px',
+                  fontWeight: 700
+                }}
+              ></div> }
+              <div              
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr',
+                  alignItems: 'center',
+                  marginLeft: '0px',
                   fontWeight: 700
                 }}
               >
@@ -214,15 +238,16 @@ const handleNewOrderArrived = (data : Order) => {
                 </div>
                 <div>
                   Oprettet:
-                  </div>
+                </div>
                 <div>
                   Ændret:
-                  </div>
+                </div>
               </div>
+          
               <div
                 style={{
-                  marginTop : '30px',
-                    marginBottom : '30px',
+                  marginTop: '30px',
+                  marginBottom: '30px',
                   display: 'grid',
                   gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr',
                   alignItems: 'left',
@@ -309,8 +334,8 @@ const handleNewOrderArrived = (data : Order) => {
                   >
                     <div>{curOrderLine.quantity} stk.</div>
                     <div>
-                      {curOrderLine.pizzanumber} { highlightText(curOrderLine.productname, searchQuery)}
-                      </div>
+                      {curOrderLine.pizzanumber} {highlightText(curOrderLine.productname, searchQuery)}
+                    </div>
                     <div style={{ textAlign: 'right' }}>{curOrderLine.unitprice.toFixed(2).replace('.', ',') + ' kr.'}</div>
                     <div style={{ textAlign: 'right' }}>
                       {(curOrderLine.unitprice * curOrderLine.quantity)
