@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Topping } from '../../types/Topping';
+import FileInput from "../../components/FileInput"
+import config from '../../config';
 
 
 interface ToppingModalProps {
@@ -11,15 +13,26 @@ interface ToppingModalProps {
 
 const AdminToppingCreateEdit: React.FC<ToppingModalProps> = ({ isOpen, onClose, toppingToEdit }) => {
 
-    const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
+
     const [submitting, setSubmitting] = useState(false);
 
     const [toppingName, setToppingName] = useState<string>('');
+    const [toppingDescription, setToppingDescription] = useState<string>('');
+    const [toppingPrice, setToppingPrice] = useState<string>('');
+
     const [submitError, setSubmitError] = useState<string>('');
 
     const [toppingNameTouched, setToppingNameTouched] = useState(false);
+    const [toppingPriceTouched, setToppingPriceTouched] = useState(false);
+    const [toppingDescriptionTouched, setToppingDescriptionTouched] = useState(false);
+
+    const [toppingImageurl, setToppingImageurl] = useState<string>('');
+
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
     const isToppingNameValid = toppingName.length > 0;
+    const isToppingPriceValid = true;
+    const isToppingDescriptionValid = toppingDescription.length > 0;
     const isFormValid = isToppingNameValid
 
     useEffect(() => {
@@ -27,10 +40,17 @@ const AdminToppingCreateEdit: React.FC<ToppingModalProps> = ({ isOpen, onClose, 
 
         if (toppingToEdit !== null) {
             setToppingName(toppingToEdit.name);
+            setToppingDescription(toppingToEdit.description);
+            setToppingImageurl(toppingToEdit.imageurl)
+             setToppingPrice(toppingToEdit.price.toFixed(2))
         }
         else {
             setToppingName('');
+            setToppingDescription('');
+            setToppingImageurl('');
+            setToppingPrice('');
         }
+
         setToppingNameTouched(false)
 
         setSubmitting(false);
@@ -40,12 +60,15 @@ const AdminToppingCreateEdit: React.FC<ToppingModalProps> = ({ isOpen, onClose, 
     const handleSubmit = async () => {
         const toppingData = {
             id: toppingToEdit !== null ? toppingToEdit.id : 0,
-
-
-
+             name: toppingName,          
+            description: toppingDescription,
+            imageurl: toppingImageurl,
+            price: toppingPrice.replaceAll(',', '.'),           
+            producttype: 0
         }
-       
-        const url = webApiBaseUrl + '/Admin/XXXXXXXXXXXXXXXXX'
+
+        const url = config.API_BASE_URL + '/Admin/addorupdatetopping'
+        
         try {
             const response = await axios.post(url, toppingData);
             onClose();
@@ -58,7 +81,48 @@ const AdminToppingCreateEdit: React.FC<ToppingModalProps> = ({ isOpen, onClose, 
 
     };
 
-  if (!isOpen) return null;
+    const handlePrice = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = e.target.value.replaceAll(',', '.');
+        if (newValue === '') {
+            setToppingPrice('');
+        } else {
+
+            let newValueAsNumber = Number(newValue);
+            if (isNaN(newValueAsNumber)) {
+                return;
+            }
+            setToppingPrice(newValue);
+            setToppingPriceTouched(true);
+        }
+    };
+
+    const handleOnBlurPrice = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+        const newValue = e.target.value.replaceAll(',', '.');
+
+        if (newValue === '') {
+            setToppingPrice('');
+        } else {
+            let newValueAsNumber = Number(newValue);
+            if (isNaN(newValueAsNumber)) {
+                setToppingPrice('0,00');
+                return;
+            }
+
+            let newValueAsString = newValueAsNumber.toFixed(2);
+            newValueAsString = newValueAsString.replaceAll('.', ',');
+
+            setToppingPrice(newValueAsString);
+        }
+    };
+
+    const handleFileSelect = (file: File) => {
+        console.log("Parent got file:", file);
+        setSelectedFile(file);
+        setToppingImageurl('/Uploads/' + file.name)
+    };
+
+    if (!isOpen) return null;
 
     return (
         <div
@@ -74,18 +138,18 @@ const AdminToppingCreateEdit: React.FC<ToppingModalProps> = ({ isOpen, onClose, 
         >
 
             <div style={{ backgroundColor: '#c7a6ac', padding: '2rem', borderRadius: '8px', minWidth: '500px' }}>
-                <h2 style={{ backgroundColor: '#8d4a5b', padding: '2rem', color: 'white', borderRadius: '8px' }} >Pladsnavn</h2>
+                <h2 style={{ backgroundColor: '#8d4a5b', padding: '2rem', color: 'white', borderRadius: '8px' }} >Topping</h2>
 
 
-                <div style={{ marginBottom: '1rem' }}>
-                    {/* <label htmlFor="email"><strong>Pladsnavn:</strong></label><br /> */}
+                <div style={{ marginBottom: '1rem', fontSize: '20px', fontWeight: 200 }}>
+                    <label htmlFor="toppingname">Toppingnavn:</label><br />
                     <input
-                        id="placename"
+                        id="toppingname"
                         type="text"
                         value={toppingName}
                         onChange={(e) => setToppingName(e.target.value)}
                         onBlur={() => setToppingNameTouched(true)}
-                        placeholder="Indtast pladsnavn"
+                        placeholder="Toppingnavn"
                         style={{
                             width: '100%',
                             padding: '0.5rem',
@@ -98,6 +162,79 @@ const AdminToppingCreateEdit: React.FC<ToppingModalProps> = ({ isOpen, onClose, 
                         disabled={submitting}
                     />
                 </div>
+
+                <div style={{ marginBottom: '1rem', fontSize: '20px', fontWeight: 200 }}>
+                    <label htmlFor="toppingdescription">Beskrivelse:</label><br />
+                    <input
+                        id="toppingdescription"
+                        type="text"
+                        value={toppingDescription}
+                        onChange={(e) => setToppingDescription(e.target.value)}
+                        onBlur={() => setToppingDescriptionTouched(true)}
+                        placeholder="Toppingbeskrivelse"
+                        style={{
+                            width: '100%',
+                            padding: '0.5rem',
+                            marginTop: '0.25rem',
+                            borderColor: !isToppingDescriptionValid && toppingDescriptionTouched ? 'red' : undefined,
+                            borderWidth: '1.5px',
+                            borderStyle: 'solid',
+                            borderRadius: '4px',
+                        }}
+                        disabled={submitting}
+                    />
+                </div>
+
+
+                <div style={{ marginBottom: '1rem', fontSize: '20px', fontWeight: 200 }}>
+                    <label htmlFor="toppingprice">Pris:</label><br />
+                    <input
+                        id="toppingprice"
+                        type="text"
+                        // readOnly
+                        value={toppingPrice.replaceAll('.', ',')}
+                        onChange={handlePrice}
+                        onBlur={handleOnBlurPrice}
+                        placeholder="Vejl. udsalgspris"
+                        style={{
+                            width: '100%',
+                            padding: '0.5rem',
+                            marginTop: '0.25rem',
+                            borderColor: !isToppingPriceValid && toppingPriceTouched ? 'red' : undefined,
+                            borderWidth: '1.5px',
+                            borderStyle: 'solid',
+                            borderRadius: '4px',
+                        }}
+                        disabled={submitting}
+                    />
+                </div>
+
+
+                <div
+                    style={{
+                        marginBottom: '1rem',
+                        display: 'flex',           // Makes children align horizontally
+                        alignItems: 'center',      // Optional: Vertically centers items
+                        gap: '1rem'                // Optional: Spacing between image and FileInput
+                    }}
+                >
+                    <div>
+                        <img
+                            src={config.API_BASE_URL + toppingImageurl}
+                            style={{
+                                maxWidth: '200px',
+                                height: 'auto',
+                                marginTop: '5px'
+                            }}
+                        />
+                    </div>
+
+                    <div>
+                        <FileInput onFileSelect={handleFileSelect} />
+                    </div>
+                </div>
+
+
 
                 <button
                     onClick={handleSubmit}

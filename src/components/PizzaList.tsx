@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Pizza } from '../types/Pizza';
+import config from '../config';
 
 // Define Pizza type matching your API data
 interface PizzaListProps {
@@ -9,7 +10,7 @@ interface PizzaListProps {
 
 const PizzaList: React.FC<PizzaListProps> = ({ pizzas }) => {
   
-      const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
+     
  
   return ( 
 
@@ -18,7 +19,7 @@ const PizzaList: React.FC<PizzaListProps> = ({ pizzas }) => {
     <div key={pizza.id} >
        <h3>{pizza.pizzanumber + " " + pizza.name}</h3>
       <img 
-        src={webApiBaseUrl  + pizza.imageurl }        
+        src={config.API_BASE_URL  + pizza.imageurl }        
         style={{ width: '30%', height: 'auto', borderRadius: '4px' }}
       />
      

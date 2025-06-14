@@ -2,6 +2,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { TruckLocation } from '../../types/TruckLocation';
+import config from '../../config';
 
 import AdminCalendarCreateEdit from "./AdminCalendarCreateEdit"
 
@@ -19,10 +20,10 @@ const AdminCalendar: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL
+   
 
     useEffect(() => {
-        const url: string = webApiBaseUrl + '/Home/truckcalendarlocationlist'
+        const url: string = config.API_BASE_URL + '/Home/truckcalendarlocationlist'
 
         axios.get<TruckLocation[]>(url)
             .then(response => {
@@ -47,7 +48,7 @@ const AdminCalendar: React.FC = () => {
         const deleteTruckLocation = async () => {
             try {
                 setSubmitting(true);
-                const url = webApiBaseUrl + '/Admin/removetrucklocation/' + truckLocation.id;
+                const url = config.API_BASE_URL + '/Admin/removetrucklocation/' + truckLocation.id;
                 await axios.delete(url);
             } catch (error) {
                 setError('Fejl');

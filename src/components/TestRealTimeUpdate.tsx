@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import * as signalR from '@microsoft/signalr';
 import axios from 'axios';
 import { Order } from '../types/Order';
+import config from '../config';
 
 interface ChildComponentProps {
   doNotify: (data: Order) => void;
@@ -11,7 +12,7 @@ const TestRealTimeUpdate: React.FC<ChildComponentProps> = ({doNotify}) => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [signalmessage, setSignalmessage] = useState<Order | ''>('');
 
-  const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
+  
 
 
 
@@ -20,7 +21,7 @@ const TestRealTimeUpdate: React.FC<ChildComponentProps> = ({doNotify}) => {
     
     const fetchOrders = async () => {
       try {
-        const url = webApiBaseUrl + '/Home/orderlist';
+        const url = config.API_BASE_URL + '/Home/orderlist';
         const response = await axios.get<Order[]>(url);
         const sortedOrders = response.data.sort(
           (a, b) => new Date(b.modifieddatetime).getTime() - new Date(a.modifieddatetime).getTime()
@@ -34,7 +35,7 @@ const TestRealTimeUpdate: React.FC<ChildComponentProps> = ({doNotify}) => {
     fetchOrders();
 
     const playSound = () => {
-      const url: string = webApiBaseUrl + '/Uploads/PistolShot.mp3';
+      const url: string = config.API_BASE_URL + '/Uploads/PistolShot.mp3';
       const audio = new Audio(url);
       audio.play().catch(err => {
         console.warn("Autoplay blocked, user interaction required:", err);
@@ -42,7 +43,7 @@ const TestRealTimeUpdate: React.FC<ChildComponentProps> = ({doNotify}) => {
     };
 
     const connection = new signalR.HubConnectionBuilder()
-      .withUrl( webApiBaseUrl + "/ordersHub", {
+      .withUrl( config.API_BASE_URL + "/ordersHub", {
         withCredentials: true
       })
       .build();

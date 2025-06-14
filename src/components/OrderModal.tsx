@@ -5,6 +5,7 @@ import { OrderItem } from '../types/OrderItem';
 import { Topping } from '../types/Topping';
 import { Order } from '../types/Order';
 import { TruckLocation } from '../types/TruckLocation';
+import config from '../config';
 
 interface OrderModalProps {
   isOpen: boolean;
@@ -43,7 +44,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const [submittedOrderSuccessfully, setSubmittedOrderSuccessfully] = useState(false);
 
-    const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
+   
 
   useEffect(() => {
     if (!isOpen) return;
@@ -241,10 +242,10 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
     try {
       let response;
       if (existingOrder === null) {
-        response = await axios.post(webApiBaseUrl + '/Home/createorder', orderData);
+        response = await axios.post(config.API_BASE_URL + '/Home/createorder', orderData);
       }
       else {
-        response = await axios.post(webApiBaseUrl + '/Home/updateorder', orderData);
+        response = await axios.post(config.API_BASE_URL + '/Home/updateorder', orderData);
       }
 
       setSubmitSuccess('Bestilling sendt! Tak for din ordre.');

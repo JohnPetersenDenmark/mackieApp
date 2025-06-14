@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Order } from '../types/Order';
+import config from '../config';
 
 
 
@@ -64,9 +65,10 @@ const CheckMyOrder: React.FC<CheckOrderModalProps> = ({ isOpen, onOrderFetched ,
 
     };
 
-     const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
+    
+
     try {
-      const response = await axios.post(webApiBaseUrl + '/Home/getorderbyid', orderData);
+      const response = await axios.post(config.API_BASE_URL + '/Home/getorderbyid', orderData);
 
       var curOrder: Order = response.data;
       //  setSubmitSuccess('Ordren er fundet');

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { QuantityItem } from '../../types/QuantityItem';
+import config from '../../config';
 
 
 interface QuantityModalProps {
@@ -11,7 +12,7 @@ interface QuantityModalProps {
 
 const AdminQuantityItemCreateEdit: React.FC<QuantityModalProps> = ({ isOpen, onClose, quantityItemToEdit }) => {
 
-    const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
+    
     const [submitting, setSubmitting] = useState(false);
 
     const [quantityItemName, setQuantityItemName] = useState<string>('');
@@ -45,7 +46,7 @@ const AdminQuantityItemCreateEdit: React.FC<QuantityModalProps> = ({ isOpen, onC
 
         }
        
-        const url = webApiBaseUrl + '/Admin/XXXXXXXXXXXXXXXXX'
+        const url = config.API_BASE_URL + '/Admin/XXXXXXXXXXXXXXXXX'
         try {
             const response = await axios.post(url, quantityData);
             onClose();

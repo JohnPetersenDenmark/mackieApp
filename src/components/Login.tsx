@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import config from '../config';
 
 interface LoginModalProps {
     isOpen: boolean;
@@ -26,7 +27,7 @@ const Login: React.FC<LoginModalProps> = ({ isOpen, onLoggedIn, onClose }) => {
 
     const isFormValid = isPasswordValid && isUserNameValid;
 
-      const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
+   
 
 const navigate = useNavigate();
 
@@ -51,7 +52,7 @@ const navigate = useNavigate();
         }
 
         try {
-            const response = await axios.post(webApiBaseUrl + '/Login/login', userData);
+            const response = await axios.post(config.API_BASE_URL + '/Login/login', userData);
 
             var token = response.data;
              localStorage.setItem('authToken', token);

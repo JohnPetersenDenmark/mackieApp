@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { SaleLocation } from '../../types/SaleLocation';
 
 import AdminPlaceCreateEdit from "./AdminPlaceCreateEdit"
+import config from '../../config';
 
 
 const AdminPlaces: React.FC = () => {
@@ -14,10 +15,10 @@ const AdminPlaces: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
+    
 
     useEffect(() => {
-        const url: string = webApiBaseUrl + '/Home/locationlist'
+        const url: string = config.API_BASE_URL + '/Home/locationlist'
 
         axios.get<SaleLocation[]>(url)
             .then(response => {
@@ -42,7 +43,7 @@ const AdminPlaces: React.FC = () => {
         const deleteLocation = async () => {
             try {
                 setSubmitting(true);
-                const url = webApiBaseUrl + '/Admin/removelocation/' + location.id;
+                const url = config.API_BASE_URL + '/Admin/removelocation/' + location.id;
                 await axios.delete(url);
             } catch (error) {
                 setError('Fejl');

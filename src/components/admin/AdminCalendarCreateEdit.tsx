@@ -7,6 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { format } from "date-fns";
 import { da } from "date-fns/locale";
 import { parse } from "date-fns";
+import config from '../../config';
 import CustomInput from "./CustomInput"; // adjust path as needed
 
 
@@ -40,12 +41,12 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
 
     const isFormValid = isStartDateTimeValid && isEndDateTimeValid && isSaleLocationIdValid
 
-    const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL
+    
 
     /* useEffect(() => {
         if (!isOpen) return;
 
-        const url: string = webApiBaseUrl + '/Home/locationlist'
+        
 
         axios.get<SaleLocation[]>(url)
             .then(response => {
@@ -80,7 +81,7 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
     }, [isOpen, selectedSaleLocationId]); */
 
     useEffect(() => {
-        const url = webApiBaseUrl + '/Home/locationlist';
+        const url = config.API_BASE_URL + '/Home/locationlist';
         axios
             .get<SaleLocation[]>(url)
             .then(response => {
@@ -160,8 +161,8 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
 
         }
 
-        const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
-        const url = webApiBaseUrl + '/Admin/addorupdatetruckcalendarlocation'
+       
+        const url = config.API_BASE_URL + '/Admin/addorupdatetruckcalendarlocation'
         try {
             const response = await axios.post(url, placeData);
             onClose();

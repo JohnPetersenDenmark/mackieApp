@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 //import { useNavigate } from 'react-router-dom';
 import { SaleLocation } from '../../types/SaleLocation';
+import config from '../../config';
 
 interface LocationModalProps {
     isOpen: boolean;
@@ -46,8 +47,8 @@ const AdminPlaceCreateEdit: React.FC<LocationModalProps> = ({ isOpen, onClose, l
             locationname: placeName.trim(),
         }
 
-        const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
-        const url = webApiBaseUrl + '/Admin/addorupdatelocation'
+        
+        const url = config.API_BASE_URL + '/Admin/addorupdatelocation'
         try {
             const response = await axios.post(url, placeData);
             onClose();

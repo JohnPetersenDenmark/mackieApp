@@ -2,6 +2,7 @@
 import { FaFacebookF } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import TruckLocationList from './TruckLocationList';
+import config from '../config';
 
 import React, { useEffect, useState } from 'react';
 import OrderModal from './OrderModal';
@@ -34,10 +35,10 @@ export default function Layout({ children }: LayoutProps) {
   const [error, setError] = useState<string | null>(null);
   const [loggedIn, setLoggedIn] = useState(false);
 
-  const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
+ 
 
   useEffect(() => {
-    axios.get<Pizza[]>(webApiBaseUrl + '/Home/pizzalist')
+    axios.get<Pizza[]>(config.API_BASE_URL + '/Home/pizzalist')
       .then(response => {
         const allPizzas = response.data;
         setPizzas(allPizzas);
@@ -49,7 +50,7 @@ export default function Layout({ children }: LayoutProps) {
         console.error(err);
       });
 
-    axios.get<Topping[]>(webApiBaseUrl +'/Home/toppinglist')
+    axios.get<Topping[]>(config.API_BASE_URL +'/Home/toppinglist')
       .then(response => {
         const allToppings = response.data;
         setToppings(allToppings);
@@ -61,7 +62,7 @@ export default function Layout({ children }: LayoutProps) {
         console.error(err);
       });
 
-    axios.get<TruckLocation[]>(webApiBaseUrl + '/Home/truckcalendarlocationlist')
+    axios.get<TruckLocation[]>(config.API_BASE_URL + '/Home/truckcalendarlocationlist')
       .then(response => {
         setLocations(response.data);
         setLoading(false);
@@ -236,7 +237,7 @@ export default function Layout({ children }: LayoutProps) {
         />
       </a>
     </div>
-  </div>
+  </div> 
 </header>
 
 
@@ -325,7 +326,7 @@ export default function Layout({ children }: LayoutProps) {
               </p>
               <p style={{ textAlign: 'center', fontSize: '25px', color: '#22191b' }}>
                 <img                
-                  src={webApiBaseUrl  + '/Uploads/PizzaTruck.png' }     
+                  src={config.API_BASE_URL  + '/Uploads/PizzaTruck.png' }     
                   alt="Pizza Truck"
                   style={{ width: '500px', height: 'auto' }}
                 />

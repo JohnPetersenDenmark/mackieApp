@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Pizza } from '../../types/Pizza';
 import { Topping } from '../../types/Topping';
 import AdminPizzaCreateEdit from "./AdminPizzaCreateEdit"
+import AdminToppingCreateEdit from "./AdminToppingCreateEdit"
+import config from '../../config';
 
 interface AdminMenuesProps {
   isOpen: boolean;
@@ -11,7 +13,7 @@ interface AdminMenuesProps {
 
 
 const AdminMenues: React.FC = () => {
-  const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
+
 
 
   const [isCreateEditPizzaModalOpen, setIsCreateEditPizzaModalOpen] = useState(false);
@@ -26,7 +28,7 @@ const AdminMenues: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    let url: string = webApiBaseUrl + '/Home/pizzalist';
+    let url: string = config.API_BASE_URL + '/Home/pizzalist';
     axios.get<Pizza[]>(url)
       .then(response => {
         setPizzas(response.data);
@@ -35,7 +37,7 @@ const AdminMenues: React.FC = () => {
         setError('Failed to load locations');
       });
 
-    url = webApiBaseUrl + '/Home/toppinglist';
+    url = config.API_BASE_URL + '/Home/toppinglist';
     axios.get<Topping[]>(url)
       .then(response => {
         setToppings(response.data);
@@ -44,7 +46,7 @@ const AdminMenues: React.FC = () => {
         setError('Failed to load locations');
       });
 
-  }, [isCreateEditPizzaModalOpen, submitting]);
+  }, [isCreateEditPizzaModalOpen, isCreateEditToppingModalOpen, submitting]);
 
   const handleNewPizza = () => {
     setPizzaToEdit(null);
@@ -60,12 +62,16 @@ const AdminMenues: React.FC = () => {
     setIsCreateEditPizzaModalOpen(false);
   };
 
+  const handleCloseCreateEditToppingModal = () => {
+    setIsCreateEditToppingModalOpen(false);
+  };
+
   const handleDeletePizza = (pizza: Pizza) => {
     if (pizza !== null) {
       const deletePizza = async () => {
         try {
           setSubmitting(true);
-          const url = webApiBaseUrl + '/Admin/removepizza/' + pizza.id;
+          const url = config.API_BASE_URL + '/Admin/removepizza/' + pizza.id;
           await axios.delete(url);
         } catch (error) {
           setError('Fejl');
@@ -93,7 +99,7 @@ const AdminMenues: React.FC = () => {
       const deleteTopping = async () => {
         try {
           setSubmitting(true);
-          const url = webApiBaseUrl + '/Admin/remocation/' + topping.id;
+          const url = config.API_BASE_URL + '/Admin/remocation/' + topping.id;
           await axios.delete(url);
         } catch (error) {
           setError('Fejl');
@@ -115,6 +121,11 @@ const AdminMenues: React.FC = () => {
         pizzaToEdit={pizzaToEdit}
       />
 
+      <AdminToppingCreateEdit
+        isOpen={isCreateEditToppingModalOpen}
+        onClose={handleCloseCreateEditToppingModal}
+        toppingToEdit={toppingToEdit}
+      />
 
       <div style={{
         border: '1px solid grey',
@@ -126,7 +137,7 @@ const AdminMenues: React.FC = () => {
         textAlign: 'center'
 
       }}>
-        <div style={{ textAlign: 'center',  fontSize: '36px', }}>
+        <div style={{ textAlign: 'center', fontSize: '36px', }}>
           Menu
         </div>
 
@@ -167,7 +178,7 @@ const AdminMenues: React.FC = () => {
               <div>
                 <div>{curPizza.pizzanumber}</div>
                 <img
-                  src={webApiBaseUrl + curPizza.imageurl}
+                  src={config.API_BASE_URL + curPizza.imageurl}
 
                   style={{ maxWidth: '100px', height: 'auto', marginTop: '5px' }}
                 />
@@ -180,7 +191,7 @@ const AdminMenues: React.FC = () => {
               <div>{curPizza.description}</div>
               <div>{curPizza.discountprice.toFixed(2).replaceAll('.', ',')}</div>
               <div>{curPizza.discountpercentage}</div>
-              
+
               <div>{curPizza.price.toFixed(2).replaceAll('.', ',')}</div>
               <div>
                 <button

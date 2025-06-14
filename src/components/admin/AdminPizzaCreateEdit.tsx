@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Pizza } from '../../types/Pizza';
 import FileInput from "../../components/FileInput"
+import config from '../../config';
 
 
 interface PizzaModalProps {
@@ -12,7 +13,7 @@ interface PizzaModalProps {
 
 const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizzaToEdit }) => {
 
-    const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
+   
     const [submitting, setSubmitting] = useState(false);
 
     const [pizzaName, setPizzaName] = useState<string>('');
@@ -114,7 +115,7 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
         if (selectedFile) {
             await handleUpload();
         }
-        const url = webApiBaseUrl + '/Admin/addorupdatepizza'
+        const url = config.API_BASE_URL + '/Admin/addorupdatepizza'
         try {
             const response = await axios.post(url, pizzaData);
             onClose();
@@ -272,7 +273,7 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
         const formData = new FormData();
         formData.append('file', selectedFile);
 
-        const url = webApiBaseUrl + '/Admin/upload'
+        const url = config.API_BASE_URL + '/Admin/upload'
         try {
             const response = await axios.post(url, formData, {
                 headers: {
@@ -468,7 +469,7 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
                 >
                     <div>
                         <img
-                            src={webApiBaseUrl + pizzaImageurl}
+                            src={config.API_BASE_URL + pizzaImageurl}
                             style={{
                                 maxWidth: '200px',
                                 height: 'auto',

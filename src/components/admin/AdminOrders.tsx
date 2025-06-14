@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Order } from '../../types/Order';
 import TestRealTimeUpdate from '../TestRealTimeUpdate';
+import config from '../../config';
 
 interface AdminOrdersProps {
   isOpen: boolean;
@@ -19,12 +20,12 @@ const AdminOrders: React.FC = () => {
 
   const [searchQuery, setSearchQuery] = useState('');
 
-  const webApiBaseUrl = process.env.REACT_APP_BASE_API_URL;
+  
 
   let NewOrder: Order | null;
 
   useEffect(() => {
-    const url: string = webApiBaseUrl + '/Home/orderlist';
+    const url: string = config.API_BASE_URL + '/Home/orderlist';
 
     axios
       .get<Order[]>(url)
@@ -97,7 +98,7 @@ const AdminOrders: React.FC = () => {
       const deleteOrder = async () => {
         try {
           setSubmitting(true);
-          const url = webApiBaseUrl + '/Admin/removeorder/' + order.id;
+          const url = config.API_BASE_URL + '/Admin/removeorder/' + order.id;
           await axios.delete(url);
 
         } catch (error) {
