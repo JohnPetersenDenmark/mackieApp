@@ -107,7 +107,7 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
             imageurl: pizzaImageurl,
             price: pizzaPriceAfterDiscount.replaceAll(',', '.'),
             discountpercentage: pizzaDiscountPercentage.replaceAll(',', '.'),
-            discountprice: pizzaPriceBeforeDiscount.replaceAll(',', '.'),
+            discountprice: pizzaPriceBeforeDiscount.replaceAll(',', '.'),  
             producttype: 0
         }
 
