@@ -6,21 +6,21 @@ import config from '../../config';
 
 import AdminCalendarCreateEdit from "./AdminCalendarCreateEdit"
 
-interface AdminCalendarProps{
-isOpen : boolean;
-  onClose: () => void;
+interface AdminCalendarProps {
+    isOpen: boolean;
+    onClose: () => void;
 }
 
 
 const AdminCalendar: React.FC = () => {
-   const [truckLocations, setTruckLocations] = useState<TruckLocation[]>([]);
+    const [truckLocations, setTruckLocations] = useState<TruckLocation[]>([]);
     const [isCreateEditCalendarModalOpen, setIsCreateEditCalendarModalOpen] = useState(false);
     const [truckLocationToEdit, setTruckLocationToEdit] = useState<TruckLocation | null>(null);
-     const [submitting, setSubmitting] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-   
+
 
     useEffect(() => {
         const url: string = config.API_BASE_URL + '/Home/truckcalendarlocationlist'
@@ -36,34 +36,34 @@ const AdminCalendar: React.FC = () => {
                 console.error(err);
             });
 
-    }, [isCreateEditCalendarModalOpen , submitting]);
+    }, [isCreateEditCalendarModalOpen, submitting]);
 
     const handleEdit = (location: TruckLocation) => {
         setTruckLocationToEdit(location);
         setIsCreateEditCalendarModalOpen(true);
     };
 
-   const handleDelete = (truckLocation: TruckLocation) => {
-    if (truckLocation !== null) {
-        const deleteTruckLocation = async () => {
-            try {
-                setSubmitting(true);
-                const url = config.API_BASE_URL + '/Admin/removetrucklocation/' + truckLocation.id;
-                await axios.delete(url);
-            } catch (error) {
-                setError('Fejl');
-                console.error(error);
-            } finally {
-                setSubmitting(false);
-            }
-        };
+    const handleDelete = (truckLocation: TruckLocation) => {
+        if (truckLocation !== null) {
+            const deleteTruckLocation = async () => {
+                try {
+                    setSubmitting(true);
+                    const url = config.API_BASE_URL + '/Admin/removetrucklocation/' + truckLocation.id;
+                    await axios.delete(url);
+                } catch (error) {
+                    setError('Fejl');
+                    console.error(error);
+                } finally {
+                    setSubmitting(false);
+                }
+            };
 
-        deleteTruckLocation();  // Call the inner async function
-    }
-};
+            deleteTruckLocation();  // Call the inner async function
+        }
+    };
 
     const handleNewLocation = () => {
-      setTruckLocationToEdit(null);
+        setTruckLocationToEdit(null);
         setIsCreateEditCalendarModalOpen(true);
     };
 
@@ -103,7 +103,7 @@ const AdminCalendar: React.FC = () => {
                     <p>Herunder er liste med aftaler.
                     </p>
 
-                    
+
                 </div>
                 <div style={{ marginTop: '20px', textAlign: 'left' }}>
                     {truckLocations.map((curLocation, index) => (
@@ -154,21 +154,40 @@ const AdminCalendar: React.FC = () => {
                             </div>
                         </div>
                     ))}
-                </div>
-                <div>
-                    <button
-                        onClick={handleNewLocation}
-                        style={{
-                            padding: '0.5rem 1rem',
-                            backgroundColor: '#8d4a5b',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                        }}
-                    >
-                        Ny
-                    </button>
+              
+                <div
+                    style={{
+                        border: '1px solid #ccc',    // Border around each row
+                        padding: '10px',             // Optional: Adds spacing inside each row
+                        marginBottom: '5px',         // Optional: Adds spacing between rows
+                        display: 'grid',
+                        gridTemplateColumns: '3fr 4fr 3fr 3fr 3fr 3fr', // Adjust column sizes as needed
+                        alignItems: 'center'
+                    }}
+                >
+
+
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div>
+                        <button
+                            onClick={handleNewLocation}
+                            style={{
+                                padding: '0.5rem 1rem',
+                                backgroundColor: '#8d4a5b',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '4px',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            Ny
+                        </button>
+                    </div>
+                      </div>
                 </div>
             </div>
         </div>

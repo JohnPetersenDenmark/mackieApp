@@ -11,11 +11,11 @@ const AdminPlaces: React.FC = () => {
     const [locations, setLocations] = useState<SaleLocation[]>([]);
     const [isCreateEditLocationModalOpen, setIsCreateEditLocationModalOpen] = useState(false);
     const [locationToEdit, setLocationToEdit] = useState<SaleLocation | null>(null);
-     const [submitting, setSubmitting] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    
+
 
     useEffect(() => {
         const url: string = config.API_BASE_URL + '/Home/locationlist'
@@ -31,31 +31,31 @@ const AdminPlaces: React.FC = () => {
                 console.error(err);
             });
 
-    }, [isCreateEditLocationModalOpen , submitting]);
+    }, [isCreateEditLocationModalOpen, submitting]);
 
     const handleEdit = (location: SaleLocation) => {
         setLocationToEdit(location);
         setIsCreateEditLocationModalOpen(true);
     };
 
-   const handleDelete = (location: SaleLocation) => {
-    if (location !== null) {
-        const deleteLocation = async () => {
-            try {
-                setSubmitting(true);
-                const url = config.API_BASE_URL + '/Admin/removelocation/' + location.id;
-                await axios.delete(url);
-            } catch (error) {
-                setError('Fejl');
-                console.error(error);
-            } finally {
-                setSubmitting(false);
-            }
-        };
+    const handleDelete = (location: SaleLocation) => {
+        if (location !== null) {
+            const deleteLocation = async () => {
+                try {
+                    setSubmitting(true);
+                    const url = config.API_BASE_URL + '/Admin/removelocation/' + location.id;
+                    await axios.delete(url);
+                } catch (error) {
+                    setError('Fejl');
+                    console.error(error);
+                } finally {
+                    setSubmitting(false);
+                }
+            };
 
-        deleteLocation();  // Call the inner async function
-    }
-};
+            deleteLocation();  // Call the inner async function
+        }
+    };
 
     const handleNewLocation = () => {
         setIsCreateEditLocationModalOpen(true);
@@ -147,21 +147,37 @@ const AdminPlaces: React.FC = () => {
                             </div>
                         </div>
                     ))}
-                </div>
-                <div>
-                    <button
-                        onClick={handleNewLocation}
+
+                    <div
                         style={{
-                            padding: '0.5rem 1rem',
-                            backgroundColor: '#8d4a5b',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
+                            border: '1px solid #ccc',    // Border around each row
+                            padding: '10px',             // Optional: Adds spacing inside each row
+                            marginBottom: '5px',         // Optional: Adds spacing between rows
+                            display: 'grid',
+                            gridTemplateColumns: '3fr 4fr 3fr 3fr', // Adjust column sizes as needed
+                            alignItems: 'center'
                         }}
                     >
-                        Ny
-                    </button>
+                        <div></div>
+                        <div></div>
+                          <div></div>
+
+                        <div>
+                            <button
+                                onClick={handleNewLocation}
+                                style={{
+                                    padding: '0.5rem 1rem',
+                                    backgroundColor: '#8d4a5b',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer',
+                                }}
+                            >
+                                Ny
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

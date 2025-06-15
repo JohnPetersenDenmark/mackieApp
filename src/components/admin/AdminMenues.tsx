@@ -138,7 +138,7 @@ const AdminMenues: React.FC = () => {
 
       }}>
         <div style={{ textAlign: 'center', fontSize: '36px', }}>
-          Menu
+          Menuer
         </div>
 
 
@@ -269,10 +269,28 @@ const AdminMenues: React.FC = () => {
           textAlign: 'left'
         }}>
 
-          Tilbehør
+
 
         </div>
         <div style={{ marginTop: '20px', textAlign: 'left', backgroundColor: 'beige' }}>
+          <div
+            style={{
+              border: '1px solid #ccc',    // Border around each row
+              padding: '10px',             // Optional: Adds spacing inside each row
+              marginBottom: '5px',         // Optional: Adds spacing between rows
+              display: 'grid',
+              fontWeight: 700,
+              fontSize: 'px',
+              gridTemplateColumns: '1fr 2fr 4fr 1fr 1fr 1fr 1fr 1fr', // Adjust column sizes as needed
+              alignItems: 'center',
+              marginBlockEnd: 30
+            }}
+          >
+            <div>Tilbehør</div>
+            <div>Beskrivelse</div>
+            <div>Pris</div>
+            <div></div>
+          </div>
           {toppings.map((curTopping, index) => (
             <div
               key={index}
@@ -281,13 +299,25 @@ const AdminMenues: React.FC = () => {
                 padding: '10px',             // Optional: Adds spacing inside each row
                 marginBottom: '5px',         // Optional: Adds spacing between rows
                 display: 'grid',
-                gridTemplateColumns: '3fr 4fr 3fr 3fr 3fr 3fr 3fr', // Adjust column sizes as needed
+                gridTemplateColumns: '1fr 2fr 4fr 1fr 1fr 1fr 1fr 1fr', // Adjust column sizes as needed
                 alignItems: 'center'
               }}
             >
-              <div>{curTopping.name}</div>
+
+              <div>
+                <div>{curTopping.name}</div>
+                <img
+                  src={config.API_BASE_URL + curTopping.imageurl}
+                  style={{ maxWidth: '100px', height: 'auto', marginTop: '5px' }}
+                />
+              </div>
+
               <div>{curTopping.description}</div>
-              <div>{curTopping.price}</div>
+               <div>{curTopping.price.toFixed(2).replaceAll('.', ',')}</div>
+              
+              <div></div>
+              <div></div>
+              <div></div>
               <div>
                 <button
                   onClick={() => handleEditTopping(curTopping)}  // You'll define handleEdit below
@@ -320,102 +350,127 @@ const AdminMenues: React.FC = () => {
               </div>
             </div>
           ))}
-        </div>
+       
         <div>
-          <button
-            onClick={handleNewTopping}
+          <div
             style={{
-              padding: '0.5rem 1rem',
-              backgroundColor: '#8d4a5b',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
+              border: '1px solid #ccc',    // Border around each row
+              padding: '10px',             // Optional: Adds spacing inside each row
+              marginBottom: '5px',         // Optional: Adds spacing between rows
+              display: 'grid',
+              fontWeight: 700,
+              fontSize: 'px',
+              gridTemplateColumns: '1fr 2fr 4fr 1fr 1fr 1fr 1fr 1fr', // Adjust column sizes as needed
+              alignItems: 'center',
+              textAlign: 'left',
+              marginBlockEnd: 30
             }}
           >
-            Ny
-          </button>
-        </div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
 
-        <div style={{
-          textAlign: 'left'
-        }}>
-
-          Salat
-
-        </div>
-        <div style={{ marginTop: '20px', textAlign: 'left' }}>
-          {pizzas.map((curPizza, index) => (
-            <div
-              key={index}
-              style={{
-                border: '1px solid #ccc',    // Border around each row
-                padding: '10px',             // Optional: Adds spacing inside each row
-                marginBottom: '5px',         // Optional: Adds spacing between rows
-                display: 'grid',
-                gridTemplateColumns: '3fr 4fr 3fr 3fr 3fr 3fr 3fr', // Adjust column sizes as needed
-                alignItems: 'center'
-              }}
-            >
-              <div>{curPizza.name}</div>
-              <div>{curPizza.description}</div>
-              <div>{curPizza.discountprice}</div>
-              <div>{curPizza.discountpercentage}</div>
-              <div>{curPizza.discountprice}</div>
-              <div>
-                <button
-                  onClick={() => handleEditPizza(curPizza)}  // You'll define handleEdit below
-                  style={{
-                    padding: '5px 10px',
-                    backgroundColor: '#8d4a5b',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Rediger
-                </button>
-              </div>
-              <div>
-                <button
-                  onClick={() => handleDeletePizza(curPizza)}  // You'll define handleEdit below
-                  style={{
-                    padding: '5px 10px',
-                    backgroundColor: '#8d4a5b',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Slet
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div>
-          <button
-            onClick={handleNewPizza}
-            style={{
-              padding: '0.5rem 1rem',
-              backgroundColor: '#8d4a5b',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-            }}
-          >
-            Ny
-          </button>
+            <div>
+              <button
+                onClick={handleNewTopping}
+                style={{
+                  padding: '0.5rem 1rem',
+                  backgroundColor: '#8d4a5b',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                }}
+              >
+                Ny
+              </button></div>
+          </div>
         </div>
       </div>
 
+    {/*   <div style={{
+        textAlign: 'left'
+      }}>
 
+        Salat
 
-
+      </div>
+      <div style={{ marginTop: '20px', textAlign: 'left' }}>
+        {pizzas.map((curPizza, index) => (
+          <div
+            key={index}
+            style={{
+              border: '1px solid #ccc',    // Border around each row
+              padding: '10px',             // Optional: Adds spacing inside each row
+              marginBottom: '5px',         // Optional: Adds spacing between rows
+              display: 'grid',
+              gridTemplateColumns: '3fr 4fr 3fr 3fr 3fr 3fr 3fr', // Adjust column sizes as needed
+              alignItems: 'center'
+            }}
+          >
+            <div>{curPizza.name}</div>
+            <div>{curPizza.description}</div>
+            <div>{curPizza.discountprice}</div>
+            <div>{curPizza.discountpercentage}</div>
+            <div>{curPizza.discountprice}</div>
+            <div>
+              <button
+                onClick={() => handleEditPizza(curPizza)}  // You'll define handleEdit below
+                style={{
+                  padding: '5px 10px',
+                  backgroundColor: '#8d4a5b',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                Rediger
+              </button>
+            </div>
+            <div>
+              <button
+                onClick={() => handleDeletePizza(curPizza)}  // You'll define handleEdit below
+                style={{
+                  padding: '5px 10px',
+                  backgroundColor: '#8d4a5b',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                Slet
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div>
+        <button
+          onClick={handleNewPizza}
+          style={{
+            padding: '0.5rem 1rem',
+            backgroundColor: '#8d4a5b',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+          }}
+        >
+          Ny
+        </button>
+      </div> */}
     </div>
+
+
+
+
+    </div >
   )
 }
 
