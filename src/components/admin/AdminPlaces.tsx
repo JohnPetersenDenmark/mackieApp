@@ -115,8 +115,14 @@ const AdminPlaces: React.FC = () => {
                         >
                             <div>Stade id.: {curLocation.id}</div>
                             <div>{curLocation.locationname}</div>
-                            <div>
-                                <button
+                            <div>                               
+                                    <img
+                                        src="/images/edit-icon.png"
+                                        alt="Ny"
+                                        onClick={() => handleEdit(curLocation)}
+                                        style={{ cursor: 'pointer', width: '24px', height: '24px' }}
+                                    />
+                                    {/* <button
                                     onClick={() => handleEdit(curLocation)}  // You'll define handleEdit below
                                     style={{
                                         padding: '5px 10px',
@@ -128,60 +134,73 @@ const AdminPlaces: React.FC = () => {
                                     }}
                                 >
                                     Rediger
-                                </button>
+                                </button> */}
+                                </div>
+                                <div>
+                                     <img
+                                        src="/images/delete-icon.png"
+                                        alt="Slet"
+                                        onClick={() => handleDelete(curLocation)}
+                                        style={{ cursor: 'pointer', width: '24px', height: '24px' }}
+                                    />
+                                {/*     <button
+                                        onClick={() => handleDelete(curLocation)}  // You'll define handleEdit below
+                                        style={{
+                                            padding: '5px 10px',
+                                            backgroundColor: '#8d4a5b',
+                                            color: 'white',
+                                            border: 'none',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer'
+                                        }}
+                                    >
+                                        Slet
+                                    </button> */}
+                                </div>
                             </div>
-                            <div>
-                                <button
-                                    onClick={() => handleDelete(curLocation)}  // You'll define handleEdit below
-                                    style={{
-                                        padding: '5px 10px',
-                                        backgroundColor: '#8d4a5b',
-                                        color: 'white',
-                                        border: 'none',
-                                        borderRadius: '4px',
-                                        cursor: 'pointer'
-                                    }}
-                                >
-                                    Slet
-                                </button>
-                            </div>
-                        </div>
                     ))}
 
-                    <div
-                        style={{
-                            border: '1px solid #ccc',    // Border around each row
-                            padding: '10px',             // Optional: Adds spacing inside each row
-                            marginBottom: '5px',         // Optional: Adds spacing between rows
-                            display: 'grid',
-                            gridTemplateColumns: '3fr 4fr 3fr 3fr', // Adjust column sizes as needed
-                            alignItems: 'center'
-                        }}
-                    >
-                        <div></div>
-                        <div></div>
-                          <div></div>
-
-                        <div>
-                            <button
-                                onClick={handleNewLocation}
+                            <div
                                 style={{
-                                    padding: '0.5rem 1rem',
-                                    backgroundColor: '#8d4a5b',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '4px',
-                                    cursor: 'pointer',
+                                    border: '1px solid #ccc',    // Border around each row
+                                    padding: '10px',             // Optional: Adds spacing inside each row
+                                    marginBottom: '5px',         // Optional: Adds spacing between rows
+                                    display: 'grid',
+                                    gridTemplateColumns: '3fr 4fr 3fr 3fr', // Adjust column sizes as needed
+                                    alignItems: 'center'
                                 }}
                             >
-                                Ny
-                            </button>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+
+                                <div>
+  
+                                     <img
+                                        src="/images/new-icon.png"
+                                        alt="Slet"
+                                       onClick={handleNewLocation}
+                                        style={{ cursor: 'pointer', width: '24px', height: '24px' }}
+                                    />
+                                   {/*  <button
+                                        onClick={handleNewLocation}
+                                        style={{
+                                            padding: '0.5rem 1rem',
+                                            backgroundColor: '#8d4a5b',
+                                            color: 'white',
+                                            border: 'none',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer',
+                                        }}
+                                    >
+                                        Ny
+                                    </button> */}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
             </div>
-        </div>
-    )
+            </div>
+            )
 }
 
-export default AdminPlaces;
+            export default AdminPlaces;

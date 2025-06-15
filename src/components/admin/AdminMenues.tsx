@@ -6,6 +6,8 @@ import AdminPizzaCreateEdit from "./AdminPizzaCreateEdit"
 import AdminToppingCreateEdit from "./AdminToppingCreateEdit"
 import config from '../../config';
 
+
+
 interface AdminMenuesProps {
   isOpen: boolean;
   onClose: () => void;
@@ -99,7 +101,7 @@ const AdminMenues: React.FC = () => {
       const deleteTopping = async () => {
         try {
           setSubmitting(true);
-          const url = config.API_BASE_URL + '/Admin/remocation/' + topping.id;
+          const url = config.API_BASE_URL + '/Admin/removetopping/' + topping.id;
           await axios.delete(url);
         } catch (error) {
           setError('Fejl');
@@ -126,6 +128,8 @@ const AdminMenues: React.FC = () => {
         onClose={handleCloseCreateEditToppingModal}
         toppingToEdit={toppingToEdit}
       />
+
+
 
       <div style={{
         border: '1px solid grey',
@@ -194,7 +198,13 @@ const AdminMenues: React.FC = () => {
 
               <div>{curPizza.price.toFixed(2).replaceAll('.', ',')}</div>
               <div>
-                <button
+                <img
+                  src="/images/edit-icon.png"
+                  alt="Edit"
+                  onClick={() => handleEditPizza(curPizza)}
+                  style={{ cursor: 'pointer', width: '24px', height: '24px' }}
+                />
+                {/*     <button
                   onClick={() => handleEditPizza(curPizza)}
                   style={{
                     padding: '5px 10px',
@@ -204,12 +214,18 @@ const AdminMenues: React.FC = () => {
                     borderRadius: '4px',
                     cursor: 'pointer'
                   }}
-                >
+                >                 
                   Rediger
-                </button>
+                </button> */}
               </div>
               <div>
-                <button
+                <img
+                  src="/images/delete-icon.png"
+                  alt="Slet"
+                  onClick={() => handleDeletePizza(curPizza)}
+                  style={{ cursor: 'pointer', width: '24px', height: '24px' }}
+                />
+                {/*  <button
                   onClick={() => handleDeletePizza(curPizza)}
                   style={{
                     padding: '5px 10px',
@@ -221,7 +237,7 @@ const AdminMenues: React.FC = () => {
                   }}
                 >
                   Slet
-                </button>
+                </button> */}
               </div>
             </div>
           ))}
@@ -239,7 +255,7 @@ const AdminMenues: React.FC = () => {
               marginBlockEnd: 30
             }}
           >
-            <div></div>
+
             <div></div>
             <div></div>
             <div></div>
@@ -247,7 +263,14 @@ const AdminMenues: React.FC = () => {
             <div></div>
             <div></div>
             <div>
-              <button
+
+              <img
+                src="/images/new-icon.png"
+                alt="Ny"
+                onClick={handleNewPizza}
+                style={{ cursor: 'pointer', width: '24px', height: '24px' }}
+              />
+              {/*  <button
                 onClick={handleNewPizza}
                 style={{
                   padding: '0.5rem 1rem',
@@ -259,7 +282,7 @@ const AdminMenues: React.FC = () => {
                 }}
               >
                 Ny
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
@@ -313,13 +336,19 @@ const AdminMenues: React.FC = () => {
               </div>
 
               <div>{curTopping.description}</div>
-               <div>{curTopping.price.toFixed(2).replaceAll('.', ',')}</div>
-              
+              <div>{curTopping.price.toFixed(2).replaceAll('.', ',')}</div>
+
               <div></div>
               <div></div>
               <div></div>
               <div>
-                <button
+                <img
+                  src="/images/edit-icon.png"
+                  alt="Edit"
+                  onClick={() => handleEditTopping(curTopping)}
+                  style={{ cursor: 'pointer', width: '24px', height: '24px' }}
+                />
+                {/* <button
                   onClick={() => handleEditTopping(curTopping)}  // You'll define handleEdit below
                   style={{
                     padding: '5px 10px',
@@ -331,10 +360,16 @@ const AdminMenues: React.FC = () => {
                   }}
                 >
                   Rediger
-                </button>
+                </button> */}
               </div>
               <div>
-                <button
+                <img
+                  src="/images/delete-icon.png"
+                  alt="Slet"
+                  onClick={() => handleDeleteTopping(curTopping)}
+                  style={{ cursor: 'pointer', width: '24px', height: '24px' }}
+                />
+                {/*    <button
                   onClick={() => handleDeleteTopping(curTopping)}  // You'll define handleEdit below
                   style={{
                     padding: '5px 10px',
@@ -346,53 +381,60 @@ const AdminMenues: React.FC = () => {
                   }}
                 >
                   Slet
-                </button>
+                </button> */}
               </div>
             </div>
           ))}
-       
-        <div>
-          <div
-            style={{
-              border: '1px solid #ccc',    // Border around each row
-              padding: '10px',             // Optional: Adds spacing inside each row
-              marginBottom: '5px',         // Optional: Adds spacing between rows
-              display: 'grid',
-              fontWeight: 700,
-              fontSize: 'px',
-              gridTemplateColumns: '1fr 2fr 4fr 1fr 1fr 1fr 1fr 1fr', // Adjust column sizes as needed
-              alignItems: 'center',
-              textAlign: 'left',
-              marginBlockEnd: 30
-            }}
-          >
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
 
-            <div>
-              <button
-                onClick={handleNewTopping}
-                style={{
-                  padding: '0.5rem 1rem',
-                  backgroundColor: '#8d4a5b',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                }}
-              >
-                Ny
-              </button></div>
+          <div>
+            <div
+              style={{
+                border: '1px solid #ccc',    // Border around each row
+                padding: '10px',             // Optional: Adds spacing inside each row
+                marginBottom: '5px',         // Optional: Adds spacing between rows
+                display: 'grid',
+                fontWeight: 700,
+                fontSize: 'px',
+                gridTemplateColumns: '1fr 2fr 4fr 1fr 1fr 1fr 1fr 1fr', // Adjust column sizes as needed
+                alignItems: 'center',
+                textAlign: 'left',
+                marginBlockEnd: 30
+              }}
+            >
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+
+              <div>
+                <img
+                  src="/images/new-icon.png"
+                  alt="Ny"
+                  onClick={handleNewTopping}
+                  style={{ cursor: 'pointer', width: '24px', height: '24px' }}
+                />
+              {/*   <button
+                  onClick={handleNewTopping}
+                  style={{
+                    padding: '0.5rem 1rem',
+                    backgroundColor: '#8d4a5b',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Ny
+                </button> */}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-    {/*   <div style={{
+        {/*   <div style={{
         textAlign: 'left'
       }}>
 
@@ -465,7 +507,7 @@ const AdminMenues: React.FC = () => {
           Ny
         </button>
       </div> */}
-    </div>
+      </div>
 
 
 

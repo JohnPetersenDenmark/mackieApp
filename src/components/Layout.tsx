@@ -1,5 +1,5 @@
 
-import { FaFacebookF } from 'react-icons/fa';
+
 import { Link } from 'react-router-dom';
 import TruckLocationList from './TruckLocationList';
 import config from '../config';

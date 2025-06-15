@@ -273,7 +273,13 @@ const AdminOrders: React.FC = () => {
                 <div>{formatDateToDanish(new Date(curOrder.modifieddatetime))}</div>
 
                 <div>
-                  <button
+                    <img
+                  src="/images/edit-icon.png"
+                  alt="Ny"
+                  onClick={() => handleEditOrder(curOrder)}
+                  style={{ cursor: 'pointer', width: '24px', height: '24px' }}
+                />
+                 {/*  <button
                     onClick={() => handleEditOrder(curOrder)}
                     style={{
                       padding: '5px 10px',
@@ -285,10 +291,17 @@ const AdminOrders: React.FC = () => {
                     }}
                   >
                     Rediger
-                  </button>
+                  </button> */}
                 </div>
                 <div>
-                  <button
+                 
+                    <img
+                  src="/images/delete-icon.png"
+                  alt="Ny"
+                 onClick={() => handleDeleteOrder(curOrder)}
+                  style={{ cursor: 'pointer', width: '24px', height: '24px' }}
+                />
+                  {/* <button
                     onClick={() => handleDeleteOrder(curOrder)}
                     style={{
                       padding: '5px 10px',
@@ -300,7 +313,7 @@ const AdminOrders: React.FC = () => {
                     }}
                   >
                     Slet
-                  </button>
+                  </button> */}
                 </div>
               </div>
               <div>

@@ -123,7 +123,13 @@ const AdminCalendar: React.FC = () => {
                             <div>{curLocation.startdatetime}</div>
                             <div>{curLocation.enddatetime}</div>
                             <div>
-                                <button
+                                <img
+                                    src="/images/edit-icon.png"
+                                    alt="Slet"
+                                    onClick={() => handleEdit(curLocation)}
+                                    style={{ cursor: 'pointer', width: '24px', height: '24px' }}
+                                />
+                                {/* <button
                                     onClick={() => handleEdit(curLocation)}  // You'll define handleEdit below
                                     style={{
                                         padding: '5px 10px',
@@ -135,10 +141,16 @@ const AdminCalendar: React.FC = () => {
                                     }}
                                 >
                                     Rediger
-                                </button>
+                                </button> */}
                             </div>
                             <div>
-                                <button
+                                <img
+                                    src="/images/delete-icon.png"
+                                    alt="Slet"
+                                    onClick={() => handleDelete(curLocation)}
+                                    style={{ cursor: 'pointer', width: '24px', height: '24px' }}
+                                />
+                                {/* <button
                                     onClick={() => handleDelete(curLocation)}  // You'll define handleEdit below
                                     style={{
                                         padding: '5px 10px',
@@ -150,30 +162,36 @@ const AdminCalendar: React.FC = () => {
                                     }}
                                 >
                                     Slet
-                                </button>
+                                </button> */}
                             </div>
                         </div>
                     ))}
-              
-                <div
-                    style={{
-                        border: '1px solid #ccc',    // Border around each row
-                        padding: '10px',             // Optional: Adds spacing inside each row
-                        marginBottom: '5px',         // Optional: Adds spacing between rows
-                        display: 'grid',
-                        gridTemplateColumns: '3fr 4fr 3fr 3fr 3fr 3fr', // Adjust column sizes as needed
-                        alignItems: 'center'
-                    }}
-                >
+
+                    <div
+                        style={{
+                            border: '1px solid #ccc',    // Border around each row
+                            padding: '10px',             // Optional: Adds spacing inside each row
+                            marginBottom: '5px',         // Optional: Adds spacing between rows
+                            display: 'grid',
+                            gridTemplateColumns: '3fr 4fr 3fr 3fr 3fr 3fr', // Adjust column sizes as needed
+                            alignItems: 'center'
+                        }}
+                    >
 
 
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div>
-                        <button
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div>
+                            <img
+                                src="/images/new-icon.png"
+                                alt="Slet"
+                                 onClick={handleNewLocation}
+                                style={{ cursor: 'pointer', width: '24px', height: '24px' }}
+                            />
+                            {/* <button
                             onClick={handleNewLocation}
                             style={{
                                 padding: '0.5rem 1rem',
@@ -185,9 +203,9 @@ const AdminCalendar: React.FC = () => {
                             }}
                         >
                             Ny
-                        </button>
+                        </button> */}
+                        </div>
                     </div>
-                      </div>
                 </div>
             </div>
         </div>
