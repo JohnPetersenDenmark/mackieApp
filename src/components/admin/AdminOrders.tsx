@@ -20,7 +20,7 @@ const AdminOrders: React.FC = () => {
 
   const [searchQuery, setSearchQuery] = useState('');
 
-  
+
 
   let NewOrder: Order | null;
 
@@ -32,7 +32,7 @@ const AdminOrders: React.FC = () => {
 
       .then((response) => {
         const sortedOrders = response.data.sort((a, b) => {
-          const timeDiffInMilliSeconds = new Date(b.modifieddatetime).getTime() - new Date(a.modifieddatetime).getTime();
+          const timeDiffInMilliSeconds = new Date(b.modifieddatetime + "Z").getTime() - new Date(a.modifieddatetime + "Z").getTime();
           return timeDiffInMilliSeconds;
         });
         setOrders(sortedOrders);
@@ -47,14 +47,13 @@ const AdminOrders: React.FC = () => {
 
   const handleNewOrderArrived = (data: Order) => {
     setNewOrderArrived(true);
-    if (data !== null && data !== undefined)
-    {
-        NewOrder = data;
+    if (data !== null && data !== undefined) {
+      NewOrder = data;
     }
-    else{
+    else {
       NewOrder = null;
     }
-   
+
   };
 
   const filteredOrders = orders.filter(order => {
@@ -79,13 +78,37 @@ const AdminOrders: React.FC = () => {
 
   const displayedOrders = searchQuery.trim() === '' ? orders : filteredOrders;
 
-  function formatDateToDanish(date: Date) {
-    return `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1)
+  function formatDateToDanish(date: Date) : string {
+    /* return `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1)
       .toString()
       .padStart(2, '0')}-${date.getFullYear()} ${date
         .getHours()
         .toString()
-        .padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+        .padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`; */
+
+   /*  const danishFormatted = date.toLocaleString("da-DK", {
+      timeZone: "Europe/Copenhagen",
+      dateStyle: "medium",
+      timeStyle: "short"
+    }); */
+
+     const options: Intl.DateTimeFormatOptions = {
+    timeZone: "Europe/Copenhagen",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  };
+
+  const parts = new Intl.DateTimeFormat("da-DK", options).formatToParts(date);
+  
+  const get = (type: string) => parts.find(p => p.type === type)?.value ?? "";
+
+  return `${get("day")}-${get("month")}-${get("year")} ${get("hour")}:${get("minute")}`;
+
+   // return danishFormatted;
   }
 
   const handleEditOrder = (order: Order) => {
@@ -114,7 +137,7 @@ const AdminOrders: React.FC = () => {
     }
   };
 
-  
+
 
   return (
     <div>
@@ -201,7 +224,7 @@ const AdminOrders: React.FC = () => {
               >
                 {curOrder.locationbeautifiedstartdatetime} - {curOrder.locationname}
               </div>
-              { NewOrder == null ? <div              
+              {NewOrder == null ? <div
                 style={{
                   display: 'grid',
                   gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr',
@@ -209,7 +232,7 @@ const AdminOrders: React.FC = () => {
                   marginLeft: '0px',
                   fontWeight: 700
                 }}
-              ></div> : <div              
+              ></div> : <div
                 style={{
                   display: 'grid',
                   gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr',
@@ -217,8 +240,8 @@ const AdminOrders: React.FC = () => {
                   marginLeft: '0px',
                   fontWeight: 700
                 }}
-              ></div> }
-              <div              
+              ></div>}
+              <div
                 style={{
                   display: 'grid',
                   gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr',
@@ -246,7 +269,7 @@ const AdminOrders: React.FC = () => {
                   Ændret:
                 </div>
               </div>
-          
+
               <div
                 style={{
                   marginTop: '30px',
@@ -275,23 +298,23 @@ const AdminOrders: React.FC = () => {
                 <div>{formatDateToDanish(new Date(curOrder.modifieddatetime))}</div>
 
                 <div>
-                    <img
-                  src="/images/edit-icon.png"
-                  alt="Ny"
-                  onClick={() => handleEditOrder(curOrder)}
-                  style={{ cursor: 'pointer', width: '24px', height: '24px' }}
-                />
+                  <img
+                    src="/images/edit-icon.png"
+                    alt="Ny"
+                    onClick={() => handleEditOrder(curOrder)}
+                    style={{ cursor: 'pointer', width: '24px', height: '24px' }}
+                  />
 
                 </div>
                 <div>
-                 
-                    <img
-                  src="/images/delete-icon.png"
-                  alt="Ny"
-                 onClick={() => handleDeleteOrder(curOrder)}
-                  style={{ cursor: 'pointer', width: '24px', height: '24px' }}
-                />
-                
+
+                  <img
+                    src="/images/delete-icon.png"
+                    alt="Ny"
+                    onClick={() => handleDeleteOrder(curOrder)}
+                    style={{ cursor: 'pointer', width: '24px', height: '24px' }}
+                  />
+
                 </div>
               </div>
               <div>
