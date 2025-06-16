@@ -294,8 +294,8 @@ const AdminOrders: React.FC = () => {
 
 
                 {/* <div> */}
-                <div>{formatDateToDanish(new Date(curOrder.createddatetime))}</div>
-                <div>{formatDateToDanish(new Date(curOrder.modifieddatetime))}</div>
+                <div>{formatDateToDanish(new Date(curOrder.createddatetime + "Z"))}</div>
+                <div>{formatDateToDanish(new Date(curOrder.modifieddatetime  + "Z"))}</div>
 
                 <div>
                   <img
