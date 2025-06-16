@@ -62,7 +62,7 @@ const AdminOrders: React.FC = () => {
     const customerNameMatches = order.customerName?.toLowerCase().includes(searchQuery.toLowerCase());
     //const truckLocationMatches = order.phone?.toLowerCase().includes(searchQuery.toLowerCase());
     const orderLineMatches = order.orderlines?.some(line =>
-      line.productname.toLowerCase().includes(searchQuery.toLowerCase())
+      line.productname?.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     return orderIdMatches || customerNameMatches || orderLineMatches // || truckLocationMatches;
@@ -113,6 +113,8 @@ const AdminOrders: React.FC = () => {
       deleteOrder();
     }
   };
+
+  
 
   return (
     <div>
@@ -279,19 +281,7 @@ const AdminOrders: React.FC = () => {
                   onClick={() => handleEditOrder(curOrder)}
                   style={{ cursor: 'pointer', width: '24px', height: '24px' }}
                 />
-                 {/*  <button
-                    onClick={() => handleEditOrder(curOrder)}
-                    style={{
-                      padding: '5px 10px',
-                      backgroundColor: '#8d4a5b',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '4px',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    Rediger
-                  </button> */}
+
                 </div>
                 <div>
                  
@@ -301,19 +291,7 @@ const AdminOrders: React.FC = () => {
                  onClick={() => handleDeleteOrder(curOrder)}
                   style={{ cursor: 'pointer', width: '24px', height: '24px' }}
                 />
-                  {/* <button
-                    onClick={() => handleDeleteOrder(curOrder)}
-                    style={{
-                      padding: '5px 10px',
-                      backgroundColor: '#8d4a5b',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '4px',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    Slet
-                  </button> */}
+                
                 </div>
               </div>
               <div>

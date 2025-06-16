@@ -44,7 +44,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const [submittedOrderSuccessfully, setSubmittedOrderSuccessfully] = useState(false);
 
-   
+  const [enteredQuantity, setEnteredQuantity] = useState<string[]>([]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -60,8 +60,10 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
       discountedunitprice: pizza.discountprice,
       unitprice: pizza.price,
       orderid: 0,
-      selected: false,
-    }));
+      selected: false     
+    }
+ 
+  ));
 
     if (existingOrder !== null) {
       existingOrder.orderlines.forEach(orderLine => {
@@ -88,7 +90,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
       quantity: 1,
       productid: topping.id,
       producttype: topping.producttype,
-       pizzanumber: '',
+      pizzanumber: '',
       productdescription: topping.description,
       productname: topping.name,
       unitdiscountpercentage: 0,
@@ -120,6 +122,14 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
     setOrderItemsTopping(orderItemsTopping);
 
     const orderItems = [...orderItemsPizza, ...orderItemsTopping]
+
+    let tmpIndex = 0;
+    orderItems.forEach(element => {
+      enteredQuantity[tmpIndex] = element.quantity.toString();
+      tmpIndex ++;
+    });
+
+
     setAllOrderItems(orderItems);
 
 
@@ -168,11 +178,43 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
     }
   };
 
-  const updateQuantity = (index: number, quantity: number) => {
-    const updated = [...allOrderItems];
-    updated[index].quantity = quantity;
-    setAllOrderItems(updated);
+  /* const preSetValueQuantity = (index: number) : string =>
+  { 
+    
+     let curQuantity = allOrderItems[index].quantity  
+     if (curQuantity === 0)
+     {
+      return "";
+     }
+    return curQuantity.toString();
+  } */
+
+  const updateQuantity = (index: number, quantity: string) => {
+
+    if (quantity === '') {
+      enteredQuantity[index] = '';
+      const updated = [...allOrderItems];
+      updated[index].quantity = 0;
+      setAllOrderItems(updated);
+      return
+      return;
+      // quantityAsNumber = 0;
+    }
+
+    let quantityAsNumber = Number(quantity);
+
+    if (!isNaN(quantityAsNumber)) {
+      enteredQuantity[index] = quantity;
+      const updated = [...allOrderItems];
+      updated[index].quantity = quantityAsNumber;
+      setAllOrderItems(updated);
+      return
+    }
+
+
   };
+
+
 
   const toggleSelection = (index: number) => {
     const updated = [...allOrderItems];
@@ -194,8 +236,10 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
   const isPhoneValid = phoneRegex.test(phone);
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const isEmailValid = emailRegex.test(email);
+  const isOneOrderlineEntered = allOrderItems.some( orderLine => orderLine.selected && orderLine.quantity > 0);
+const isAnyOrderlineEnteredWithZeroQuantity = allOrderItems.some( orderLine => orderLine.selected && orderLine.quantity == 0);
 
-  const isFormValid = isNameValid && isLocationValid && isPhoneValid && isEmailValid && allOrderItems.some(p => p.selected);
+  const isFormValid = isNameValid && isLocationValid && isPhoneValid && isEmailValid && isOneOrderlineEntered && !isAnyOrderlineEnteredWithZeroQuantity;
 
   // Submit handler
   const handleSubmit = async () => {
@@ -457,10 +501,17 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
                   >
                     <input
                       type='text'
-                      min={1}
-                      value={item.quantity}
+                      // min={1}
+                      //value={item.quantity}
+
+                      value={enteredQuantity[index]} 
+
+                      // value = {preSetValueQuantity(index )}
+
                       onChange={(e) =>
-                        updateQuantity(index, parseInt(e.target.value) || 1)
+                        // updateQuantity(index, parseInt(e.target.value) || 1)
+                        // updateQuantity(index, parseInt(e.target.value))
+                        updateQuantity(index, e.target.value)
                       }
                       disabled={submitting}
                       style={{
@@ -533,10 +584,10 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
                     >
                       <input
                         type='text'
-                        min={1}
-                        value={item.quantity}
+                        //value={item.quantity}
+                       value={enteredQuantity[index + orderItemsPizza.length]} 
                         onChange={(e) =>
-                          updateQuantity(index + orderItemsPizza.length, parseInt(e.target.value) || 1)
+                          updateQuantity(index + orderItemsPizza.length, e.target.value)
                         }
                         disabled={submitting}
                         style={{
@@ -555,7 +606,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
               ))}
             </div>
 
-            <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+            {/*   <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
               <label style={{ display: 'flex', alignItems: 'center', fontSize: '20px' }}>
                 <input
                   type="checkbox"
@@ -566,7 +617,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
                 />
                 Jeg vil gerne modtage nyhedsbrev fra Mackies Pizza Truck
               </label>
-            </div>
+            </div> */}
 
             {/* Comment input added here */}
             <div style={{ marginTop: '1rem', marginBottom: '3rem' }}>
