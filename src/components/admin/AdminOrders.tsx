@@ -142,12 +142,26 @@ const AdminOrders: React.FC = () => {
   };
 
   const handleRemoveComment = (order: Order) => {
+
+    const orderData = order.id;
     if (order !== null) {
       const updateOrder = async () => {
         try {
           setSubmitting(true);
-          const url = config.API_BASE_URL + '/Home/orderremovecomment/?id=' + order.id;
-          await axios.post(url);
+          // const url = config.API_BASE_URL + '/Home/orderremovecomment/?id=' + order.id;
+          const url = config.API_BASE_URL + '/Home/orderremovecomment';
+
+
+          await axios.post(url, {
+            id: order.id
+          }, {
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            withCredentials: true // only if your server sets cookies
+          });
+
+
           setReload(prev => prev + 1);
 
         } catch (error) {
@@ -361,13 +375,13 @@ const AdminOrders: React.FC = () => {
 
                       paddingLeft: 20,
                       marginBottom: '30px'
-                    }}> 
-                       <img
-                      src="/images/delete-icon.png"
-                      alt="Ny"
-                      onClick={() => handleRemoveComment(curOrder)}
-                      style={{ cursor: 'pointer', width: '24px', height: '24px' }}
-                    />
+                    }}>
+                      <img
+                        src="/images/delete-icon.png"
+                        alt="Ny"
+                        onClick={() => handleRemoveComment(curOrder)}
+                        style={{ cursor: 'pointer', width: '24px', height: '24px' }}
+                      />
                     </div>
                     <div style={{
                       display: 'flex',
