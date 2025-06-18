@@ -12,6 +12,9 @@ interface AdminOrdersProps {
 const AdminOrders: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [newOrderArrived, setNewOrderArrived] = useState(false);
+
+  const [reload, setReload] = useState(0);
+
   const [isEditOrderModalOpen, setsEditOrderModalOpen] = useState(false);
   const [orderToEdit, setOrderToEdit] = useState<Order | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -43,7 +46,7 @@ const AdminOrders: React.FC = () => {
         setLoading(false);
         console.error(err);
       });
-  }, [newOrderArrived]);
+  }, [newOrderArrived, reload]);
 
   const handleNewOrderArrived = (data: Order) => {
     setNewOrderArrived(true);
@@ -78,7 +81,7 @@ const AdminOrders: React.FC = () => {
 
   const displayedOrders = searchQuery.trim() === '' ? orders : filteredOrders;
 
-  function formatDateToDanish(date: Date) : string {
+  function formatDateToDanish(date: Date): string {
     /* return `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1)
       .toString()
       .padStart(2, '0')}-${date.getFullYear()} ${date
@@ -86,29 +89,29 @@ const AdminOrders: React.FC = () => {
         .toString()
         .padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`; */
 
-   /*  const danishFormatted = date.toLocaleString("da-DK", {
+    /*  const danishFormatted = date.toLocaleString("da-DK", {
+       timeZone: "Europe/Copenhagen",
+       dateStyle: "medium",
+       timeStyle: "short"
+     }); */
+
+    const options: Intl.DateTimeFormatOptions = {
       timeZone: "Europe/Copenhagen",
-      dateStyle: "medium",
-      timeStyle: "short"
-    }); */
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    };
 
-     const options: Intl.DateTimeFormatOptions = {
-    timeZone: "Europe/Copenhagen",
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  };
+    const parts = new Intl.DateTimeFormat("da-DK", options).formatToParts(date);
 
-  const parts = new Intl.DateTimeFormat("da-DK", options).formatToParts(date);
-  
-  const get = (type: string) => parts.find(p => p.type === type)?.value ?? "";
+    const get = (type: string) => parts.find(p => p.type === type)?.value ?? "";
 
-  return `${get("day")}-${get("month")}-${get("year")} ${get("hour")}:${get("minute")}`;
+    return `${get("day")}-${get("month")}-${get("year")} ${get("hour")}:${get("minute")}`;
 
-   // return danishFormatted;
+    // return danishFormatted;
   }
 
   const handleEditOrder = (order: Order) => {
@@ -123,6 +126,7 @@ const AdminOrders: React.FC = () => {
           setSubmitting(true);
           const url = config.API_BASE_URL + '/Admin/removeorder/' + order.id;
           await axios.delete(url);
+          setReload(prev => prev + 1);
 
         } catch (error) {
           setError('Failed to delete order');
@@ -134,6 +138,28 @@ const AdminOrders: React.FC = () => {
       };
 
       deleteOrder();
+    }
+  };
+
+  const handleRemoveComment = (order: Order) => {
+    if (order !== null) {
+      const updateOrder = async () => {
+        try {
+          setSubmitting(true);
+          const url = config.API_BASE_URL + '/Home/orderremovecomment/?id=' + order.id;
+          await axios.post(url);
+          setReload(prev => prev + 1);
+
+        } catch (error) {
+          setError('Failed to update order');
+          console.error(error);
+
+        } finally {
+          setSubmitting(false);
+        }
+      };
+
+      updateOrder();
     }
   };
 
@@ -295,7 +321,7 @@ const AdminOrders: React.FC = () => {
 
                 {/* <div> */}
                 <div>{formatDateToDanish(new Date(curOrder.createddatetime + "Z"))}</div>
-                <div>{formatDateToDanish(new Date(curOrder.modifieddatetime  + "Z"))}</div>
+                <div>{formatDateToDanish(new Date(curOrder.modifieddatetime + "Z"))}</div>
 
                 <div>
                   <img
@@ -317,19 +343,45 @@ const AdminOrders: React.FC = () => {
 
                 </div>
               </div>
-              <div>
+              <div style={{
+                marginTop: '30px',
+                marginBottom: '30px',
+                backgroundColor: '#17db4e',
+                display: 'grid',
+                gridTemplateColumns: '1fr 6fr',
+                alignItems: 'left',
+              }}>
                 {curOrder.comment.trim().length > 0 ?
-                  <div style={{
-                    display: 'flex',
-                    textAlign: 'left',
-                    alignItems: 'center',
-                    height: 60,
-                    backgroundColor: '#17db4e',
-                    paddingLeft: 20,
-                    marginBottom: '30px'
-                  }}>
-                    {curOrder.comment}
-                  </div>
+                  <>
+                    <div style={{
+                      display: 'flex',
+                      textAlign: 'left',
+                      alignItems: 'center',
+                      height: 60,
+
+                      paddingLeft: 20,
+                      marginBottom: '30px'
+                    }}> 
+                       <img
+                      src="/images/delete-icon.png"
+                      alt="Ny"
+                      onClick={() => handleRemoveComment(curOrder)}
+                      style={{ cursor: 'pointer', width: '24px', height: '24px' }}
+                    />
+                    </div>
+                    <div style={{
+                      display: 'flex',
+                      textAlign: 'left',
+                      alignItems: 'center',
+                      height: 60,
+
+                      paddingLeft: 20,
+                      marginBottom: '30px'
+                    }}>
+                      {curOrder.comment}
+                    </div>
+
+                  </>
                   : ''}
               </div>
 

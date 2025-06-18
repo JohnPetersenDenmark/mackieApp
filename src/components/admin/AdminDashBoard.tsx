@@ -6,6 +6,7 @@ import AdminOrders from './AdminOrders'
 import AdminMenues from './AdminMenues'
 import AdminSettings from './AdminSettings'
 import AdminUsers from './AdminUsers'
+import AdminPackingList from './AdminPackingList';
 
 
 
@@ -40,6 +41,7 @@ const AdminDashBoard: React.FC = () => {
                 <div  style={{ cursor: 'pointer' }} onClick={() => setActiveMenu('Stadepladser')}>Stadepladser</div>
                 <div  style={{ cursor: 'pointer' }} onClick={() => setActiveMenu('Kalender')}>Kalender</div>
                 <div  style={{ cursor: 'pointer' }} onClick={() => setActiveMenu('Bestillinger')}>Bestillinger</div>
+                <div  style={{ cursor: 'pointer' }} onClick={() => setActiveMenu('Pakkeliste')}>Pakkeliste</div>
                 <div  style={{ cursor: 'pointer' }} onClick={() => setActiveMenu('Menuer')}>Menuer</div>
                 <div  style={{ cursor: 'pointer' }} onClick={() => setActiveMenu('Indstillinger')}>Indstillinger</div>
                 <div  style={{ cursor: 'pointer' }} onClick={() => setActiveMenu('Brugere')}>Brugere</div>
@@ -62,6 +64,7 @@ const AdminDashBoard: React.FC = () => {
                 {activeMenu === 'Stadepladser' && <AdminPlaces />}
                 {activeMenu === 'Kalender' && <AdminCalendar />}
                 {activeMenu === 'Bestillinger' && <AdminOrders />}
+                 {activeMenu === 'Pakkeliste' && <AdminPackingList />}
                 {activeMenu === 'Menuer' && <AdminMenues />}
                 {activeMenu === 'Indstillinger' && <AdminSettings />}
                 {activeMenu === 'Brugere' && <AdminUsers />}
