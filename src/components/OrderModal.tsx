@@ -6,6 +6,7 @@ import { Topping } from '../types/Topping';
 import { Order } from '../types/Order';
 import { TruckLocation } from '../types/TruckLocation';
 import config from '../config';
+import FrisbiiCheckoutButton from './FrisbiiCheckoutButton';
 
 interface OrderModalProps {
   isOpen: boolean;
@@ -689,6 +690,9 @@ const isAnyOrderlineEnteredWithZeroQuantity = allOrderItems.some( orderLine => o
               >
                 Luk
               </button>
+
+{submittedOrderSuccessfully ? <FrisbiiCheckoutButton /> : ''}
+
             </div>
           </>
         )}
