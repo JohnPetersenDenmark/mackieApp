@@ -25,6 +25,8 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
 
   const [orderId, setOrderId] = useState<number>(0);
 
+   const [createdOrder, setCreatedOrder] = useState<Order | null>(null);
+
   const [selectedLocationId, setSelectedLocationId] = useState<string>('');
   const [selectedLocation, setSelectedLocation] = useState<TruckLocation | null>(null);
   const [locationTouched, setLocationTouched] = useState(false);
@@ -61,10 +63,10 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
       discountedunitprice: pizza.discountprice,
       unitprice: pizza.price,
       orderid: 0,
-      selected: false     
+      selected: false
     }
- 
-  ));
+
+    ));
 
     if (existingOrder !== null) {
       existingOrder.orderlines.forEach(orderLine => {
@@ -127,7 +129,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
     let tmpIndex = 0;
     orderItems.forEach(element => {
       enteredQuantity[tmpIndex] = element.quantity.toString();
-      tmpIndex ++;
+      tmpIndex++;
     });
 
 
@@ -237,8 +239,8 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
   const isPhoneValid = phoneRegex.test(phone);
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const isEmailValid = emailRegex.test(email);
-  const isOneOrderlineEntered = allOrderItems.some( orderLine => orderLine.selected && orderLine.quantity > 0);
-const isAnyOrderlineEnteredWithZeroQuantity = allOrderItems.some( orderLine => orderLine.selected && orderLine.quantity == 0);
+  const isOneOrderlineEntered = allOrderItems.some(orderLine => orderLine.selected && orderLine.quantity > 0);
+  const isAnyOrderlineEnteredWithZeroQuantity = allOrderItems.some(orderLine => orderLine.selected && orderLine.quantity == 0);
 
   const isFormValid = isNameValid && isLocationValid && isPhoneValid && isEmailValid && isOneOrderlineEntered && !isAnyOrderlineEnteredWithZeroQuantity;
 
@@ -290,14 +292,15 @@ const isAnyOrderlineEnteredWithZeroQuantity = allOrderItems.some( orderLine => o
         response = await axios.post(config.API_BASE_URL + '/Home/createorder', orderData);
       }
       else {
-        response = await axios.post(config.API_BASE_URL + '/Home/updateorder', orderData);
+        response = await axios.post(config.API_BASE_URL + '/Home/updateorder', orderData);         
       }
 
       setSubmitSuccess('Bestilling sendt! Tak for din ordre.');
       setSubmittedOrderSuccessfully(true);
+       setCreatedOrder(response.data)   
       // Optionally reset form or close modal after success:
       // onClose();
-    } catch (error) {
+    } catch (error) {  
       setSubmitError('Kunne ikke sende bestillingen. Prøv igen senere.');
       console.error(error);
     } finally {
@@ -505,7 +508,7 @@ const isAnyOrderlineEnteredWithZeroQuantity = allOrderItems.some( orderLine => o
                       // min={1}
                       //value={item.quantity}
 
-                      value={enteredQuantity[index]} 
+                      value={enteredQuantity[index]}
 
                       // value = {preSetValueQuantity(index )}
 
@@ -586,7 +589,7 @@ const isAnyOrderlineEnteredWithZeroQuantity = allOrderItems.some( orderLine => o
                       <input
                         type='text'
                         //value={item.quantity}
-                       value={enteredQuantity[index + orderItemsPizza.length]} 
+                        value={enteredQuantity[index + orderItemsPizza.length]}
                         onChange={(e) =>
                           updateQuantity(index + orderItemsPizza.length, e.target.value)
                         }
@@ -688,10 +691,10 @@ const isAnyOrderlineEnteredWithZeroQuantity = allOrderItems.some( orderLine => o
                   cursor: submitting ? 'not-allowed' : 'pointer',
                 }}
               >
-                Luk
+                Luk 
               </button>
 
-{submittedOrderSuccessfully ? <FrisbiiCheckoutButton /> : ''}
+              {submittedOrderSuccessfully ? <FrisbiiCheckoutButton  createdOrderA={createdOrder} /> : ''}
 
             </div>
           </>

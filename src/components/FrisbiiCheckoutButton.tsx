@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import config from '../config';
+import { Order } from '../types/Order';
 
 type CreateSessionPayload = {
     orderId: string;
@@ -11,8 +12,15 @@ type CreateSessionPayload = {
     lastName: string;
 };
 
-const FrisbiiCheckoutButton: React.FC = () => {
-    const handleCheckout = async () => {
+interface CheckoutProps {
+ 
+  createdOrderA: Order  | null ;
+}
+
+
+
+const FrisbiiCheckoutButton: React.FC<CheckoutProps> = ({ createdOrderA }) => {
+  /*   const handleCheckout = async () => {
         const payload: CreateSessionPayload = {
             orderId: "order-462",
             amount: 19900, // 199.00 DKK
@@ -20,6 +28,23 @@ const FrisbiiCheckoutButton: React.FC = () => {
             email: "jane@example.com",
             firstName: "Jane",
             lastName: "Doe",
+        };
+ */
+
+        if (createdOrderA === null)
+        {
+            return null;
+        }
+
+
+          const handleCheckout = async () => {
+        const payload: CreateSessionPayload = {
+            orderId: createdOrderA.id.toString(),
+            amount: createdOrderA.totalPrice, // 199.00 DKK
+            customerId: createdOrderA.customerorderCode,
+            email: createdOrderA.email,
+            firstName: "",
+            lastName: createdOrderA.customerName,
         };
 
         try {
