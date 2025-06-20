@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import Layout from './components/Layout';
 import PaymentSuccess from "./components/PaymentSuccess";
 import PaymentCancel from "./components/PaymentCancel";
+import TermsOfSale from './components/TermsOfSale';
 
 /* function Layout() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
           <Route index element={<div>Home Page</div>} />       {/* root / */}
           <Route path="payment-success" element={<PaymentSuccess />} />
           <Route path="payment-cancel" element={<PaymentCancel />} />
+          {/* <Route path="/termsofsale" element={<TermsOfSale />} /> */}
           <Route path="*" element={<div>404 Not Found</div>} />
         </Route>
       </Routes>

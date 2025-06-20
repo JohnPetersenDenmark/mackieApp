@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Outlet } from "react-router-dom";
 import TruckLocationList from './TruckLocationList';
 import config from '../config';
+import TermsOfSale from './TermsOfSale';
 
 import React, { useEffect, useState } from 'react';
 import OrderModal from './OrderModal';
@@ -98,6 +99,10 @@ export default function Layout() {
     setIsLoginModalOpen(false);
   };
 
+  const handleCloseTermsOfSaleModal = () => {
+    setIsTermsOfSaleModalOpen(false);
+  };
+
   const handleLoginClick = () => {
     setIsLoginModalOpen(true);
   };
@@ -113,10 +118,15 @@ export default function Layout() {
   };
 
   const [isLoginModalOpen, setIsLoginModalOpen] = React.useState(false);
-
   const [isCheckOrderModalOpen, setIsCheckOrderModalOpen] = React.useState(false);
+  const [isTermsOfSaleModalOpen, setIsTermsOfSaleModalOpen] = React.useState(false);
+
   const handleCheckOrderClick = () => {
     setIsCheckOrderModalOpen(true);
+  };
+
+  const handleTermsOfSaleClick = () => {
+    setIsTermsOfSaleModalOpen(true);
   };
 
   const handleCheckCloseOrderModal = () => {
@@ -172,6 +182,11 @@ export default function Layout() {
               onClose={handleCloseLoginModal}
             />
 
+            <TermsOfSale
+              isOpen={isTermsOfSaleModalOpen}
+              onClose={handleCloseTermsOfSaleModal}
+            />
+
             {/* HEADER */}
             {/*   <header style={{ background: '#8d4a5b', padding: '1rem', color: '#22191b', height: '50px', display: 'flex', alignItems: 'center' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr', gap: '1rem' }}>
@@ -208,7 +223,7 @@ export default function Layout() {
               <div
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: '1fr 2fr 1fr',
+                  gridTemplateColumns: '1fr 2fr 2fr 1fr',
                   gap: '1rem',
                   alignItems: 'center', // Added this line to center content vertically
                 }}
@@ -222,6 +237,15 @@ export default function Layout() {
                   }}
                 >
                   Mackie's Pizza Truck
+                </div>
+
+                <div style={{ background: '#8d4a5b', padding: '1rem' }}>
+                  <span
+                    onClick={handleTermsOfSaleClick}
+                    style={{ cursor: 'pointer', color: '#22191b' }}
+                  >
+                    Handelsbetingelser
+                  </span>
                 </div>
 
                 <div style={{ background: '#8d4a5b', padding: '1rem' }}>

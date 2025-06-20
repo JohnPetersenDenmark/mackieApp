@@ -10,34 +10,35 @@ type CreateSessionPayload = {
     email: string;
     firstName: string;
     lastName: string;
+    PaymentCancelUrl: string;
+    PaymentSuccessUrl: string
 };
 
 interface CheckoutProps {
- 
-  createdOrderA: Order  | null ;
+
+    createdOrderA: Order | null;
 }
 
 
 
 const FrisbiiCheckoutButton: React.FC<CheckoutProps> = ({ createdOrderA }) => {
-  /*   const handleCheckout = async () => {
-        const payload: CreateSessionPayload = {
-            orderId: "order-462",
-            amount: 19900, // 199.00 DKK
-            customerId: "cust-789",
-            email: "jane@example.com",
-            firstName: "Jane",
-            lastName: "Doe",
-        };
- */
+    /*   const handleCheckout = async () => {
+          const payload: CreateSessionPayload = {
+              orderId: "order-462",
+              amount: 19900, // 199.00 DKK
+              customerId: "cust-789",
+              email: "jane@example.com",
+              firstName: "Jane",
+              lastName: "Doe",
+          };
+   */
 
-        if (createdOrderA === null)
-        {
-            return null;
-        }
+    if (createdOrderA === null) {
+        return null;
+    }
 
 
-          const handleCheckout = async () => {
+    const handleCheckout = async () => {
         const payload: CreateSessionPayload = {
             orderId: createdOrderA.id.toString(),
             amount: createdOrderA.totalPrice, // 199.00 DKK
@@ -45,6 +46,9 @@ const FrisbiiCheckoutButton: React.FC<CheckoutProps> = ({ createdOrderA }) => {
             email: createdOrderA.email,
             firstName: "",
             lastName: createdOrderA.customerName,
+            PaymentCancelUrl: config.PAYMENT_CANCEL_URL,
+            PaymentSuccessUrl: config.PAYMENT_ACCEPT_URL
+
         };
 
         try {
