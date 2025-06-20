@@ -22,21 +22,10 @@ interface CheckoutProps {
 
 
 const FrisbiiCheckoutButton: React.FC<CheckoutProps> = ({ createdOrderA }) => {
-    /*   const handleCheckout = async () => {
-          const payload: CreateSessionPayload = {
-              orderId: "order-462",
-              amount: 19900, // 199.00 DKK
-              customerId: "cust-789",
-              email: "jane@example.com",
-              firstName: "Jane",
-              lastName: "Doe",
-          };
-   */
-
+ 
     if (createdOrderA === null) {
         return null;
     }
-
 
     const handleCheckout = async () => {
         const payload: CreateSessionPayload = {
@@ -52,12 +41,13 @@ const FrisbiiCheckoutButton: React.FC<CheckoutProps> = ({ createdOrderA }) => {
         };
 
         try {
-            const url = config.API_BASE_URL + "/payments/create-session";
+            const url = config.API_BASE_URL + "/Payments/create-session";
             const response = await axios.post(url, payload);
 
             const checkoutUrl = response.data.checkoutUrl;
             if (checkoutUrl) {
                 window.location.href = checkoutUrl;
+
             } else {
                 alert("No checkout URL returned.");
             }

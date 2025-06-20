@@ -6,7 +6,11 @@ import { Topping } from '../types/Topping';
 import { Order } from '../types/Order';
 import { TruckLocation } from '../types/TruckLocation';
 import config from '../config';
-import FrisbiiCheckoutButton from './FrisbiiCheckoutButton';
+//import FrisbiiCheckoutButton from './FrisbiiCheckoutButton';
+
+import FlatpayCheckout from './FlatpayCheckout';
+
+
 
 interface OrderModalProps {
   isOpen: boolean;
@@ -25,7 +29,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
 
   const [orderId, setOrderId] = useState<number>(0);
 
-   const [createdOrder, setCreatedOrder] = useState<Order | null>(null);
+  const [createdOrder, setCreatedOrder] = useState<Order | null>(null);
 
   const [selectedLocationId, setSelectedLocationId] = useState<string>('');
   const [selectedLocation, setSelectedLocation] = useState<TruckLocation | null>(null);
@@ -292,15 +296,15 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
         response = await axios.post(config.API_BASE_URL + '/Home/createorder', orderData);
       }
       else {
-        response = await axios.post(config.API_BASE_URL + '/Home/updateorder', orderData);         
+        response = await axios.post(config.API_BASE_URL + '/Home/updateorder', orderData);
       }
 
       setSubmitSuccess('Bestilling sendt! Tak for din ordre.');
       setSubmittedOrderSuccessfully(true);
-       setCreatedOrder(response.data)   
+      setCreatedOrder(response.data)
       // Optionally reset form or close modal after success:
       // onClose();
-    } catch (error) {  
+    } catch (error) {
       setSubmitError('Kunne ikke sende bestillingen. Prøv igen senere.');
       console.error(error);
     } finally {
@@ -691,10 +695,13 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
                   cursor: submitting ? 'not-allowed' : 'pointer',
                 }}
               >
-                Luk 
+                Luk
               </button>
 
-              {submittedOrderSuccessfully ? <FrisbiiCheckoutButton  createdOrderA={createdOrder} /> : ''}
+              {/* {submittedOrderSuccessfully ? <FrisbiiCheckoutButton  createdOrderA={createdOrder} /> : ''} */}
+
+              {submittedOrderSuccessfully ? <FlatpayCheckout createdOrderA={createdOrder} /> : ''}
+
 
             </div>
           </>
