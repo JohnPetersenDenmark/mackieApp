@@ -230,6 +230,18 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
     }
   };
 
+  const handleCloseCheckout = () => {
+    setGoToPayment(false);
+  };
+
+  
+
+   const handleCloseThisWindow = () => {
+    setCreatedOrder(null);
+    setSubmittedOrderSuccessfully(false);
+   onClose();
+  };
+
   const toggleSelection = (index: number) => {
     const updated = [...allOrderItems];
     updated[index].selected = !updated[index].selected;
@@ -269,6 +281,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
     setSubmitting(true);
     setSubmitError(null);
     setSubmitSuccess(null);
+     setGoToPayment(false);
 
     let LocationIdAsNumber = Number(selectedLocationId);
     if (isNaN(LocationIdAsNumber)) {
@@ -671,7 +684,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
             {submitError && <p style={{ color: 'red' }}>{submitError}</p>}
             {submitSuccess && <p style={{ color: 'green' }}>{submitSuccess}</p>}
 
-            <div style={{ textAlign: 'right' }}>
+            <div style={{ textAlign: 'right', marginLeft :'20px'}}>
               <button
                 onClick={handleSubmit}
                 disabled={!isFormValid || submitting || submittedOrderSuccessfully}
@@ -689,14 +702,14 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
                 {submitting ? 'Sender...' : 'Send Bestilling'}
               </button>
               <button
-                onClick={onClose}
+                onClick={handleCloseThisWindow}
                 disabled={submitting}
                 style={{
                   marginTop: '1rem',
                   padding: '0.5rem 1rem',
                   backgroundColor: '#8d4a5b',
                   color: 'white',
-
+marginRight: '0.5rem',
                   border: 'none',
                   borderRadius: '4px',
                   cursor: submitting ? 'not-allowed' : 'pointer',
@@ -707,32 +720,28 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
 
                <button
                 onClick={handleGoToPayment}
-                disabled={submitting}
+                disabled={!submittedOrderSuccessfully}
                 style={{
+                  marginRight: '0.5rem',
                   marginTop: '1rem',
                   padding: '0.5rem 1rem',
-                  backgroundColor: '#8d4a5b',
+                backgroundColor: submittedOrderSuccessfully ? '#8d4a5b' : 'grey',
                   color: 'white',
-
+ 
+                 
                   border: 'none',
                   borderRadius: '4px',
-                  cursor: submitting ? 'not-allowed' : 'pointer',
+                  cursor: !submittedOrderSuccessfully ? 'not-allowed' : 'pointer',
                 }}
               >
                 Betaling
               </button>
-
-              {/* {submittedOrderSuccessfully ? <FrisbiiCheckoutButton  createdOrderA={createdOrder} /> : ''} */}
-
-
-
-
             </div>
           </>
         )}
       </div>
       <div>
-        {goToPayment ? <FlatpayCheckout createdOrderA={createdOrder} /> : ''}
+        {goToPayment ? <FlatpayCheckout createdOrderA={createdOrder} onClose={handleCloseCheckout}/> : ''}
       </div>
     </div>
   );
