@@ -51,6 +51,8 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const [submittedOrderSuccessfully, setSubmittedOrderSuccessfully] = useState(false);
 
+  const [goToPayment, setGoToPayment] = useState(false);
+
   const [enteredQuantity, setEnteredQuantity] = useState<string[]>([]);
 
   useEffect(() => {
@@ -221,7 +223,12 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
 
   };
 
-
+ const handleGoToPayment = () => {
+    if (submittedOrderSuccessfully)
+    {
+      setGoToPayment(true);
+    }
+  };
 
   const toggleSelection = (index: number) => {
     const updated = [...allOrderItems];
@@ -698,14 +705,34 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
                 Luk
               </button>
 
+               <button
+                onClick={handleGoToPayment}
+                disabled={submitting}
+                style={{
+                  marginTop: '1rem',
+                  padding: '0.5rem 1rem',
+                  backgroundColor: '#8d4a5b',
+                  color: 'white',
+
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: submitting ? 'not-allowed' : 'pointer',
+                }}
+              >
+                Betaling
+              </button>
+
               {/* {submittedOrderSuccessfully ? <FrisbiiCheckoutButton  createdOrderA={createdOrder} /> : ''} */}
 
-              {submittedOrderSuccessfully ? <FlatpayCheckout createdOrderA={createdOrder} /> : ''}
+
 
 
             </div>
           </>
         )}
+      </div>
+      <div>
+        {goToPayment ? <FlatpayCheckout createdOrderA={createdOrder} /> : ''}
       </div>
     </div>
   );
