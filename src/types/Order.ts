@@ -14,6 +14,7 @@ export interface Order {
     locationbeautifiedTimeInterval: string,
     createddatetime: string   ,
     modifieddatetime: string ,
+    payeddatetime : string,
     comment: string
     orderlines: OrderItem[],
     totalPrice: number

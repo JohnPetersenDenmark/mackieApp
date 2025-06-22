@@ -86,7 +86,7 @@ const AdminPackingList: React.FC = () => {
         let filteredOrdersByDate: Order[] = []
 
         sorders.forEach(order => {
-            const created = new Date(order.modifieddatetime); // assumes createdAt is ISO UTC string
+            const created = new Date(order.modifieddatetime + 'Z'); // assumes createdAt is ISO UTC string
 
             if (created >= startTime && created <= endTime) {
                 filteredOrdersByDate.push(order);

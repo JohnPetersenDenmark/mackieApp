@@ -4,6 +4,7 @@ import { Pizza } from '../types/Pizza';
 import { OrderItem } from '../types/OrderItem';
 import { Topping } from '../types/Topping';
 import { Order } from '../types/Order';
+import { Payment } from "../types/Payment";
 import { TruckLocation } from '../types/TruckLocation';
 import config from '../config';
 //import FrisbiiCheckoutButton from './FrisbiiCheckoutButton';
@@ -223,9 +224,8 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
 
   };
 
- const handleGoToPayment = () => {
-    if (submittedOrderSuccessfully)
-    {
+  const handleGoToPayment = () => {
+    if (submittedOrderSuccessfully) {
       setGoToPayment(true);
     }
   };
@@ -234,12 +234,28 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
     setGoToPayment(false);
   };
 
-  
 
-   const handleCloseThisWindow = () => {
+  const handlePaymentStatus = (payment: Payment) => {
+
+    try {
+      const response = axios.post(config.API_BASE_URL + '/Home/createorderpayment', payment);
+
+    } catch (error) {
+
+      setSubmitError('Kunne ikke sende betalingsinfo. Prøv igen senere.');
+      console.error(error);
+
+    } finally {
+
+    }
+  };
+
+
+
+  const handleCloseThisWindow = () => {
     setCreatedOrder(null);
     setSubmittedOrderSuccessfully(false);
-   onClose();
+    onClose();
   };
 
   const toggleSelection = (index: number) => {
@@ -281,7 +297,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
     setSubmitting(true);
     setSubmitError(null);
     setSubmitSuccess(null);
-     setGoToPayment(false);
+    setGoToPayment(false);
 
     let LocationIdAsNumber = Number(selectedLocationId);
     if (isNaN(LocationIdAsNumber)) {
@@ -297,6 +313,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
       locationId: LocationIdAsNumber,
       createddatetime: new Date().toISOString(),
       modifieddatetime: new Date().toISOString(),
+      payeddatetime : new Date().toISOString(),
       locationname: 'aaaa',
       locationstartdatetime: '',
       locationenddatetime: '',
@@ -684,7 +701,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
             {submitError && <p style={{ color: 'red' }}>{submitError}</p>}
             {submitSuccess && <p style={{ color: 'green' }}>{submitSuccess}</p>}
 
-            <div style={{ textAlign: 'right', marginLeft :'20px'}}>
+            <div style={{ textAlign: 'right', marginLeft: '20px' }}>
               <button
                 onClick={handleSubmit}
                 disabled={!isFormValid || submitting || submittedOrderSuccessfully}
@@ -709,7 +726,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
                   padding: '0.5rem 1rem',
                   backgroundColor: '#8d4a5b',
                   color: 'white',
-marginRight: '0.5rem',
+                  marginRight: '0.5rem',
                   border: 'none',
                   borderRadius: '4px',
                   cursor: submitting ? 'not-allowed' : 'pointer',
@@ -718,17 +735,17 @@ marginRight: '0.5rem',
                 Luk
               </button>
 
-               <button
+              <button
                 onClick={handleGoToPayment}
                 disabled={!submittedOrderSuccessfully}
                 style={{
                   marginRight: '0.5rem',
                   marginTop: '1rem',
                   padding: '0.5rem 1rem',
-                backgroundColor: submittedOrderSuccessfully ? '#8d4a5b' : 'grey',
+                  backgroundColor: submittedOrderSuccessfully ? '#8d4a5b' : 'grey',
                   color: 'white',
- 
-                 
+
+
                   border: 'none',
                   borderRadius: '4px',
                   cursor: !submittedOrderSuccessfully ? 'not-allowed' : 'pointer',
@@ -741,7 +758,7 @@ marginRight: '0.5rem',
         )}
       </div>
       <div>
-        {goToPayment ? <FlatpayCheckout createdOrderA={createdOrder} onClose={handleCloseCheckout}/> : ''}
+        {goToPayment ? <FlatpayCheckout createdOrderA={createdOrder} onPaymentStatus={handlePaymentStatus} onClose={handleCloseCheckout} /> : ''}
       </div>
     </div>
   );

@@ -267,7 +267,7 @@ const AdminOrders: React.FC = () => {
               {NewOrder == null ? <div
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr',
+                  gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr',
                   alignItems: 'center',
                   marginLeft: '0px',
                   fontWeight: 700
@@ -275,7 +275,7 @@ const AdminOrders: React.FC = () => {
               ></div> : <div
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr',
+                  gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr',
                   alignItems: 'center',
                   marginLeft: '0px',
                   fontWeight: 700
@@ -284,7 +284,7 @@ const AdminOrders: React.FC = () => {
               <div
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr',
+                gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr',
                   alignItems: 'center',
                   marginLeft: '0px',
                   fontWeight: 700
@@ -308,6 +308,9 @@ const AdminOrders: React.FC = () => {
                 <div>
                   Ændret:
                 </div>
+                 <div>
+                  Betalt:
+                </div>
               </div>
 
               <div
@@ -315,7 +318,7 @@ const AdminOrders: React.FC = () => {
                   marginTop: '30px',
                   marginBottom: '30px',
                   display: 'grid',
-                  gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr',
+                  gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr',
                   alignItems: 'left',
                 }}
               >
@@ -336,6 +339,7 @@ const AdminOrders: React.FC = () => {
                 {/* <div> */}
                 <div>{formatDateToDanish(new Date(curOrder.createddatetime + "Z"))}</div>
                 <div>{formatDateToDanish(new Date(curOrder.modifieddatetime + "Z"))}</div>
+                <div>{curOrder.payeddatetime ? formatDateToDanish(new Date(curOrder.payeddatetime + "Z")) : ''}</div>
 
                 <div>
                   <img

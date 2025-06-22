@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import config from "../config";
 import { Order } from "../types/Order";
+import { Payment } from "../types/Payment";
 
 type CreateSessionPayload = {
     orderId: string;
@@ -24,12 +25,13 @@ declare global {
 interface CheckoutProps {
     createdOrderA: Order | null;
     onClose: () => void;
+    onPaymentStatus: (payment: Payment) => void;
 }
 
-const FlatpayCheckout: React.FC<CheckoutProps> = ({ createdOrderA, onClose }) => {
+const FlatpayCheckout: React.FC<CheckoutProps> = ({ createdOrderA, onPaymentStatus, onClose }) => {
 
 
-   // const [submitting, setSubmitting] = useState(false);
+    // const [submitting, setSubmitting] = useState(false);
     const didRun = useRef(false);
 
     let rp: any;
@@ -41,7 +43,7 @@ const FlatpayCheckout: React.FC<CheckoutProps> = ({ createdOrderA, onClose }) =>
 
         const getFlatPaySessionId = async (payLoad: CreateSessionPayload) => {
             try {
-              
+
                 const url = config.API_BASE_URL + "/payments/create-session";
                 const response = await axios.post(url, payLoad);
 
@@ -51,24 +53,27 @@ const FlatpayCheckout: React.FC<CheckoutProps> = ({ createdOrderA, onClose }) =>
 
                 rp.addEventHandler(window.Reepay.Event.Accept, (data: any) => {
                     console.log("✅ Payment succeeded", data);
+                    handlePayment(true, data);
                     // Optionally redirect or update state
                 });
 
                 rp.addEventHandler(window.Reepay.Event.Cancel, (data: any) => {
                     console.log("⚠️ Payment cancelled", data);
+                    handlePayment(true, data);
                 });
 
                 rp.addEventHandler(window.Reepay.Event.Error, (data: any) => {
                     console.error("❌ Payment error", data);
+                     handlePayment(true, data);
                 });
 
-               
+
             } catch (error: any) {
                 console.error(
                     "Payment session error:",
                     error.response?.data || error.message
                 );
-                alert("Failed to start payment session.");               
+                alert("Failed to start payment session.");
             }
         };
 
@@ -85,6 +90,25 @@ const FlatpayCheckout: React.FC<CheckoutProps> = ({ createdOrderA, onClose }) =>
         };
         getFlatPaySessionId(payload);
     }, [createdOrderA]); // Runs only when createdOrderA changes
+
+
+    const handlePayment = (status: boolean, responseData: any) => {
+        const paymentData: Payment = {
+
+            id: 0,            
+            flatratepaymentsuccess : status,
+            orderid: createdOrderA?.id ? createdOrderA.id : 0,
+            flatrateinvoicenumber : responseData.invoice,
+            flatratecustomernumber : responseData.customer,
+            flatratepaymentid : responseData.id,
+            flatratepaymentmethod : responseData.payment_method,
+            flatratesubscription : responseData.subscription,
+            flatratestatusorerror : responseData.error
+        }
+
+        onPaymentStatus(paymentData);
+        handleCloseThisWindow();
+    };
 
     const handleCloseThisWindow = () => {
         rp.removeEventHandler(window.Reepay.Event.Accept);
