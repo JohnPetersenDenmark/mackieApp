@@ -68,7 +68,11 @@ export default function Layout() {
 
     axios.get<TruckLocation[]>(config.API_BASE_URL + '/Home/truckcalendarlocationlist')
       .then(response => {
-        setLocations(response.data);
+         const sortedTruckcalendarlocations = response.data.sort((a, b) => {
+          const timeDiffInMilliSeconds = new Date(b.startdatetime + "Z").getTime() - new Date(a.startdatetime + "Z").getTime();
+          return timeDiffInMilliSeconds;
+        });
+        setLocations(sortedTruckcalendarlocations);
         setLoading(false);
       })
       .catch(err => {
