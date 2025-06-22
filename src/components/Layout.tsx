@@ -69,7 +69,8 @@ export default function Layout() {
     axios.get<TruckLocation[]>(config.API_BASE_URL + '/Home/truckcalendarlocationlist')
       .then(response => {
          const sortedTruckcalendarlocations = response.data.sort((a, b) => {
-          const timeDiffInMilliSeconds = new Date(b.startdatetime + "Z").getTime() - new Date(a.startdatetime + "Z").getTime();
+      //    const timeDiffInMilliSeconds = new Date(b.startdatetime + "Z").getTime() - new Date(a.startdatetime + "Z").getTime();
+                const timeDiffInMilliSeconds = parseDanishDateTime(a.startdatetime ).getTime() - parseDanishDateTime(b.startdatetime ).getTime();
           return timeDiffInMilliSeconds;
         });
         setLocations(sortedTruckcalendarlocations);
@@ -83,7 +84,14 @@ export default function Layout() {
 
   }, []);
 
+function parseDanishDateTime(dateTimeStr: string): Date {
+  // Split into date and time
+  const [datePart, timePart] = dateTimeStr.split(' '); // "20-05-2025" and "14:30"
+  const [day, month, year] = datePart.split('-').map(Number); 
+  const [hours, minutes] = timePart.split(':').map(Number);
 
+  return new Date(year, month - 1, day, hours, minutes);
+}
 
   const handleLoggedIn = (loggedIn: boolean) => {
     setLoggedIn(loggedIn)
