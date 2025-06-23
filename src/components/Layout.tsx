@@ -153,7 +153,7 @@ function parseDanishDateTime(dateTimeStr: string): Date {
         <Outlet />
       </main>
 
-      <div style={{ fontFamily: 'Arial, sans-serif' }}>
+      {/* <div style={{ fontFamily: 'Arial, sans-serif' }}> */}
 
 
         {loggedIn ? (
@@ -435,7 +435,7 @@ function parseDanishDateTime(dateTimeStr: string): Date {
           </>
         )
         }
-      </div >
+      {/* </div > */}
     </>
   );
 }

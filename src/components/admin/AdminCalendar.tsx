@@ -27,6 +27,13 @@ const AdminCalendar: React.FC = () => {
 
         axios.get<TruckLocation[]>(url)
             .then(response => {
+
+                const sortedTruckcalendarlocations = response.data.sort((a, b) => {
+                    const timeDiffInMilliSeconds = parseDanishDateTime(a.startdatetime).getTime() - parseDanishDateTime(b.startdatetime).getTime();
+                    return timeDiffInMilliSeconds;
+                });
+                setTruckLocations(sortedTruckcalendarlocations);
+
                 setTruckLocations(response.data);
                 setLoading(false);
             })
@@ -37,6 +44,15 @@ const AdminCalendar: React.FC = () => {
             });
 
     }, [isCreateEditCalendarModalOpen, submitting]);
+
+    function parseDanishDateTime(dateTimeStr: string): Date {
+        // Split into date and time
+        const [datePart, timePart] = dateTimeStr.split(' '); // "20-05-2025" and "14:30"
+        const [day, month, year] = datePart.split('-').map(Number);
+        const [hours, minutes] = timePart.split(':').map(Number);
+
+        return new Date(year, month - 1, day, hours, minutes);
+    }
 
     const handleEdit = (location: TruckLocation) => {
         setTruckLocationToEdit(location);
@@ -188,7 +204,7 @@ const AdminCalendar: React.FC = () => {
                             <img
                                 src="/images/new-icon.png"
                                 alt="Slet"
-                                 onClick={handleNewLocation}
+                                onClick={handleNewLocation}
                                 style={{ cursor: 'pointer', width: '24px', height: '24px' }}
                             />
                             {/* <button

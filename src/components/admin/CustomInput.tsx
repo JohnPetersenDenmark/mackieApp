@@ -6,6 +6,8 @@ interface CustomInputProps {
 }
 
 const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(({ value, onClick }, ref) => (
+  
+
   <input
     type="text"
     onClick={onClick}

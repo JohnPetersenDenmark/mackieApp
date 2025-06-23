@@ -41,7 +41,7 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
 
     const isFormValid = isStartDateTimeValid && isEndDateTimeValid && isSaleLocationIdValid
 
-    
+
 
     /* useEffect(() => {
         if (!isOpen) return;
@@ -125,12 +125,14 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
 
 
     const handleStartDateChange = (date: any) => {
-        setSelectedStartDate(date);
+
 
         if (date && endDateTime && endDateTime <= date) {
-            const adjustedEndTime = new Date(date.getTime() + 15 * 60 * 1000);
+            const adjustedEndTime = new Date(date.getTime() + 60 * 60 * 1000);
             setSelectedEndDate(adjustedEndTime);
         }
+        setSelectedStartDate(date);
+
     };
 
     const handleEndDateChange = (date: any) => {
@@ -161,7 +163,7 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
 
         }
 
-       
+
         const url = config.API_BASE_URL + '/Admin/addorupdatetruckcalendarlocation'
         try {
             const response = await axios.post(url, placeData);
@@ -203,7 +205,7 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
                         onChange={handleStartDateChange}
                         showTimeSelect
                         timeCaption="Tid"
-                        timeIntervals={15}
+                        timeIntervals={60}
                         dateFormat="dd-MM-yyyy HH:mm"
                         timeFormat="HH:mm"
                         locale={da}
@@ -219,7 +221,7 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
                         onChange={handleEndDateChange}
                         timeCaption="Tid"
                         showTimeSelect
-                        timeIntervals={15}
+                        timeIntervals={60}
                         dateFormat="dd-MM-yyyy HH:mm"
                         timeFormat="HH:mm"
                         locale={da}
@@ -228,12 +230,12 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
                         minDate={startDateTime ? startDateTime : undefined}
                         maxDate={startDateTime ? startDateTime : undefined}
                         // Restrict time to after start time on same day
-                        minTime={
+                     /*    minTime={
                             startDateTime
                                 ? startDateTime
-                                : new Date(new Date().setHours(0, 0, 0, 0)) // fallback to midnight
+                                : undefined
                         }
-                        maxTime={new Date(new Date().setHours(23, 59, 59, 999))}
+                        maxTime={startDateTime ? new Date(startDateTime.setHours(23, 59, 59, 999)) : undefined} */
                         customInput={<CustomInput />}
                     />
                 </div>
