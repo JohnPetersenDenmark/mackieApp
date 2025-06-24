@@ -123,41 +123,55 @@ const AdminPackingList: React.FC = () => {
 
 
 
-    return (
-        <div style={{
+ return (
+  <div
+    style={{
+      border: '1px solid grey',
+      padding: '10px',
+      borderRadius: '5px',
+      fontSize: '20px',
+      color: '#22191b',
+      fontWeight: 200,
+      textAlign: 'center',
+      width: '100vw',
+      boxSizing: 'border-box',
+      margin: 0,
+      overflowX: 'hidden',
+    }}
+  >
+    <div style={{ margin: '20px 0', textAlign: 'left' }}>
+      {groupedOrderLines?.map((group, idx) => (
+        <div
+          key={idx}
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
             border: '1px solid grey',
-            padding: '10px', // optional: adds space inside the border
-            borderRadius: '5px', // optional: rounded corners
-            fontSize: '20px',
-            color: '#22191b',
+            borderRadius: '4px',
+            padding: '10px 15px',
+            marginBottom: '20px',
             fontWeight: 200,
-            textAlign: 'center'
-
-        }}>
-            <div style={{ margin: '20px', textAlign: 'left' }}>
-                {groupedOrderLines?.map((group) => (
-                    <div
-                        style={{
-                            display: 'grid',
-                            height: '100px',
-                            border: '1px solid grey',
-                            gridTemplateColumns: '1fr 1fr 1fr',
-                            alignItems: 'center',
-                            marginLeft: '0px',
-                            marginBottom: '20px',
-                            fontWeight: 200
-                        }}
-                    >
-                        <div style={{ marginLeft: '20px', textAlign: 'left' }}>{group.pizzaNumber}</div>
-                        <div>{group.pizzaName}</div>
-                        <div>{group.subtotalNumber}</div>
-                    </div>
-                ))}
-
-            </div>
-
+            flexWrap: 'wrap',
+          }}
+        >
+          <div style={{ flex: '1 1 30%', minWidth: '100px', textAlign: 'left' }}>
+            {group.pizzaNumber}
+          </div>
+          <div style={{ flex: '2 1 40%', minWidth: '150px', textAlign: 'left' }}>
+            {group.pizzaName}
+          </div>
+          <div style={{ flex: '1 1 20%', minWidth: '80px', textAlign: 'right' }}>
+            {group.subtotalNumber}
+          </div>
         </div>
-    );
+      ))}
+    </div>
+  </div>
+);
+
+
+
 }
 
 export default AdminPackingList
