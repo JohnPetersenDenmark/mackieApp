@@ -21,9 +21,9 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<Layout />}>
-          <Route index element={<div>Home Page</div>} />       {/* root / */}
+        <Route index element={<></>} />       root /
           <Route path="payment-success" element={<PaymentSuccess />} />
-          <Route path="payment-cancel" element={<PaymentCancel />} />
+          <Route path="payment-cancel" element={<PaymentCancel />} /> 
           {/* <Route path="/termsofsale" element={<TermsOfSale />} /> */}
           <Route path="*" element={<div>404 Not Found</div>} />
         </Route>

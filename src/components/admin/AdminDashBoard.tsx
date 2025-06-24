@@ -12,7 +12,7 @@ import AdminPackingList from './AdminPackingList';
 
 const AdminDashBoard: React.FC = () => {
 
-    const [activeMenu, setActiveMenu] = useState('Menuer');
+    const [activeMenu, setActiveMenu] = useState('Bestillinger');
 
     return (
         <>

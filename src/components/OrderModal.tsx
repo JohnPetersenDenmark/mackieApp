@@ -7,6 +7,7 @@ import { Order } from '../types/Order';
 import { Payment } from "../types/Payment";
 import { TruckLocation } from '../types/TruckLocation';
 import config from '../config';
+import "./OrderModal.css";
 //import FrisbiiCheckoutButton from './FrisbiiCheckoutButton';
 
 import FlatpayCheckout from './FlatpayCheckout';
@@ -313,7 +314,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
       locationId: LocationIdAsNumber,
       createddatetime: new Date().toISOString(),
       modifieddatetime: new Date().toISOString(),
-      payeddatetime : new Date().toISOString(),
+      payeddatetime: new Date().toISOString(),
       locationname: 'aaaa',
       locationstartdatetime: '',
       locationenddatetime: '',
@@ -352,416 +353,214 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
   if (!isOpen) return null;
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        top: 0, left: 0, right: 0, bottom: 0,
-        backgroundColor: '#8d4a5b',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        zIndex: 1000,
-      }}
-    >
-      <div style={{ backgroundColor: '#c7a6ac', padding: '2rem', borderRadius: '8px', minWidth: '500px' }}>
-
-        <div style={{ backgroundColor: '#8d4a5b', color: 'white', height: '80px' }}>
-          <p style={{ fontSize: '50px', paddingTop: '10px', paddingLeft: '10px' }}>Bestil frisklavet pizza og bag-selv</p>
-        </div>
 
 
-        {/* Location selector */}
-        <div style={{ marginBottom: '1rem', marginTop: '20px' }}>
-          <label htmlFor="locationSelect"><strong>Vælg afhentningssted:</strong></label><br />
-          <select
-            id="locationSelect"
-            value={selectedLocationId}
-            onChange={(e) => handleLocationChanged(e.target.value)}
-            onBlur={() => setLocationTouched(true)}
-            style={{
-              backgroundColor: '#c7a6ac',
-              fontSize: '20px',
-              width: '100%',
-              padding: '0.5rem',
-              marginTop: '0.25rem',
-              borderColor: !isLocationValid && locationTouched ? 'red' : '#22191b',
-              border: '1.5px',
-              borderStyle: 'solid',
-              borderRadius: '4px'
-            }}
-            disabled={submitting}
-          >
-            <option value="" disabled>-- Vælg et sted --</option>
-            {locations.map(loc => (
-              <option key={loc.id} value={loc.id}>
-                {loc.locationname} ({loc.startdatetime.split(' ')[0]}) {loc.startdatetime.slice(-5)}–{loc.enddatetime.slice(-5)}
-              </option>
-            ))}
-          </select>
-          {!isLocationValid && locationTouched && (
-            <p style={{ color: 'red', marginTop: '0.25rem' }}>Du skal vælge et afhentningssted.</p>
-          )}
-        </div>
+    <div className="modal-overlay">
+      <div className="modal-content">
 
-        {/* Customer name input */}
-        <div style={{ marginBottom: '1rem' }}>
-          <label htmlFor="customerName"><strong>Dit navn:</strong></label><br />
-          <input
-            id="customerName"
-            type="text"
-            value={customerName}
-            onChange={(e) => setCustomerName(e.target.value)}
-            onBlur={() => setNameTouched(true)}
-            placeholder="Indtast dit navn"
-            style={{
-              fontSize: '20px',
-              backgroundColor: '#c7a6ac',
-              width: '100%',
-              padding: '0.5rem',
-              marginTop: '0.25rem',
-              borderColor: !isNameValid && nameTouched ? 'red' : '#22191b',
-              border: '1.5px solid',
-              borderRadius: '4px',
-            }}
-            disabled={submitting}
-          />
-          {!isNameValid && nameTouched && (
-            <p style={{ color: 'red', marginTop: '0.25rem' }}>Navn må ikke være tomt.</p>
-          )}
-        </div>
+        <h2 className="heading">Bestil frisklavet pizza og bag-selv</h2>
+        {/* Location */}
+        <label htmlFor="locationSelect" className="label">Vælg afhentningssted:</label>
+        <select
+          id="locationSelect"
+          value={selectedLocationId}
+          onChange={(e) => handleLocationChanged(e.target.value)}
+          onBlur={() => setLocationTouched(true)}
+          className="select"
+          disabled={submitting}
+        >
+          <option value="" disabled>-- Vælg et sted --</option>
+          {locations.map(loc => (
+            <option key={loc.id} value={loc.id}>
+              {loc.locationname} ({loc.startdatetime.split(' ')[0]}) {loc.startdatetime.slice(-5)}–{loc.enddatetime.slice(-5)}
+            </option>
+          ))}
+        </select>
 
-        {/* Phone number input */}
-        <div style={{ marginBottom: '1rem' }}>
-          <label htmlFor="phone"><strong>Telefonnummer:</strong></label><br />
-          <input
-            id="phone"
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            onBlur={() => setPhoneTouched(true)}
-            placeholder="+451234567890 eller 12345678"
-            style={{
-              backgroundColor: '#c7a6ac',
-              fontSize: '20px',
-              width: '100%',
-              padding: '0.5rem',
-              marginTop: '0.25rem',
-              borderColor: !isPhoneValid && phoneTouched ? 'red' : undefined,
-              border: '1.5px solid #22191b',
-              borderRadius: '4px',
-            }}
-            maxLength={12}
-            disabled={submitting}
-          />
-          {!isPhoneValid && phoneTouched && (
-            <p style={{ color: 'red', marginTop: '0.25rem' }}>
-              Telefonnummer skal være enten 8 cifre eller '+' efterfulgt af 10 cifre.
-            </p>
-          )}
-        </div>
 
-        {/* Email input */}
-        <div style={{ marginBottom: '1rem' }}>
-          <label htmlFor="email"><strong>Email:</strong></label><br />
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            onBlur={() => setEmailTouched(true)}
-            placeholder="Indtast din email"
-            style={{
-              backgroundColor: '#c7a6ac',
-              fontSize: '20px',
-              width: '100%',
-              padding: '0.5rem',
-              marginTop: '0.25rem',
-              borderColor: !isEmailValid && emailTouched ? 'red' : undefined,
-              border: '1.5px solid #22191b',
-              borderRadius: '4px',
-            }}
-            disabled={submitting || (existingOrder !== null)}
-          />
-          {!isEmailValid && emailTouched && (
-            <p style={{ color: 'red', marginTop: '0.25rem' }}>Indtast venligst en gyldig emailadresse.</p>
-          )}
-        </div>
+        {/* Customer name */}
+        <label htmlFor="customerName" className="label">Dit navn:</label>
+        <input
+          id="customerName"
+          type="text"
+          value={customerName}
+          onChange={(e) => setCustomerName(e.target.value)}
+          onBlur={() => setNameTouched(true)}
+          placeholder="Indtast dit navn"
+          className="input"
+          disabled={submitting}
+        />
+        {!isNameValid && nameTouched && (
+          <p style={{ color: 'red', marginTop: '0.25rem' }}>Navn må ikke være tomt.</p>
+        )}
 
-        {/* Pizza selection */}
-        {orderItemsPizza.length === 0 ? (
-          <p>Ingen pizzaer tilgængelige...</p>
-        ) : (
-          <>
-            <div style={{ marginBottom: '1rem', marginTop: '3rem', fontSize: '25px' }}>
-              Vælg pizza
-            </div>
 
-            {orderItemsPizza.map((item, index) => (
-              <div
-                key={item.productid}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  marginBottom: '0.5rem',
-                  fontSize: '20px'
-                }}
-              >
-                {/* 1) Checkbox (native size + scaled) */}
-                <input
-                  type="checkbox"
-                  checked={item.selected}
-                  onChange={() => toggleSelection(index)}
-                  disabled={submitting}
-                  style={{
-                    accentColor: '#8d4a5b',
-                    marginRight: '0.5rem',
-                    transform: 'scale(1.5)',
-                    transformOrigin: 'center center',
-                    alignSelf: 'center'
-                  }}
-                />
+        {/* Phone */}
 
-                {/* 2) Product info — fixed width */}
-                <div
-                  style={{
-                    flex: '0 0 500px',    // no grow, no shrink, basis = 300px
-                    overflow: 'hidden',   // if text too long, hide it
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap'
-                  }}
-                >
-                  <strong>{item.pizzanumber + ' ' + item.productname}</strong>{' '}
-                  (Pris før rabat {item.discountedunitprice.toFixed(2).replaceAll('.', ',')} kr)
-                </div>
+        <label htmlFor="phone" className="label">Telefonnummer:</label>
+        <input
+          id="phone"
+          type="tel"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          onBlur={() => setPhoneTouched(true)}
+          placeholder="+451234567890 eller 12345678"
+          className="input"
+          maxLength={12}
+          disabled={submitting}
+        />
+        {!isPhoneValid && phoneTouched && (
+          <p style={{ color: 'red', marginTop: '0.25rem' }}>
+            Telefonnummer skal være enten 8 cifre eller '+' efterfulgt af 10 cifre.
+          </p>
+        )}
 
-                {/* 3) Quantity & line total — only when selected, fixed width */}
-                {item.selected && (
-                  <div
-                    style={{
-                      display: 'flex',
-                      flex: '0 0 200px',  // no grow, no shrink, basis = 150px
-                      alignItems: 'center',
-                      marginLeft: '1rem'
-                    }}
-                  >
-                    <input
-                      type='text'
-                      // min={1}
-                      //value={item.quantity}
 
-                      value={enteredQuantity[index]}
+        {/* Email */}
+        <label htmlFor="email" className="label">Email:</label>
+        <input
+          id="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          onBlur={() => setEmailTouched(true)}
+          placeholder="Indtast din email"
+          className="input"
+          disabled={submitting || (existingOrder !== null)}
+        />
+        {!isEmailValid && emailTouched && (
+          <p style={{ color: 'red', marginTop: '0.25rem' }}>Indtast venligst en gyldig emailadresse.</p>
+        )}
 
-                      // value = {preSetValueQuantity(index )}
-
-                      onChange={(e) =>
-                        // updateQuantity(index, parseInt(e.target.value) || 1)
-                        // updateQuantity(index, parseInt(e.target.value))
-                        updateQuantity(index, e.target.value)
-                      }
-                      disabled={submitting}
-                      style={{
-                        width: '50px',
-                        height: '25px',
-                        fontSize: '15px',
-                        marginRight: '0.5rem'
-                      }}
-                    />
-                    <span>
-                      {(item.unitprice * item.quantity).toFixed(2).replaceAll('.', ',')} kr
-                    </span>
-                  </div>
-                )}
-              </div>
-            ))}
-
-            <div>
-              {/* Topping selection */}
-              <div style={{ marginBottom: '1rem', marginTop: '3rem', fontSize: '25px' }}>
-                Vælg tilbehør
-              </div>
-              {orderItemsTopping.map((item, index) => (
-                <div
-                  key={item.productid}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    marginBottom: '0.5rem',
-                    fontSize: '20px'
-                  }}
-                >
-                  {/* 1) Checkbox (native size + scaled) */}
-                  <input
-                    type="checkbox"
-                    checked={item.selected}
-                    onChange={() => toggleSelection(index + orderItemsPizza.length)}
-                    disabled={submitting}
-                    style={{
-                      accentColor: '#8d4a5b',
-                      marginRight: '0.5rem',
-                      transform: 'scale(1.5)',
-                      transformOrigin: 'center center',
-                      alignSelf: 'center'
-                    }}
-                  />
-
-                  {/* 2) Product info — fixed width */}
-                  <div
-                    style={{
-                      flex: '0 0 500px',    // no grow, no shrink, basis = 300px
-                      overflow: 'hidden',   // if text too long, hide it
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap'
-                    }}
-                  >
-                    <strong>{item.productname}</strong>{' '}
-                    (Pris før rabat {item.discountedunitprice.toFixed(2).replaceAll('.', ',')} kr)
-                  </div>
-
-                  {/* 3) Quantity & line total — only when selected, fixed width */}
-                  {item.selected && (
-                    <div
-                      style={{
-                        display: 'flex',
-                        flex: '0 0 200px',  // no grow, no shrink, basis = 150px
-                        alignItems: 'center',
-                        marginLeft: '1rem'
-                      }}
-                    >
-                      <input
-                        type='text'
-                        //value={item.quantity}
-                        value={enteredQuantity[index + orderItemsPizza.length]}
-                        onChange={(e) =>
-                          updateQuantity(index + orderItemsPizza.length, e.target.value)
-                        }
-                        disabled={submitting}
-                        style={{
-                          width: '50px',
-                          height: '25px',
-                          fontSize: '15px',
-                          marginRight: '0.5rem'
-                        }}
-                      />
-                      <span>
-                        {(item.unitprice * item.quantity).toFixed(2).replaceAll('.', ',')} kr
-                      </span>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/*   <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
-              <label style={{ display: 'flex', alignItems: 'center', fontSize: '20px' }}>
-                <input
-                  type="checkbox"
-                  checked={subscribeToNewsletter}
-                  onChange={() => setSubscribeToNewsletter(!subscribeToNewsletter)}
-                  disabled={submitting}
-                  style={{ marginRight: '0.5rem', transform: 'scale(1.5)', transformOrigin: 'top left' }}
-                />
-                Jeg vil gerne modtage nyhedsbrev fra Mackies Pizza Truck
-              </label>
-            </div> */}
-
-            {/* Comment input added here */}
-            <div style={{ marginTop: '1rem', marginBottom: '3rem' }}>
-              <label htmlFor="comment" style={{ fontSize: '20px' }} ><strong>Kommentarer til bestillingen:</strong></label><br />
-              <textarea
-                id="comment"
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                placeholder="Skriv eventuelle ønsker eller bemærkninger her..."
-                spellCheck='false'
-                rows={3}
-                style={{
-                  backgroundColor: '#c7a6ac',
-                  width: '100%',
-                  padding: '0.5rem',
-                  marginTop: '0.25rem',
-                  borderRadius: '4px',
-                  border: '1.5px solid #22191b',
-                  resize: 'vertical',
-                }}
+ <hr />
+        {/* Pizza list */}
+        {orderItemsPizza.map((item, index) => (
+          <div key={item.productid} className="pizza-item-container">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={item.selected}
+                onChange={() => toggleSelection(index)}
                 disabled={submitting}
               />
-            </div>
-            <div style={{
+              <span>
+                <strong>{item.pizzanumber + ' ' + item.productname}</strong>{' '}
+                (Pris før rabat {item.discountedunitprice.toFixed(2).replaceAll('.', ',')} kr)
+              </span>
+            </label>
 
-              fontSize: '25px',
-              color: 'white',
-              fontWeight: 400,
-              textAlign: 'left',
-            }}>
-              Afhentning:  {selectedLocation?.locationname} d. {selectedLocation?.locationbeautifiedstartdatetime} mellem {selectedLocation?.locationbeautifiedTimeInterval}
-            </div>
-            <hr />
-            <p><strong>Total: {getTotal()} kr</strong></p>
+            {item.selected && (
+              <div className="quantity-container">
+                <input
+                  className="quantity-input"
+                  type="number"
+                  value={enteredQuantity[index]}
+                  onChange={(e) => updateQuantity(index, e.target.value)}
+                  disabled={submitting}
+                />
+                <span>
+                  {(item.unitprice * item.quantity).toFixed(2).replaceAll('.', ',')} kr
+                </span>
+              </div>
+            )}
+          </div>
+        ))}
 
-            {submitError && <p style={{ color: 'red' }}>{submitError}</p>}
+        {/* Topping list */}
+        {orderItemsTopping.map((item, index) => (
+          <div key={item.productid} className="pizza-item-container">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={item.selected}
+                onChange={() => toggleSelection(index + orderItemsPizza.length)}
+                disabled={submitting}
+              />
+              <span>
+                <strong>{item.productname}</strong>{' '}
+                (Pris før rabat {item.discountedunitprice.toFixed(2).replaceAll('.', ',')} kr)
+              </span>
+            </label>
+
+            {item.selected && (
+              <div className="quantity-container">
+                <input
+                  className="quantity-input"
+                  type="number"
+                  value={enteredQuantity[index + orderItemsPizza.length]}
+                  onChange={(e) => updateQuantity(index + orderItemsPizza.length, e.target.value)}
+                  disabled={submitting}
+                />
+                <span>
+                  {(item.unitprice * item.quantity).toFixed(2).replaceAll('.', ',')} kr
+                </span>
+              </div>
+            )}
+          </div>
+        ))}
+
+
+
+        {/* Comment */}
+        {/*   <label htmlFor="comment" className="label">Kommentarer til bestillingen:</label>
+        <textarea id="comment" className="textarea" ... /> */}
+
+        <label htmlFor="comment" className="label">Kommentarer til bestillingen:</label>
+        <textarea
+          id="comment"
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          placeholder="Skriv eventuelle ønsker eller bemærkninger her..."
+          spellCheck='false'
+          rows={3}
+          className="textarea"
+          disabled={submitting}
+        />
+
+        Afhentning:  {selectedLocation?.locationname} d. {selectedLocation?.locationbeautifiedstartdatetime} mellem {selectedLocation?.locationbeautifiedTimeInterval}
+        <hr />
+        <p><strong>Total: {getTotal()} kr</strong></p>
+
+          {submitError && <p style={{ color: 'red' }}>{submitError}</p>}
             {submitSuccess && <p style={{ color: 'green' }}>{submitSuccess}</p>}
 
-            <div style={{ textAlign: 'right', marginLeft: '20px' }}>
-              <button
-                onClick={handleSubmit}
-                disabled={!isFormValid || submitting || submittedOrderSuccessfully}
-                style={{
-                  marginTop: '1rem',
-                  padding: '0.5rem 1rem',
-                  backgroundColor: isFormValid && !submitting && !submittedOrderSuccessfully ? '#8d4a5b' : 'grey',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: isFormValid && !submitting ? 'pointer' : 'not-allowed',
-                  marginRight: '0.5rem',
-                }}
-              >
-                {submitting ? 'Sender...' : 'Send Bestilling'}
-              </button>
-              <button
-                onClick={handleCloseThisWindow}
-                disabled={submitting}
-                style={{
-                  marginTop: '1rem',
-                  padding: '0.5rem 1rem',
-                  backgroundColor: '#8d4a5b',
-                  color: 'white',
-                  marginRight: '0.5rem',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: submitting ? 'not-allowed' : 'pointer',
-                }}
-              >
-                Luk
-              </button>
+        {/* Buttons */}
 
-              {/* <button
-                onClick={handleGoToPayment}
-                disabled={!submittedOrderSuccessfully}
-                style={{
-                  marginRight: '0.5rem',
-                  marginTop: '1rem',
-                  padding: '0.5rem 1rem',
-                  backgroundColor: submittedOrderSuccessfully ? '#8d4a5b' : 'grey',
-                  color: 'white',
+        <button
+          onClick={handleSubmit}
+          disabled={!isFormValid || submitting || submittedOrderSuccessfully}
+          className="submit-btn"
+        >
+          {submitting ? 'Sender...' : 'Send Bestilling'}
+        </button>
 
 
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: !submittedOrderSuccessfully ? 'not-allowed' : 'pointer',
-                }}
-              >
-                Betaling
-              </button> */}
-            </div>
-          </>
-        )}
-      </div>
-      <div>
+        <button
+          onClick={handleCloseThisWindow}
+          disabled={submitting}
+          className="close-btn"
+        >
+          Luk
+        </button>
+
+
+        {/*   <button
+          onClick={handleGoToPayment}
+          disabled={!submittedOrderSuccessfully}
+          className="close-btn"
+        >
+          Betaling
+        </button> */}
+
         {/* {goToPayment ? <FlatpayCheckout createdOrderA={createdOrder} onPaymentStatus={handlePaymentStatus} onClose={handleCloseCheckout} /> : ''} */}
+
+
       </div>
-    </div>
+    </div >
+
   );
+
+
 };
 
 export default OrderModal;
