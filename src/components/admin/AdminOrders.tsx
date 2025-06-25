@@ -3,10 +3,21 @@ import React, { useEffect, useState } from 'react';
 import { Order } from '../../types/Order';
 import TestRealTimeUpdate from '../TestRealTimeUpdate';
 import config from '../../config';
+import { TruckLocation } from '../../types/TruckLocation';
+
 
 const AdminOrders: React.FC = () => {
+
   const [orders, setOrders] = useState<Order[]>([]);
+  const [allOrdersSorted, setAllOrdersSorted] = useState<Order[]>([]);
+
   const [newOrderArrived, setNewOrderArrived] = useState(false);
+
+  const [selectedLocation, setSelectedLocation] = useState<TruckLocation | null>(null);
+  const [locations, setLocations] = useState<TruckLocation[]>([]);
+  const [selectedLocationId, setSelectedLocationId] = useState<string>('');
+  const [locationTouched, setLocationTouched] = useState(false);
+
   const [reload, setReload] = useState(0);
   const [isEditOrderModalOpen, setsEditOrderModalOpen] = useState(false);
   const [orderToEdit, setOrderToEdit] = useState<Order | null>(null);
@@ -27,7 +38,17 @@ const AdminOrders: React.FC = () => {
           const timeDiffInMilliSeconds = new Date(b.modifieddatetime + "Z").getTime() - new Date(a.modifieddatetime + "Z").getTime();
           return timeDiffInMilliSeconds;
         });
-        setOrders(sortedOrders);
+
+        setAllOrdersSorted(sortedOrders) // keep a list with all fetched order and sorted
+
+        if (selectedLocationId) {
+          let filteredByLocation = filterOrdersByLocation(sortedOrders, selectedLocationId)
+          setOrders(filteredByLocation);
+        }
+        else {
+          setOrders(sortedOrders);
+        }
+
         setLoading(false);
       })
       .catch((err) => {
@@ -35,6 +56,24 @@ const AdminOrders: React.FC = () => {
         setLoading(false);
         console.error(err);
       });
+
+
+    axios.get<TruckLocation[]>(config.API_BASE_URL + '/Home/truckcalendarlocationlist')
+      .then(response => {
+        const sortedTruckcalendarlocations = response.data.sort((a, b) => {
+          const timeDiffInMilliSeconds = parseDanishDateTime(a.startdatetime).getTime() - parseDanishDateTime(b.startdatetime).getTime();
+          return timeDiffInMilliSeconds;
+        });
+        setLocations(sortedTruckcalendarlocations);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError('Failed to load locations');
+        setLoading(false);
+        console.error(err);
+      });
+
+
   }, [newOrderArrived, reload]);
 
   const handleNewOrderArrived = (data: Order) => {
@@ -67,6 +106,20 @@ const AdminOrders: React.FC = () => {
   };
 
   const displayedOrders = searchQuery.trim() === '' ? orders : filteredOrders;
+
+  function parseDanishDateTime(dateTimeStr: string): Date {
+    // Split into date and time
+    const [dateStr, timeStr] = dateTimeStr.split(' ');
+
+    // Parse date part
+    const [day, month, year] = dateStr.split('-').map(Number);
+
+    // Parse time part
+    const [hour, minute] = timeStr.split(':').map(Number);
+
+    // JS Date months are 0-indexed
+    return new Date(year, month - 1, day, hour, minute);
+  }
 
   function formatDateToDanish(date: Date): string {
     const options: Intl.DateTimeFormatOptions = {
@@ -130,6 +183,50 @@ const AdminOrders: React.FC = () => {
       updateOrder();
     }
   };
+
+  const handleLocationChanged = (locationId: string) => {
+
+    setSelectedLocationId(locationId);
+
+    if (locationId) {
+      let filteredByLocation = filterOrdersByLocation(allOrdersSorted, locationId)
+      setOrders(filteredByLocation);
+    }
+    else {
+      setOrders(allOrdersSorted);
+    }
+
+
+
+
+    let location = locations.find(tmpLocation => tmpLocation.id === Number(locationId));
+    if (location) {
+      setSelectedLocation(location);
+    }
+  };
+
+
+
+  const filterOrdersByLocation = ((sorders: Order[], truckLocationId : string) => {
+
+    let filteredOrdersByComment: Order[] = []
+
+    if ( !truckLocationId ) {
+      return filteredOrdersByComment
+    }
+
+    let copyOfSelectedLocationId = Number(truckLocationId);
+
+    sorders.forEach(order => {
+
+      if (order.locationId == copyOfSelectedLocationId) {
+
+        filteredOrdersByComment.push(order);
+      }
+
+    });
+    return filteredOrdersByComment
+  })
 
   // Responsive styles
   const styles = {
@@ -228,11 +325,11 @@ const AdminOrders: React.FC = () => {
       border: '1px solid #ccc',
       padding: '10px',
       marginBottom: '10px',
-       fontSize: '16px',
+      fontSize: '16px',
       textAlign: 'left' as const,
       display: 'grid',
-     // gridTemplateColumns: 'auto 1fr auto auto',
-        gridTemplateColumns: '1fr',
+      // gridTemplateColumns: 'auto 1fr auto auto',
+      gridTemplateColumns: '1fr',
       alignItems: 'center',
       gap: '8px',
       borderRadius: '4px',
@@ -277,69 +374,89 @@ const AdminOrders: React.FC = () => {
   `;
 
   return (
-  <>
-    <style>{mediaQueries}</style>
-    <div style={{ ...styles.container, width: '100vw', overflowX: 'hidden' }}>
-      <TestRealTimeUpdate doNotify={handleNewOrderArrived} />
-      <div style={styles.headerGrid}>
-        <input
-          type="text"
-          placeholder="Søg"
-          style={styles.searchInput}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <div style={styles.title}>Bestillinger</div>
-      </div>
+    <>
+      <style>{mediaQueries}</style>
+      <div style={{ ...styles.container, width: '100vw', overflowX: 'hidden' }}>
+        <TestRealTimeUpdate doNotify={handleNewOrderArrived} />
+        <div style={styles.headerGrid}>
+          <input
+            type="text"
+            placeholder="Søg"
+            style={styles.searchInput}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <div>
 
-      {/* Inner wrapper to constrain max width and add side padding */}
-      <div style={{ maxWidth: 900, margin: '0 auto', padding: '0 10px', textAlign: 'left' }}>
-        {loading && <div>Loading orders...</div>}
-        {error && <div style={{ color: 'red' }}>{error}</div>}
+            <select
+              id="locationSelect"
+              value={selectedLocationId}
+              onChange={(e) => handleLocationChanged(e.target.value)}
+              onBlur={() => setLocationTouched(true)}
+              className="select"
+              disabled={submitting}
+            >
+              <option value="" >-- Alle --</option>
+              {locations.map(loc => (
+                <option key={loc.id} value={loc.id}>
+                  {loc.locationname} ({loc.startdatetime.split(' ')[0]}) {loc.startdatetime.slice(-5)}–{loc.enddatetime.slice(-5)}
+                </option>
+              ))}
+            </select>
 
-        {displayedOrders.map((curOrder) => {
-          const subtotal = curOrder.orderlines.reduce(
-            (sum, line) => sum + line.unitprice * line.quantity,
-            0
-          );
 
-          const subtotalPizzas = curOrder.orderlines
-            .filter((line) => line.producttype === 0)
-            .reduce((sum, line) => sum + line.quantity, 0);
+          </div>
+          <div style={styles.title}>Bestillinger</div>
+        </div>
 
-          const subtotalToppings = curOrder.orderlines
-            .filter((line) => line.producttype === 1)
-            .reduce((sum, line) => sum + line.quantity, 0);
+        {/* Inner wrapper to constrain max width and add side padding */}
+        <div style={{ maxWidth: 900, margin: '0 auto', padding: '0 10px', textAlign: 'left' }}>
+          {loading && <div>Loading orders...</div>}
+          {error && <div style={{ color: 'red' }}>{error}</div>}
 
-          return (
-            <div key={curOrder.id} style={styles.orderCard}>
-              <div style={styles.orderHeader}>
-                {curOrder.locationbeautifiedstartdatetime} - {curOrder.locationname}
-              </div>
+          {displayedOrders.map((curOrder) => {
+            const subtotal = curOrder.orderlines.reduce(
+              (sum, line) => sum + line.unitprice * line.quantity,
+              0
+            );
 
-              <div className="ordersGridHeader" style={styles.ordersGridHeader}>
-                <div>Best nr.:  {curOrder.customerorderCode}</div>
-                <div>Kunde: {highlightText(curOrder.customerName, searchQuery)}</div>
-                <div>Telefon: {curOrder.phone}</div>
-                <div>Email: {curOrder.email}</div>
-                <div>Oprettet: {formatDateToDanish(new Date(curOrder.createddatetime + "Z"))}</div>
-                <div>Ændret: {formatDateToDanish(new Date(curOrder.modifieddatetime + "Z"))}</div>
-                <div>{curOrder.payeddatetime ? "Betalt: " + formatDateToDanish(new Date(curOrder.payeddatetime + "Z")) : ''}</div>
-                <div> <img
+            const subtotalPizzas = curOrder.orderlines
+              .filter((line) => line.producttype === 0)
+              .reduce((sum, line) => sum + line.quantity, 0);
+
+            const subtotalToppings = curOrder.orderlines
+              .filter((line) => line.producttype === 1)
+              .reduce((sum, line) => sum + line.quantity, 0);
+
+            return (
+              <div key={curOrder.id} style={styles.orderCard}>
+                <div style={styles.orderHeader}>
+                  {curOrder.locationbeautifiedstartdatetime} - {curOrder.locationname}
+                </div>
+
+                <div className="ordersGridHeader" style={styles.ordersGridHeader}>
+                  <div>Best nr.:  {curOrder.customerorderCode}</div>
+                  <div>Kunde: {highlightText(curOrder.customerName, searchQuery)}</div>
+                  <div>Telefon: {curOrder.phone}</div>
+                  <div>Email: {curOrder.email}</div>
+                  <div>Oprettet: {formatDateToDanish(new Date(curOrder.createddatetime + "Z"))}</div>
+                  <div>Ændret: {formatDateToDanish(new Date(curOrder.modifieddatetime + "Z"))}</div>
+                  <div>{curOrder.payeddatetime ? "Betalt: " + formatDateToDanish(new Date(curOrder.payeddatetime + "Z")) : ''}</div>
+                  <div> <img
                     src="/images/edit-icon.png"
                     alt="Edit"
                     onClick={() => handleEditOrder(curOrder)}
                     style={styles.icon}
                   /></div>
-                <div> <img
+                  <div> <img
                     src="/images/delete-icon.png"
                     alt="Delete"
                     onClick={() => handleDeleteOrder(curOrder)}
                     style={styles.icon}
                   /></div>
-              </div>
+                </div>
 
-              {/* <div className="ordersGrid" style={styles.ordersGrid}>
+                {/* <div className="ordersGrid" style={styles.ordersGrid}>
                 <div>{curOrder.customerorderCode}</div>
                 <div>{highlightText(curOrder.customerName, searchQuery)}</div>
                 <div>{curOrder.phone}</div>
@@ -365,48 +482,48 @@ const AdminOrders: React.FC = () => {
                 </div>
               </div> */}
 
-              {curOrder.comment.trim().length > 0 && (
-                <div style={styles.commentBox}>
-                  <img
-                    src="/images/delete-icon.png"
-                    alt="Remove Comment"
-                    onClick={() => handleRemoveComment(curOrder)}
-                    style={styles.commentIcon}
-                  />
-                  <div>{curOrder.comment}</div>
-                </div>
-              )}
-
-              <div>
-                {curOrder.orderlines.map((curOrderLine, lineIndex) => (
-                  <div key={lineIndex} style={styles.orderlineGrid}>
-                    <div>{curOrderLine.quantity} stk.</div>
-                    <div>
-                      {curOrderLine.pizzanumber} {highlightText(curOrderLine.productname, searchQuery)}                   
-                    </div>
-                    <div style={{ textAlign: 'right' }}>{curOrderLine.unitprice.toFixed(2).replace('.', ',')} kr.</div>
-                    <div style={{ textAlign: 'right' }}>
-                      {(curOrderLine.unitprice * curOrderLine.quantity)
-                        .toFixed(2)
-                        .replace('.', ',')} kr.
-                    </div>
+                {curOrder.comment.trim().length > 0 && (
+                  <div style={styles.commentBox}>
+                    <img
+                      src="/images/delete-icon.png"
+                      alt="Remove Comment"
+                      onClick={() => handleRemoveComment(curOrder)}
+                      style={styles.commentIcon}
+                    />
+                    <div>{curOrder.comment}</div>
                   </div>
-                ))}
+                )}
 
-                <div style={styles.subtotalGrid}>
-                  <div>Antal pizzaer: {subtotalPizzas}</div>
-                  <div>Antal tilbehør: {subtotalToppings}</div>
-                  <div></div>
-                  <div style={{ textAlign: 'right' }}>Ialt: {subtotal.toFixed(2).replace('.', ',')}</div>
+                <div>
+                  {curOrder.orderlines.map((curOrderLine, lineIndex) => (
+                    <div key={lineIndex} style={styles.orderlineGrid}>
+                      <div>{curOrderLine.quantity} stk.</div>
+                      <div>
+                        {curOrderLine.pizzanumber} {highlightText(curOrderLine.productname, searchQuery)}
+                      </div>
+                      <div style={{ textAlign: 'right' }}>{curOrderLine.unitprice.toFixed(2).replace('.', ',')} kr.</div>
+                      <div style={{ textAlign: 'right' }}>
+                        {(curOrderLine.unitprice * curOrderLine.quantity)
+                          .toFixed(2)
+                          .replace('.', ',')} kr.
+                      </div>
+                    </div>
+                  ))}
+
+                  <div style={styles.subtotalGrid}>
+                    <div>Antal pizzaer: {subtotalPizzas}</div>
+                    <div>Antal tilbehør: {subtotalToppings}</div>
+                    <div></div>
+                    <div style={{ textAlign: 'right' }}>Ialt: {subtotal.toFixed(2).replace('.', ',')}</div>
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
-    </div>
-  </>
-);
+    </>
+  );
 
 };
 
