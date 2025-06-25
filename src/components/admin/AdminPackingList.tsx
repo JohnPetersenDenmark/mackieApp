@@ -18,12 +18,14 @@ const AdminPackingList: React.FC = () => {
   };
 
 
-  let orderCommentArray: string[] = [];
+  
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const [searchQuery, setSearchQuery] = useState('');
+
+    const [orderCommentArray, setOrderCommentArray] = useState<string[]>([]);
 
   const [groupedOrderLinesNoComment, setGroupedOrderLinesNoComment] = useState<PizzaGroup[]>([]);
 
@@ -59,7 +61,7 @@ const AdminPackingList: React.FC = () => {
 
         const filteredByHaveCommentArray = filteredByHaveComment(filteredByDate);
         const orderLinesArrayComment: OrderItem[] = [];
-          orderCommentArray= [];
+          let tmpOrderCommentArray : string[] = [];
 
         filteredByHaveCommentArray.forEach(order => {
           let index = 0;
@@ -67,13 +69,15 @@ const AdminPackingList: React.FC = () => {
             if (orderLine.producttype === 0)  // type 0 is pizza
             {
               orderLinesArrayComment.push(orderLine)
-              orderCommentArray.push(order.comment);
+              tmpOrderCommentArray.push(order.comment);
               index ++;
             }
 
           });
         });
 
+        setOrderCommentArray(tmpOrderCommentArray);
+        
         const sortedLinesComment = [...orderLinesArrayComment].sort((a, b) => a.productid - b.productid);
          const va1 = GroupOrderLinesByPizzaProductId(sortedLinesComment);
         setGroupedOrderLinesWithComment(va1);
