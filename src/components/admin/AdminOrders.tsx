@@ -34,8 +34,13 @@ const AdminOrders: React.FC = () => {
     axios
       .get<Order[]>(url)
       .then((response) => {
-        const sortedOrders = response.data.sort((a, b) => {
-          const timeDiffInMilliSeconds = new Date(b.modifieddatetime + "Z").getTime() - new Date(a.modifieddatetime + "Z").getTime();
+
+        let ordersFromTodayAndForward = filterOrderByTodaysDate(response.data);
+
+        const sortedOrders = ordersFromTodayAndForward.sort((a, b) => {
+          
+         // const timeDiffInMilliSeconds = new Date(b.modifieddatetime + "Z").getTime() - new Date(a.modifieddatetime + "Z").getTime();
+          const timeDiffInMilliSeconds = parseDanishDateTime(b.locationstartdatetime).getTime() - parseDanishDateTime(a.locationstartdatetime).getTime();
           return timeDiffInMilliSeconds;
         });
 
@@ -60,7 +65,10 @@ const AdminOrders: React.FC = () => {
 
     axios.get<TruckLocation[]>(config.API_BASE_URL + '/Home/truckcalendarlocationlist')
       .then(response => {
-        const sortedTruckcalendarlocations = response.data.sort((a, b) => {
+
+        let locationsAfterTodayAndForward = filterTruckLocationsByTodaysDate(response.data)
+
+        const sortedTruckcalendarlocations = locationsAfterTodayAndForward.sort((a, b) => {
           const timeDiffInMilliSeconds = parseDanishDateTime(a.startdatetime).getTime() - parseDanishDateTime(b.startdatetime).getTime();
           return timeDiffInMilliSeconds;
         });
@@ -78,6 +86,7 @@ const AdminOrders: React.FC = () => {
 
   const handleNewOrderArrived = (data: Order) => {
     setNewOrderArrived(true);
+    setReload(prev => prev + 1);
     if (data !== null && data !== undefined) {
       NewOrder = data;
     }
@@ -137,6 +146,55 @@ const AdminOrders: React.FC = () => {
 
     return `${get("day")}-${get("month")}-${get("year")} ${get("hour")}:${get("minute")}`;
   }
+
+  const filterOrderByTodaysDate = ((sorders: Order[]) => {
+    const now = new Date();
+    const year = now.getUTCFullYear();
+    const month = now.getUTCMonth(); // 0-based
+    const day = now.getUTCDate();
+
+    // Create start and end times in UTC
+    const startTimeToday = new Date(Date.UTC(year, month, day, 0, 10, 0));  // today 00:10:00 UTC
+    const endTimeToday = new Date(Date.UTC(year, month, day, 23, 59, 59));  // today 23:59:59 UTC
+
+    let filteredOrdersByDate: Order[] = []
+
+    sorders.forEach(order => {
+      // const created = parseDanishDateTime(order.createddatetime); // assumes createdAt is ISO UTC string
+
+      const locationDate = parseDanishDateTime(order.locationstartdatetime); // assumes createdAt is ISO UTC string
+
+     // if (created >= startTime && created <= endTime) {
+     if (locationDate >= startTimeToday) {
+        filteredOrdersByDate.push(order);
+      }
+    });
+    return filteredOrdersByDate
+  });
+
+   const filterTruckLocationsByTodaysDate = ((slocations: TruckLocation[]) => {
+    const now = new Date();
+    const year = now.getUTCFullYear();
+    const month = now.getUTCMonth(); // 0-based
+    const day = now.getUTCDate();
+
+    // Create start and end times in UTC
+    const startTime = new Date(Date.UTC(year, month, day, 0, 10, 0));  // today 00:10:00 UTC
+    const endTime = new Date(Date.UTC(year, month, day, 23, 59, 59));  // today 23:59:59 UTC
+
+    let filteredLocationsByDate: TruckLocation[] = []
+
+    slocations.forEach(location => {
+      // const created = parseDanishDateTime(order.createddatetime); // assumes createdAt is ISO UTC string
+
+      const locationDate = parseDanishDateTime(location.startdatetime); // assumes createdAt is ISO UTC string
+
+      if (locationDate >= startTime) {
+        filteredLocationsByDate.push(location);
+      }
+    });
+    return filteredLocationsByDate
+  });
 
   const handleEditOrder = (order: Order) => {
     setOrderToEdit(order);
@@ -207,11 +265,11 @@ const AdminOrders: React.FC = () => {
 
 
 
-  const filterOrdersByLocation = ((sorders: Order[], truckLocationId : string) => {
+  const filterOrdersByLocation = ((sorders: Order[], truckLocationId: string) => {
 
     let filteredOrdersByComment: Order[] = []
 
-    if ( !truckLocationId ) {
+    if (!truckLocationId) {
       return filteredOrdersByComment
     }
 

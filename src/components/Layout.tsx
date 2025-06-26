@@ -16,7 +16,7 @@ import Login from './Login';
 import PizzaToppingList from './PizzaToppingList';
 import { TruckLocation } from '../types/TruckLocation';
 import CheckMyOrder from './CheckMyOrder';
-import AdminDashBoard from './admin/AdminDashBoard' ;
+import AdminDashBoard from './admin/AdminDashBoard';
 import { Order } from '../types/Order';
 
 interface LayoutProps {
@@ -252,7 +252,7 @@ export default function Layout() {
               Mackie's Pizza Truck
             </div>
 
-            <div style={{ flex: '1 1 250px', background: '#8d4a5b', padding: '1rem' }}>
+            <div style={{ flex: '1 1 250px', background: '#8d4a5b', padding: '1rem', margin: 0, fontSize: '24px', }}>
               <span
                 onClick={handleTermsOfSaleClick}
                 style={{ cursor: 'pointer', color: '#22191b' }}
@@ -261,7 +261,7 @@ export default function Layout() {
               </span>
             </div>
 
-            <div style={{ flex: '1 1 250px', background: '#8d4a5b', padding: '1rem' }}>
+            <div style={{ flex: '1 1 250px', background: '#8d4a5b', padding: '1rem', margin: 0, fontSize: '24px', }}>
               <span
                 onClick={handleCheckOrderClick}
                 style={{ cursor: 'pointer', color: '#22191b' }}
@@ -270,7 +270,7 @@ export default function Layout() {
               </span>
             </div>
 
-            <div style={{ flex: '1 1 250px', background: '#8d4a5b', padding: '1rem' }}>
+            <div style={{ flex: '1 1 250px', background: '#8d4a5b', padding: '1rem', fontSize: '24px', }}>
               <a
                 href="https://www.facebook.com/profile.php?id=61570093418685"
                 target="_blank"
@@ -350,111 +350,13 @@ export default function Layout() {
               <p style={{ textAlign: 'center', fontSize: '15px', fontWeight: 700, color: '#ffffff' }}>
                 Det er nemt og originalt
               </p>
-            </div>
+         
 
-            {/* Right empty column */}
-            <div style={{ flex: '1 1 0', background: '#c7a6ac', padding: '0rem', fontSize: '34px', margin: 0 }} />
-          </div>
+             <PizzaList pizzas={pizzas} />
 
-
-          {/* ADDITIONAL SECTIONS */}
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '0rem',
-            }}
-          >
-            {/* Left column */}
-            <div
-              style={{
-                flex: '4 1 200px', // can grow/shrink but tries to be 4 parts
-                background: '#8d4a5b',
-                padding: '1rem',
-                fontSize: '24px',
-                margin: 0,
-              }}
-            />
-
-            {/* Middle column */}
-            <div
-              style={{
-                flex: '8 1 400px', // middle column is larger
-                background: '#8d4a5b',
-                padding: '1rem',
-              }}
-            >
-              <p
-                style={{
-                  textAlign: 'left',
-                  fontSize: '15px',
-                  background: '#8d4a5b',
-                  color: '#ffffff',
-                }}
-              >
-                Pizzaer
-              </p>
-              <p
-                style={{
-                  textAlign: 'left',
-                  fontSize: '15px',
-                  background: '#8d4a5b',
-                  color: '#ffffff',
-                }}
-              >
-                <PizzaList pizzas={pizzas} />
-              </p>
-
-              {/* 
-    <p style={{ textAlign: 'left', fontSize: '15px', background: '#8d4a5b', color: '#ffffff' }}> 
-      Tilbehør 
-    </p>
-    <p style={{ textAlign: 'left', fontSize: '15px', background: '#8d4a5b', color: '#ffffff' }}> 
-      <PizzaToppingList pizzaToppings={toppings} />
-    </p> 
-    */}
-            </div>
-
-            {/* Right column */}
-            <div
-              style={{
-                flex: '1 1 100px', // small right column
-                background: '#8d4a5b',
-                padding: '1rem',
-                fontSize: '24px',
-                margin: 0,
-              }}
-            />
-          </div>
+              
 
 
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              background: '#c7a6ac',
-              gap: '0rem',
-            }}
-          >
-            {/* Left empty column */}
-            <div
-              style={{
-                flex: '4 1 200px',
-                padding: '1rem',
-                fontSize: '24px',
-                margin: 0,
-              }}
-            />
-
-            {/* Middle column */}
-            <div
-              style={{
-                flex: '8 1 400px',
-                padding: '1rem',
-                fontSize: '24px',
-                margin: 0,
-              }}
-            >
               <p
                 style={{
                   textAlign: 'center',
@@ -504,18 +406,11 @@ export default function Layout() {
               </p>
             </div>
 
+
+
             {/* Right empty column */}
-            <div
-              style={{
-                flex: '1 1 100px',
-                padding: '1rem',
-                fontSize: '24px',
-                margin: 0,
-              }}
-            />
+            <div style={{ flex: '1 1 0', background: '#c7a6ac', padding: '0rem', fontSize: '34px', margin: 0 }} />
           </div>
-
-
 
 
           {/* FOOTER */}

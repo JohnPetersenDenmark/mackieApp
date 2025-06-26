@@ -1,7 +1,7 @@
 
 const config = {
 
- /*   API_BASE_URL: "http://192.168.8.105:5000",
+  /*  API_BASE_URL: "http://192.168.8.105:5000",
   PAYMENT_CANCEL_URL: "http://localhost:3000/payment-cancel",
   PAYMENT_ACCEPT_URL: "http://localhost:3000/payment-success"  */
  
