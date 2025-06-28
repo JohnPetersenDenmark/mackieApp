@@ -60,14 +60,18 @@ const AdminPlaces: React.FC = () => {
     setIsCreateEditLocationModalOpen(false);
   };
 
+
   return (
     <div
       style={{
-        padding: '10px',
-        width: '100%',
-        boxSizing: 'border-box',
-        background: 'cornsilk',
-        minHeight: '100vh'
+        border: '1px solid grey',
+        borderRadius: '5px',
+        background: '#8d4a5b',
+        fontSize: '20px',
+        color: '#22191b',
+        fontWeight: 200,
+        maxWidth: 1400,
+        margin: 'auto',
       }}
     >
       <AdminPlaceCreateEdit
@@ -76,54 +80,21 @@ const AdminPlaces: React.FC = () => {
         locationToEdit={locationToEdit}
       />
 
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: '1rem',
-          padding: '1rem',
-          background: 'white',
-          borderRadius: '8px',
-          boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-          boxSizing: 'border-box',
-        }}
-      >
-        <div
-          style={{
-            gridColumn: '1 / -1',
-            textAlign: 'center',
-            fontSize: '2rem',
-            color: '#8d4a5b',
-            fontWeight: 700,
-            marginBottom: '1rem',
-          }}
-        >
-          Stadepladser
-        </div>
-
+      <div style={{ maxWidth: 1400, margin: 'auto', padding: '1rem' }}>
         {locations.map((location) => (
-          <div
-            key={location.id}
-            style={{
-              border: '1px solid #ccc',
-              padding: '1rem',
-              borderRadius: '8px',
-              background: '#f9f9f9',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              gap: '0.5rem',
-            }}
-          >
-            <div>Stade id.: {location.id}</div>
-            <div>{location.locationname}</div>
-            <div style={{ display: 'flex', gap: '1rem' }}>
+          <div key={location.id} style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', border: '1px solid grey', borderRadius: '5px', background: '#ffffff', }}>
+            <div style={{ flex: '1', padding: '0.5rem' }}>{location.id}</div>
+            <div style={{ flex: '2', padding: '0.5rem' }}>{location.locationname}</div>
+            <div style={{ flex: '3', padding: '0.5rem' }}>
               <img
                 src="/images/edit-icon.png"
                 alt="Edit"
                 onClick={() => handleEdit(location)}
                 style={{ cursor: 'pointer', width: '28px', height: '28px' }}
               />
+            </div>
+
+            <div style={{ flex: '4', padding: '0.5rem' }}>
               <img
                 src="/images/delete-icon.png"
                 alt="Delete"
@@ -131,41 +102,35 @@ const AdminPlaces: React.FC = () => {
                 style={{ cursor: 'pointer', width: '28px', height: '28px' }}
               />
             </div>
+
           </div>
         ))}
-
-        {/* New location box */}
-        <div
-          style={{
-            border: '1px dashed #ccc',
-            padding: '1rem',
-            borderRadius: '8px',
-            background: '#f0f0f0',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-          }}
-          onClick={handleNewLocation}
-        >
-          <img
-            src="/images/new-icon.png"
-            alt="Ny"
-            style={{ width: '28px', height: '28px' }}
-          />
-        </div>
       </div>
-
-      {/* Inline responsive CSS */}
-      <style>{`
-        @media (max-width: 600px) {
-          div[style*='grid'] {
-            grid-template-columns: 1fr !important;
-          }
-        }
-      `}</style>
+      <div
+        style={{
+          border: '1px dashed #ccc',
+          padding: '1rem',
+          borderRadius: '8px',
+          background: '#f0f0f0',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+        }}
+        onClick={handleNewLocation}
+      >
+        <img
+          src="/images/new-icon.png"
+          alt="Ny"
+          style={{ width: '28px', height: '28px' }}
+        />
+      </div>
     </div>
   );
-};
+
+
+
+
+}
 
 export default AdminPlaces;

@@ -517,12 +517,12 @@ const AdminOrders: React.FC = () => {
                   <div>Oprettet: {formatDateToDanish(new Date(curOrder.createddatetime + "Z"))}</div>
                   <div>Ændret: {formatDateToDanish(new Date(curOrder.modifieddatetime + "Z"))}</div>
                   <div>{curOrder.payeddatetime ? "Betalt: " + formatDateToDanish(new Date(curOrder.payeddatetime + "Z")) : ''}</div>
-                  <div> <img
+                  {/* <div> <img
                     src="/images/edit-icon.png"
                     alt="Edit"
                     onClick={() => handleEditOrder(curOrder)}
                     style={styles.icon}
-                  /></div>
+                  /></div> */}
                   <div> <img
                     src="/images/delete-icon.png"
                     alt="Delete"
