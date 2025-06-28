@@ -88,144 +88,114 @@ const AdminCalendar: React.FC = () => {
     };
 
     return (
-        <div>
-            <AdminCalendarCreateEdit
-                isOpen={isCreateEditCalendarModalOpen}
-                onClose={handleCloseCreateEditPlaceModal}
-                truckLocationToEdit={truckLocationToEdit}
-            />
+  <div style={{ padding: '1rem', width: '100%' }}>
+    <AdminCalendarCreateEdit
+      isOpen={isCreateEditCalendarModalOpen}
+      onClose={handleCloseCreateEditPlaceModal}
+      truckLocationToEdit={truckLocationToEdit}
+    />
 
+    <div
+      style={{
+        border: '1px solid grey',
+        padding: '1rem',
+        borderRadius: '0.5rem',
+        color: '#22191b',
+        fontWeight: 200,
+        width: '100%',
+        boxSizing: 'border-box',
+      }}
+    >
+      <div style={{ textAlign: 'center', fontSize: '2.25rem', marginBottom: '1rem' }}>Kalender</div>
 
-            <div style={{
-                border: '1px solid grey',
-                padding: '10px', // optional: adds space inside the border
-                borderRadius: '5px', // optional: rounded corners
-                fontSize: '20px',
-                color: '#22191b',
-                fontWeight: 200,
-                textAlign: 'center'
+      <div style={{ marginBottom: '1rem' }}></div>
 
-            }}>
-                <div style={{
-                    textAlign: 'center',
-                    fontSize: '36px',
-
-                }}>
-                    Kalender
-                </div>
-                <div style={{
-                    textAlign: 'left'
-                }}>
-                    <p>Herunder er liste med aftaler.
-                    </p>
-
-
-                </div>
-                <div style={{ marginTop: '20px', textAlign: 'left' }}>
-                    {truckLocations.map((curLocation, index) => (
-                        <div
-                            key={index}
-                            style={{
-                                border: '1px solid #ccc',    // Border around each row
-                                padding: '10px',             // Optional: Adds spacing inside each row
-                                marginBottom: '5px',         // Optional: Adds spacing between rows
-                                display: 'grid',
-                                gridTemplateColumns: '3fr 4fr 3fr 3fr 3fr 3fr', // Adjust column sizes as needed
-                                alignItems: 'center'
-                            }}
-                        >
-                            <div>{curLocation.startdatetime}</div>
-                            <div>{curLocation.locationname}</div>
-                            <div>{curLocation.startdatetime}</div>
-                            <div>{curLocation.enddatetime}</div>
-                            <div>
-                                <img
-                                    src="/images/edit-icon.png"
-                                    alt="Slet"
-                                    onClick={() => handleEdit(curLocation)}
-                                    style={{ cursor: 'pointer', width: '24px', height: '24px' }}
-                                />
-                                {/* <button
-                                    onClick={() => handleEdit(curLocation)}  // You'll define handleEdit below
-                                    style={{
-                                        padding: '5px 10px',
-                                        backgroundColor: '#8d4a5b',
-                                        color: 'white',
-                                        border: 'none',
-                                        borderRadius: '4px',
-                                        cursor: 'pointer'
-                                    }}
-                                >
-                                    Rediger
-                                </button> */}
-                            </div>
-                            <div>
-                                <img
-                                    src="/images/delete-icon.png"
-                                    alt="Slet"
-                                    onClick={() => handleDelete(curLocation)}
-                                    style={{ cursor: 'pointer', width: '24px', height: '24px' }}
-                                />
-                                {/* <button
-                                    onClick={() => handleDelete(curLocation)}  // You'll define handleEdit below
-                                    style={{
-                                        padding: '5px 10px',
-                                        backgroundColor: '#8d4a5b',
-                                        color: 'white',
-                                        border: 'none',
-                                        borderRadius: '4px',
-                                        cursor: 'pointer'
-                                    }}
-                                >
-                                    Slet
-                                </button> */}
-                            </div>
-                        </div>
-                    ))}
-
-                    <div
-                        style={{
-                            border: '1px solid #ccc',    // Border around each row
-                            padding: '10px',             // Optional: Adds spacing inside each row
-                            marginBottom: '5px',         // Optional: Adds spacing between rows
-                            display: 'grid',
-                            gridTemplateColumns: '3fr 4fr 3fr 3fr 3fr 3fr', // Adjust column sizes as needed
-                            alignItems: 'center'
-                        }}
-                    >
-
-
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div>
-                            <img
-                                src="/images/new-icon.png"
-                                alt="Slet"
-                                onClick={handleNewLocation}
-                                style={{ cursor: 'pointer', width: '24px', height: '24px' }}
-                            />
-                            {/* <button
-                            onClick={handleNewLocation}
-                            style={{
-                                padding: '0.5rem 1rem',
-                                backgroundColor: '#8d4a5b',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '4px',
-                                cursor: 'pointer',
-                            }}
-                        >
-                            Ny
-                        </button> */}
-                        </div>
-                    </div>
-                </div>
+      {/* Flex container */}
+      <div
+        className="calendar-list"
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '1rem',
+          width: '100%',
+          boxSizing: 'border-box',
+        }}
+      >
+        {truckLocations.map((curLocation, index) => (
+          <div
+            key={index}
+            className="calendar-card"
+            style={{
+              border: '1px solid #ccc',
+              padding: '1rem',
+              borderRadius: '0.5rem',
+              background: '#f9f9f9',
+              flex: '1 1 250px',
+              minWidth: '250px',
+              boxSizing: 'border-box',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.5rem',
+            }}
+          >
+            <div>{curLocation.startdatetime}</div>
+            <div>{curLocation.locationname}</div>
+            <div>{curLocation.startdatetime}</div>
+            <div>{curLocation.enddatetime}</div>
+            <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+              <img
+                src="/images/edit-icon.png"
+                alt="Edit"
+                onClick={() => handleEdit(curLocation)}
+                style={{ cursor: 'pointer', width: '28px', height: '28px' }}
+              />
+              <img
+                src="/images/delete-icon.png"
+                alt="Delete"
+                onClick={() => handleDelete(curLocation)}
+                style={{ cursor: 'pointer', width: '28px', height: '28px' }}
+              />
             </div>
+          </div>
+        ))}
+
+        {/* "New" location */}
+        <div
+          className="calendar-card"
+          style={{
+            border: '1px solid #ccc',
+            padding: '1rem',
+            borderRadius: '0.5rem',
+            background: '#f9f9f9',
+            flex: '1 1 250px',
+            minWidth: '250px',
+            boxSizing: 'border-box',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <img
+            src="/images/new-icon.png"
+            alt="New"
+            onClick={handleNewLocation}
+            style={{ cursor: 'pointer', width: '28px', height: '28px' }}
+          />
         </div>
-    )
+      </div>
+    </div>
+
+    {/* Responsive CSS */}
+    <style>{`
+      @media (min-width: 1024px) {
+        .calendar-card {
+          flex: 1 1 100%;
+        }
+      }
+    `}</style>
+  </div>
+)
+
 }
 
 

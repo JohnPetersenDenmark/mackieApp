@@ -1,519 +1,219 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import styled from 'styled-components';
 import { Pizza } from '../../types/Pizza';
 import { Topping } from '../../types/Topping';
-import AdminPizzaCreateEdit from "./AdminPizzaCreateEdit"
-import AdminToppingCreateEdit from "./AdminToppingCreateEdit"
+import AdminPizzaCreateEdit from './AdminPizzaCreateEdit';
+import AdminToppingCreateEdit from './AdminToppingCreateEdit';
 import config from '../../config';
+import {
+  AdminContainer,
+  SectionWrapper,
+  SectionTitle,
+  GridHeaderPizza,
+  GridHeaderTopping,
+  GridRowPizza,
+  GridRowTopping,
+  ImageWrapper,
+  ActionIcon,
+  NewIconWrapper
+} from './AdminLayoutStyles';
 
-
-
-interface AdminMenuesProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
+// ✅ Full-width responsive container
+const Container = styled.div`
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 10px;
+  box-sizing: border-box;
+  font-size: 20px;
+  color: #22191b;
+  font-weight: 200;
+`;
 
 const AdminMenues: React.FC = () => {
-
-
-
-  const [isCreateEditPizzaModalOpen, setIsCreateEditPizzaModalOpen] = useState(false);
   const [pizzas, setPizzas] = useState<Pizza[]>([]);
   const [pizzaToEdit, setPizzaToEdit] = useState<Pizza | null>(null);
-
-  const [isCreateEditToppingModalOpen, setIsCreateEditToppingModalOpen] = useState(false);
   const [toppings, setToppings] = useState<Topping[]>([]);
   const [toppingToEdit, setToppingToEdit] = useState<Topping | null>(null);
-
+  const [isCreateEditPizzaModalOpen, setIsCreateEditPizzaModalOpen] = useState(false);
+  const [isCreateEditToppingModalOpen, setIsCreateEditToppingModalOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    let url: string = config.API_BASE_URL + '/Home/pizzalist';
-    axios.get<Pizza[]>(url)
-      .then(response => {
+    const fetchPizzas = async () => {
+      try {
+        const response = await axios.get<Pizza[]>(`${config.API_BASE_URL}/Home/pizzalist`);
         setPizzas(response.data);
-      })
-      .catch(err => {
-        setError('Failed to load locations');
-      });
+      } catch {
+        setError('Failed to load pizzas');
+      }
+    };
 
-    url = config.API_BASE_URL + '/Home/toppinglist';
-    axios.get<Topping[]>(url)
-      .then(response => {
+    const fetchToppings = async () => {
+      try {
+        const response = await axios.get<Topping[]>(`${config.API_BASE_URL}/Home/toppinglist`);
         setToppings(response.data);
-      })
-      .catch(err => {
-        setError('Failed to load locations');
-      });
+      } catch {
+        setError('Failed to load toppings');
+      }
+    };
 
+    fetchPizzas();
+    fetchToppings();
   }, [isCreateEditPizzaModalOpen, isCreateEditToppingModalOpen, submitting]);
 
-  const handleNewPizza = () => {
-    setPizzaToEdit(null);
-    setIsCreateEditPizzaModalOpen(true);
-  };
-
-  const handleEditPizza = (pizza: Pizza) => {
-    setPizzaToEdit(pizza);
-    setIsCreateEditPizzaModalOpen(true);
-  };
-
-  const handleCloseCreateEditPizzaModal = () => {
-    setIsCreateEditPizzaModalOpen(false);
-  };
-
-  const handleCloseCreateEditToppingModal = () => {
-    setIsCreateEditToppingModalOpen(false);
-  };
-
-  const handleDeletePizza = (pizza: Pizza) => {
-    if (pizza !== null) {
-      const deletePizza = async () => {
-        try {
-          setSubmitting(true);
-          const url = config.API_BASE_URL + '/Admin/removepizza/' + pizza.id;
-          await axios.delete(url);
-        } catch (error) {
-          setError('Fejl');
-          console.error(error);
-        } finally {
-          setSubmitting(false);
-        }
-      };
-
-      deletePizza();  // Call the inner async function
+  const handleDeletePizza = async (pizza: Pizza) => {
+    try {
+      setSubmitting(true);
+      await axios.delete(`${config.API_BASE_URL}/Admin/removepizza/${pizza.id}`);
+    } catch {
+      setError('Failed to delete pizza');
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const handleNewTopping = () => {
-    setIsCreateEditToppingModalOpen(true);
-  };
-
-  const handleEditTopping = (topping: Topping) => {
-    setToppingToEdit(topping);
-    setIsCreateEditToppingModalOpen(true);
-  };
-
-  const handleDeleteTopping = (topping: Topping) => {
-    if (topping !== null) {
-      const deleteTopping = async () => {
-        try {
-          setSubmitting(true);
-          const url = config.API_BASE_URL + '/Admin/removetopping/' + topping.id;
-          await axios.delete(url);
-        } catch (error) {
-          setError('Fejl');
-          console.error(error);
-        } finally {
-          setSubmitting(false);
-        }
-      };
-
-      deleteTopping();  // Call the inner async function
+  const handleDeleteTopping = async (topping: Topping) => {
+    try {
+      setSubmitting(true);
+      await axios.delete(`${config.API_BASE_URL}/Admin/removetopping/${topping.id}`);
+    } catch {
+      setError('Failed to delete topping');
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <div>
+    <Container>
       <AdminPizzaCreateEdit
         isOpen={isCreateEditPizzaModalOpen}
-        onClose={handleCloseCreateEditPizzaModal}
+        onClose={() => setIsCreateEditPizzaModalOpen(false)}
         pizzaToEdit={pizzaToEdit}
       />
 
       <AdminToppingCreateEdit
         isOpen={isCreateEditToppingModalOpen}
-        onClose={handleCloseCreateEditToppingModal}
+        onClose={() => setIsCreateEditToppingModalOpen(false)}
         toppingToEdit={toppingToEdit}
       />
 
+      <SectionTitle>Menuer</SectionTitle>
 
+      {/* Pizzas Section */}
+      <SectionWrapper bgColor='#ffffff' >
+        <GridHeaderPizza>
+          <div></div>
+          <div>Nr.</div>
+          <div>Navn</div>
+          <div>Beskrivelse</div>
+         {/*  <div>Pris før rabat</div>
+          <div>Rabat %</div> */}
+          <div>Pris efter rabat</div>
+          <div></div>
+          <div></div>
+        </GridHeaderPizza>
 
-      <div style={{
-        border: '1px solid grey',
-        padding: '10px', // optional: adds space inside the border
-        borderRadius: '5px', // optional: rounded corners
-        fontSize: '20px',
-        color: '#22191b',
-        fontWeight: 200,
-        textAlign: 'center'
-
-      }}>
-        <div style={{ textAlign: 'center', fontSize: '36px', }}>
-          Menuer
-        </div>
-
-
-        <div style={{ marginTop: '20px', textAlign: 'left', backgroundColor: 'cornsilk' }}>
-          <div
-            style={{
-              border: '1px solid #ccc',    // Border around each row
-              padding: '10px',             // Optional: Adds spacing inside each row
-              marginBottom: '5px',         // Optional: Adds spacing between rows
-              display: 'grid',
-              fontWeight: 700,
-              fontSize: 'px',
-              gridTemplateColumns: '1fr 2fr 4fr 1fr 1fr 1fr 1fr 1fr', // Adjust column sizes as needed
-              alignItems: 'center',
-              marginBlockEnd: 30
-            }}
-          >
-            <div>Pizza nr.</div>
-            <div>Pizzanavn</div>
-            <div>Beskrivelse</div>
-            <div>Pris før rabat</div>
-            <div>Rabat i %</div>
-            <div>Pris efter rabat</div>
-          </div>
-          {pizzas.map((curPizza, index) => (
-            <div
-              key={index}
-              style={{
-                border: '1px solid #ccc',    // Border around each row
-                padding: '10px',             // Optional: Adds spacing inside each row
-                marginBottom: '5px',         // Optional: Adds spacing between rows
-                display: 'grid',
-                gridTemplateColumns: '1fr 2fr 4fr 1fr 1fr 1fr 1fr 1fr', // Adjust column sizes as needed
-                alignItems: 'center'
-              }}
-            >
-              <div>
-                <div>{curPizza.pizzanumber}</div>
-                <img
-                  src={config.API_BASE_URL + curPizza.imageurl}
-
-                  style={{ maxWidth: '100px', height: 'auto', marginTop: '5px' }}
-                />
-              </div>
-              <div>
-                <div>{curPizza.name}</div>
-              </div>
-
-              {/* The rest of the columns remain unchanged */}
-              <div>{curPizza.description}</div>
-              <div>{curPizza.discountprice.toFixed(2).replaceAll('.', ',')}</div>
-              <div>{curPizza.discountpercentage}</div>
-
-              <div>{curPizza.price.toFixed(2).replaceAll('.', ',')}</div>
-              <div>
-                <img
-                  src="/images/edit-icon.png"
-                  alt="Edit"
-                  onClick={() => handleEditPizza(curPizza)}
-                  style={{ cursor: 'pointer', width: '24px', height: '24px' }}
-                />
-                {/*     <button
-                  onClick={() => handleEditPizza(curPizza)}
-                  style={{
-                    padding: '5px 10px',
-                    backgroundColor: '#8d4a5b',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
-                  }}
-                >                 
-                  Rediger
-                </button> */}
-              </div>
-              <div>
-                <img
-                  src="/images/delete-icon.png"
-                  alt="Slet"
-                  onClick={() => handleDeletePizza(curPizza)}
-                  style={{ cursor: 'pointer', width: '24px', height: '24px' }}
-                />
-                {/*  <button
-                  onClick={() => handleDeletePizza(curPizza)}
-                  style={{
-                    padding: '5px 10px',
-                    backgroundColor: '#8d4a5b',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Slet
-                </button> */}
-              </div>
-            </div>
-          ))}
-
-          <div
-            style={{
-              border: '1px solid #ccc',    // Border around each row
-              padding: '10px',             // Optional: Adds spacing inside each row
-              marginBottom: '5px',         // Optional: Adds spacing between rows
-              display: 'grid',
-              fontWeight: 700,
-              fontSize: 'px',
-              gridTemplateColumns: '1fr 2fr 4fr 1fr 1fr 1fr 1fr 1fr', // Adjust column sizes as needed
-              alignItems: 'center',
-              marginBlockEnd: 30
-            }}
-          >
-
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+        {pizzas.map((pizza, index) => (
+          <GridRowPizza key={index}>
+            <ImageWrapper>
+              <img src={`${config.API_BASE_URL}${pizza.imageurl}`} alt={pizza.name} />
+            </ImageWrapper>
+            <div>{pizza.pizzanumber}</div>
+            <div>{pizza.name}</div>
+            <div>{pizza.description}</div>
+          {/*   <div>{pizza.discountprice.toFixed(2).replace('.', ',')}</div>
+            <div>{pizza.discountpercentage}</div> */}
+            <div>{pizza.price.toFixed(2).replace('.', ',')}</div>
             <div>
-
-              <img
-                src="/images/new-icon.png"
-                alt="Ny"
-                onClick={handleNewPizza}
-                style={{ cursor: 'pointer', width: '24px', height: '24px' }}
+              <ActionIcon
+                src="/images/edit-icon.png"
+                alt="Edit"
+                onClick={() => {
+                  setPizzaToEdit(pizza);
+                  setIsCreateEditPizzaModalOpen(true);
+                }}
               />
-              {/*  <button
-                onClick={handleNewPizza}
-                style={{
-                  padding: '0.5rem 1rem',
-                  backgroundColor: '#8d4a5b',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                }}
-              >
-                Ny
-              </button> */}
-            </div>
-          </div>
-        </div>
-
-
-        <div style={{
-          textAlign: 'left'
-        }}>
-
-
-
-        </div>
-        <div style={{ marginTop: '20px', textAlign: 'left', backgroundColor: 'beige' }}>
-          <div
-            style={{
-              border: '1px solid #ccc',    // Border around each row
-              padding: '10px',             // Optional: Adds spacing inside each row
-              marginBottom: '5px',         // Optional: Adds spacing between rows
-              display: 'grid',
-              fontWeight: 700,
-              fontSize: 'px',
-              gridTemplateColumns: '1fr 2fr 4fr 1fr 1fr 1fr 1fr 1fr', // Adjust column sizes as needed
-              alignItems: 'center',
-              marginBlockEnd: 30
-            }}
-          >
-            <div>Tilbehør</div>
-            <div>Beskrivelse</div>
-            <div>Pris</div>
-            <div></div>
-          </div>
-          {toppings.map((curTopping, index) => (
-            <div
-              key={index}
-              style={{
-                border: '1px solid #ccc',    // Border around each row
-                padding: '10px',             // Optional: Adds spacing inside each row
-                marginBottom: '5px',         // Optional: Adds spacing between rows
-                display: 'grid',
-                gridTemplateColumns: '1fr 2fr 4fr 1fr 1fr 1fr 1fr 1fr', // Adjust column sizes as needed
-                alignItems: 'center'
-              }}
-            >
-
-              <div>
-                <div>{curTopping.name}</div>
-                <img
-                  src={config.API_BASE_URL + curTopping.imageurl}
-                  style={{ maxWidth: '100px', height: 'auto', marginTop: '5px' }}
-                />
-              </div>
-
-              <div>{curTopping.description}</div>
-              <div>{curTopping.price.toFixed(2).replaceAll('.', ',')}</div>
-
-              <div></div>
-              <div></div>
-              <div></div>
-              <div>
-                <img
-                  src="/images/edit-icon.png"
-                  alt="Edit"
-                  onClick={() => handleEditTopping(curTopping)}
-                  style={{ cursor: 'pointer', width: '24px', height: '24px' }}
-                />
-                {/* <button
-                  onClick={() => handleEditTopping(curTopping)}  // You'll define handleEdit below
-                  style={{
-                    padding: '5px 10px',
-                    backgroundColor: '#8d4a5b',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Rediger
-                </button> */}
-              </div>
-              <div>
-                <img
-                  src="/images/delete-icon.png"
-                  alt="Slet"
-                  onClick={() => handleDeleteTopping(curTopping)}
-                  style={{ cursor: 'pointer', width: '24px', height: '24px' }}
-                />
-                {/*    <button
-                  onClick={() => handleDeleteTopping(curTopping)}  // You'll define handleEdit below
-                  style={{
-                    padding: '5px 10px',
-                    backgroundColor: '#8d4a5b',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Slet
-                </button> */}
-              </div>
-            </div>
-          ))}
-
-          <div>
-            <div
-              style={{
-                border: '1px solid #ccc',    // Border around each row
-                padding: '10px',             // Optional: Adds spacing inside each row
-                marginBottom: '5px',         // Optional: Adds spacing between rows
-                display: 'grid',
-                fontWeight: 700,
-                fontSize: 'px',
-                gridTemplateColumns: '1fr 2fr 4fr 1fr 1fr 1fr 1fr 1fr', // Adjust column sizes as needed
-                alignItems: 'center',
-                textAlign: 'left',
-                marginBlockEnd: 30
-              }}
-            >
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-
-              <div>
-                <img
-                  src="/images/new-icon.png"
-                  alt="Ny"
-                  onClick={handleNewTopping}
-                  style={{ cursor: 'pointer', width: '24px', height: '24px' }}
-                />
-              {/*   <button
-                  onClick={handleNewTopping}
-                  style={{
-                    padding: '0.5rem 1rem',
-                    backgroundColor: '#8d4a5b',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                  }}
-                >
-                  Ny
-                </button> */}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/*   <div style={{
-        textAlign: 'left'
-      }}>
-
-        Salat
-
-      </div>
-      <div style={{ marginTop: '20px', textAlign: 'left' }}>
-        {pizzas.map((curPizza, index) => (
-          <div
-            key={index}
-            style={{
-              border: '1px solid #ccc',    // Border around each row
-              padding: '10px',             // Optional: Adds spacing inside each row
-              marginBottom: '5px',         // Optional: Adds spacing between rows
-              display: 'grid',
-              gridTemplateColumns: '3fr 4fr 3fr 3fr 3fr 3fr 3fr', // Adjust column sizes as needed
-              alignItems: 'center'
-            }}
-          >
-            <div>{curPizza.name}</div>
-            <div>{curPizza.description}</div>
-            <div>{curPizza.discountprice}</div>
-            <div>{curPizza.discountpercentage}</div>
-            <div>{curPizza.discountprice}</div>
-            <div>
-              <button
-                onClick={() => handleEditPizza(curPizza)}  // You'll define handleEdit below
-                style={{
-                  padding: '5px 10px',
-                  backgroundColor: '#8d4a5b',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer'
-                }}
-              >
-                Rediger
-              </button>
             </div>
             <div>
-              <button
-                onClick={() => handleDeletePizza(curPizza)}  // You'll define handleEdit below
-                style={{
-                  padding: '5px 10px',
-                  backgroundColor: '#8d4a5b',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer'
-                }}
-              >
-                Slet
-              </button>
+              <ActionIcon
+                src="/images/delete-icon.png"
+                alt="Delete"
+                onClick={() => handleDeletePizza(pizza)}
+              />
             </div>
-          </div>
+          </GridRowPizza>
         ))}
-      </div>
-      <div>
-        <button
-          onClick={handleNewPizza}
-          style={{
-            padding: '0.5rem 1rem',
-            backgroundColor: '#8d4a5b',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
-        >
-          Ny
-        </button>
-      </div> */}
-      </div>
+
+
+        <NewIconWrapper>
+          <ActionIcon src="/images/new-icon.png" alt="Ny" onClick={() => {
+            setPizzaToEdit(null);
+            setIsCreateEditPizzaModalOpen(true);
+          }} />
+        </NewIconWrapper>
 
 
 
+      </SectionWrapper>
 
-    </div >
-  )
-}
+      {/* Toppings Section */}
+      <SectionWrapper bgColor="beige">
+        <GridHeaderTopping>
+          <div></div>
+          <div>Tilbehør</div>
+          <div>Beskrivelse</div>
+          <div>Pris</div>
+
+<div></div>
+          <div></div>
+
+        </GridHeaderTopping>
+
+        {toppings.map((topping, index) => (
+          <GridRowTopping key={index}>
+            <ImageWrapper>
+              <img src={`${config.API_BASE_URL}${topping.imageurl}`} />
+            </ImageWrapper>
+
+            <div>{topping.name}</div>
+            <div>{topping.description}</div>
+            <div>{topping.price.toFixed(2).replace('.', ',')}</div>
+
+            <div>
+              <ActionIcon
+                src="/images/edit-icon.png"
+                alt="Edit"
+                onClick={() => {
+                  setToppingToEdit(topping);
+                  setIsCreateEditToppingModalOpen(true);
+                }}
+              />
+            </div>
+            <div>
+              <ActionIcon
+                src="/images/delete-icon.png"
+                alt="Delete"
+                onClick={() => handleDeleteTopping(topping)}
+              />
+            </div>
+          </GridRowTopping>
+        ))}
+
+
+        <NewIconWrapper>
+          <ActionIcon src="/images/new-icon.png" alt="Ny" onClick={() => {
+            setToppingToEdit(null);
+            setIsCreateEditToppingModalOpen(true);
+          }} />
+        </NewIconWrapper>
+
+
+      </SectionWrapper>
+    </Container>
+  );
+};
 
 export default AdminMenues;

@@ -64,79 +64,106 @@ const AdminPlaceCreateEdit: React.FC<LocationModalProps> = ({ isOpen, onClose, l
 
     if (!isOpen) return null;
 
-    return (
-        <div
-            style={{
-                position: 'fixed',
-                top: 0, left: 0, right: 0, bottom: 0,
-                backgroundColor: '#8d4a5b',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                zIndex: 1000,
-            }}
+   return (
+  <div
+    style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)', // optional backdrop
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 1000,
+      padding: '1rem', // allow some breathing space on small screens
+    }}
+  >
+    <div
+      style={{
+        backgroundColor: '#c7a6ac',
+        padding: '1.5rem',
+        borderRadius: '8px',
+        width: '90%',
+        maxWidth: '500px', // stays smaller on desktop
+      }}
+    >
+      <h2
+        style={{
+          backgroundColor: '#8d4a5b',
+          padding: '1rem',
+          color: 'white',
+          borderRadius: '8px',
+          fontSize: '1.25rem',
+          textAlign: 'center',
+          margin: 0,
+          marginBottom: '1rem',
+        }}
+      >
+        Pladsnavn
+      </h2>
+
+      <div style={{ marginBottom: '1rem' }}>
+        <input
+          id="placename"
+          type="text"
+          value={placeName}
+          onChange={(e) => setPlaceName(e.target.value)}
+          onBlur={() => setPlaceNameTouched(true)}
+          placeholder="Indtast pladsnavn"
+          style={{
+            width: '100%',
+            padding: '0.5rem',
+            borderColor:
+              !isPlaceNameValid && placeNameTouched ? 'red' : undefined,
+            borderWidth: '1.5px',
+            borderStyle: 'solid',
+            borderRadius: '4px',
+            boxSizing: 'border-box',
+          }}
+          disabled={submitting}
+        />
+      </div>
+
+      <div style={{ textAlign: 'center' }}>
+        <button
+          onClick={handleSubmit}
+          disabled={!isFormValid || submitting}
+          style={{
+            padding: '0.5rem 1rem',
+            backgroundColor:
+              isFormValid && !submitting ? '#8d4a5b' : 'grey',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor:
+              isFormValid && !submitting ? 'pointer' : 'not-allowed',
+            marginRight: '0.5rem',
+          }}
         >
+          Ok
+        </button>
 
-            <div style={{ backgroundColor: '#c7a6ac', padding: '2rem', borderRadius: '8px', minWidth: '500px' }}>
-                <h2 style={{ backgroundColor: '#8d4a5b', padding: '2rem', color: 'white', borderRadius: '8px' }} >Pladsnavn</h2>
+        <button
+          onClick={onClose}
+          disabled={submitting}
+          style={{
+            padding: '0.5rem 1rem',
+            backgroundColor: !submitting ? '#8d4a5b' : 'grey',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: !submitting ? 'pointer' : 'not-allowed',
+          }}
+        >
+          Annuler
+        </button>
+      </div>
+    </div>
+  </div>
+);
 
-
-                <div style={{ marginBottom: '1rem' }}>
-                    {/* <label htmlFor="email"><strong>Pladsnavn:</strong></label><br /> */}
-                    <input
-                        id="placename"
-                        type="text"
-                        value={placeName}
-                        onChange={(e) => setPlaceName(e.target.value)}
-                        onBlur={() => setPlaceNameTouched(true)}
-                        placeholder="Indtast pladsnavn"
-                        style={{
-                            width: '100%',
-                            padding: '0.5rem',
-                            marginTop: '0.25rem',
-                            borderColor: !isPlaceNameValid && placeNameTouched ? 'red' : undefined,
-                            borderWidth: '1.5px',
-                            borderStyle: 'solid',
-                            borderRadius: '4px',
-                        }}
-                        disabled={submitting}
-                    />
-                </div>
-
-                <button
-                    onClick={handleSubmit}
-                    disabled={!isFormValid || submitting}
-                    style={{
-                        marginTop: '1rem',
-                        padding: '0.5rem 1rem',
-                        backgroundColor: isFormValid && !submitting ? '#8d4a5b' : 'grey',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: isFormValid && !submitting ? 'pointer' : 'not-allowed',
-                        marginRight: '0.5rem',
-                    }}
-                > Ok</button>
-
-
-                <button
-                    onClick={onClose}
-                    disabled={submitting}
-                    style={{
-                        marginTop: '1rem',
-                        padding: '0.5rem 1rem',
-                        backgroundColor: !submitting ? '#8d4a5b' : 'grey',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: !submitting ? 'pointer' : 'not-allowed',
-                        marginRight: '0.5rem',
-                    }}
-                > Annuler</button>
-
-            </div>
-        </div>
-    )
 };
 
 export default AdminPlaceCreateEdit;

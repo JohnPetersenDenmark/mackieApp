@@ -38,8 +38,8 @@ const AdminOrders: React.FC = () => {
         let ordersFromTodayAndForward = filterOrderByTodaysDate(response.data);
 
         const sortedOrders = ordersFromTodayAndForward.sort((a, b) => {
-          
-         // const timeDiffInMilliSeconds = new Date(b.modifieddatetime + "Z").getTime() - new Date(a.modifieddatetime + "Z").getTime();
+
+          // const timeDiffInMilliSeconds = new Date(b.modifieddatetime + "Z").getTime() - new Date(a.modifieddatetime + "Z").getTime();
           const timeDiffInMilliSeconds = parseDanishDateTime(b.locationstartdatetime).getTime() - parseDanishDateTime(a.locationstartdatetime).getTime();
           return timeDiffInMilliSeconds;
         });
@@ -107,6 +107,11 @@ const AdminOrders: React.FC = () => {
 
   const highlightText = (text: string, query: string) => {
     if (!query) return text;
+      if (!text) 
+      {
+          return text;
+      }
+       
     const regex = new RegExp(`(${query})`, 'gi');
     const parts = text.split(regex);
     return parts.map((part, i) =>
@@ -117,7 +122,10 @@ const AdminOrders: React.FC = () => {
   const displayedOrders = searchQuery.trim() === '' ? orders : filteredOrders;
 
   function parseDanishDateTime(dateTimeStr: string): Date {
-    // Split into date and time
+
+
+    try {
+        // Split into date and time
     const [dateStr, timeStr] = dateTimeStr.split(' ');
 
     // Parse date part
@@ -128,6 +136,13 @@ const AdminOrders: React.FC = () => {
 
     // JS Date months are 0-indexed
     return new Date(year, month - 1, day, hour, minute);
+
+    } catch (error) {
+     var x = 1;
+     return new Date
+    }
+
+ 
   }
 
   function formatDateToDanish(date: Date): string {
@@ -164,15 +179,15 @@ const AdminOrders: React.FC = () => {
 
       const locationDate = parseDanishDateTime(order.locationstartdatetime); // assumes createdAt is ISO UTC string
 
-     // if (created >= startTime && created <= endTime) {
-     if (locationDate >= startTimeToday) {
+      // if (created >= startTime && created <= endTime) {
+      if (locationDate >= startTimeToday) {
         filteredOrdersByDate.push(order);
       }
     });
     return filteredOrdersByDate
   });
 
-   const filterTruckLocationsByTodaysDate = ((slocations: TruckLocation[]) => {
+  const filterTruckLocationsByTodaysDate = ((slocations: TruckLocation[]) => {
     const now = new Date();
     const year = now.getUTCFullYear();
     const month = now.getUTCMonth(); // 0-based
@@ -493,7 +508,8 @@ const AdminOrders: React.FC = () => {
                 </div>
 
                 <div className="ordersGridHeader" style={styles.ordersGridHeader}>
-                  <div>Best nr.:  {curOrder.customerorderCode}</div>
+                 
+                  <div>Best nr.:  {highlightText(curOrder.customerorderCode, searchQuery)}</div>
                   <div>Kunde: {highlightText(curOrder.customerName, searchQuery)}</div>
                   <div>Telefon: {curOrder.phone}</div>
                   <div>Email: {curOrder.email}</div>
@@ -514,31 +530,6 @@ const AdminOrders: React.FC = () => {
                   /></div>
                 </div>
 
-                {/* <div className="ordersGrid" style={styles.ordersGrid}>
-                <div>{curOrder.customerorderCode}</div>
-                <div>{highlightText(curOrder.customerName, searchQuery)}</div>
-                <div>{curOrder.phone}</div>
-                <div>{curOrder.email}</div>
-                <div>{formatDateToDanish(new Date(curOrder.createddatetime + "Z"))}</div>
-                <div>{formatDateToDanish(new Date(curOrder.modifieddatetime + "Z"))}</div>
-                <div>{curOrder.payeddatetime ? formatDateToDanish(new Date(curOrder.payeddatetime + "Z")) : ''}</div>
-                <div>
-                  <img
-                    src="/images/edit-icon.png"
-                    alt="Edit"
-                    onClick={() => handleEditOrder(curOrder)}
-                    style={styles.icon}
-                  />
-                </div>
-                <div>
-                  <img
-                    src="/images/delete-icon.png"
-                    alt="Delete"
-                    onClick={() => handleDeleteOrder(curOrder)}
-                    style={styles.icon}
-                  />
-                </div>
-              </div> */}
 
                 {curOrder.comment.trim().length > 0 && (
                   <div style={styles.commentBox}>

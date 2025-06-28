@@ -16,51 +16,29 @@ const AdminDashBoard: React.FC = () => {
 
     return (
         <>
-            {/* <div> */}
-            {/*   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr ', gap: '0rem', fontSize: '36px', color: 'white' }}>
-                <div style={{ background: '#8d4a5b', padding: '1rem', margin: 0 }}>
-                    Mackie's Pizza Truck
-                </div>
-
-                <div style={{ background: '#8d4a5b', padding: '1rem', textAlign: "right" }}>
-                    Log ud
-                </div>
-            </div> */}
-            <div style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: '1rem',
-                fontSize: '40px',
-                color: '#8d4a5b',
-                fontWeight: 700,
-                marginLeft: '0px',
-                marginTop: '80px',
-                marginBottom: '80px'
-            }}>
+            <div
+                style={{
+               /*      display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '1rem', */
+                    fontSize: '30px',
+                    color: '#8d4a5b',
+                    fontWeight: 700,
+                    marginLeft: '0px',
+                    marginTop: '40px',
+                    marginBottom: '40px'
+                }}
+            >
 
                 {/* <div  style={{ cursor: 'pointer' }} onClick={() => setActiveMenu('Dashboard')}>Dashboard</div> */}
-                <div style={{ cursor: 'pointer' , marginLeft: '100px' }} onClick={() => setActiveMenu('Stadepladser')}>Stadepladser</div>
-                <div style={{ cursor: 'pointer' , marginLeft: '100px'}} onClick={() => setActiveMenu('Kalender')}>Kalender</div>
-                <div style={{ cursor: 'pointer' , marginLeft: '100px'}} onClick={() => setActiveMenu('Bestillinger')}>Bestillinger</div>
-                <div style={{ cursor: 'pointer' , marginLeft: '100px' }} onClick={() => setActiveMenu('Pakkeliste')}>Pakkeliste</div>
-                <div style={{ cursor: 'pointer' , marginLeft: '100px' }} onClick={() => setActiveMenu('Menuer')}>Menuer</div>
+                <div style={{ cursor: 'pointer', marginLeft: '100px' }} onClick={() => setActiveMenu('Stadepladser')}>Stadepladser</div>
+                <div style={{ cursor: 'pointer', marginLeft: '100px' }} onClick={() => setActiveMenu('Kalender')}>Kalender</div>
+                <div style={{ cursor: 'pointer', marginLeft: '100px' }} onClick={() => setActiveMenu('Bestillinger')}>Bestillinger</div>
+                <div style={{ cursor: 'pointer', marginLeft: '100px' }} onClick={() => setActiveMenu('Pakkeliste')}>Pakkeliste</div>
+                <div style={{ cursor: 'pointer', marginLeft: '100px' }} onClick={() => setActiveMenu('Menuer')}>Menuer</div>
                 {/* <div  style={{ cursor: 'pointer' }} onClick={() => setActiveMenu('Indstillinger')}>Indstillinger</div> */}
                 {/* <div  style={{ cursor: 'pointer' }} onClick={() => setActiveMenu('Brugere')}>Brugere</div> */}
-            </div>
 
-
-            <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(1, 1fr)',
-                gap: '0rem',
-                fontSize: '30px',
-                color: '#8d4a5b',
-                fontWeight: 700,
-                marginLeft: '10px',
-                marginRight: '240px',
-                marginTop: '80px',
-                marginBottom: '80px'
-            }}>
                 {/* {activeMenu === 'Dashboard' && <AdminSalePerMenu />} */}
                 {activeMenu === 'Stadepladser' && <AdminPlaces />}
                 {activeMenu === 'Kalender' && <AdminCalendar />}
@@ -70,7 +48,6 @@ const AdminDashBoard: React.FC = () => {
                 {/* {activeMenu === 'Indstillinger' && <AdminSettings />} */}
                 {/* {activeMenu === 'Brugere' && <AdminUsers />} */}
             </div>
-            {/* </div> */}
         </>
 
     )

@@ -180,127 +180,153 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
 
     if (!isOpen) return null;
 
-    return (
-        <div
-            style={{
-                position: 'fixed',
-                top: 0, left: 0, right: 0, bottom: 0,
-                backgroundColor: '#8d4a5b',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                zIndex: 1000,
-            }}
+   return (
+  <div
+    style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(141, 74, 91, 0.9)',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 1000,
+      padding: '1rem',
+      boxSizing: 'border-box',
+    }}
+  >
+    <div
+      className="modal-content"
+      style={{
+        backgroundColor: '#c7a6ac',
+        padding: '1.5rem',
+        borderRadius: '0.5rem',
+        width: '100%',
+        maxWidth: '500px',
+        boxSizing: 'border-box',
+      }}
+    >
+      <h2
+        style={{
+          backgroundColor: '#8d4a5b',
+          padding: '1rem',
+          color: 'white',
+          borderRadius: '0.5rem',
+          textAlign: 'center',
+          marginBottom: '1rem',
+        }}
+      >
+        Aftale
+      </h2>
+
+      <div style={{ marginBottom: '1rem' }}>
+        <label htmlFor="startDateTimePicker" style={{ fontWeight: 'bold' }}>Start:</label><br />
+        <DatePicker
+          id="startDateTimePicker"
+          selected={startDateTime}
+          onChange={handleStartDateChange}
+          showTimeSelect
+          timeCaption="Tid"
+          timeIntervals={60}
+          dateFormat="dd-MM-yyyy HH:mm"
+          timeFormat="HH:mm"
+          locale={da}
+          placeholderText="Vælg startdato og tid"
+          customInput={<CustomInput />}
+        />
+      </div>
+
+      <div style={{ marginBottom: '1rem' }}>
+        <label htmlFor="endDateTimePicker" style={{ fontWeight: 'bold' }}>Slut:</label><br />
+        <DatePicker
+          id="endDateTimePicker"
+          selected={endDateTime}
+          onChange={handleEndDateChange}
+          showTimeSelect
+          timeCaption="Tid"
+          timeIntervals={60}
+          dateFormat="dd-MM-yyyy HH:mm"
+          timeFormat="HH:mm"
+          locale={da}
+          placeholderText="Vælg slutdato og tid"
+          minDate={startDateTime || undefined}
+          maxDate={startDateTime || undefined}
+          customInput={<CustomInput />}
+        />
+      </div>
+
+      <div style={{ marginBottom: '1.5rem' }}>
+        <label htmlFor="selectSaleLocation" style={{ fontWeight: 'bold' }}>Vælg stadeplads:</label><br />
+        <select
+          id="selectSaleLocation"
+          value={selectedSaleLocationId ?? ''}
+          onChange={(e) => setSelectedSaleLocationId(Number(e.target.value))}
+          style={{
+            width: '100%',
+            padding: '0.75rem',
+            fontSize: '1rem',
+            borderRadius: '0.25rem',
+            border: '1px solid #ccc',
+          }}
         >
+          <option value="" disabled>
+            Vælg en lokation
+          </option>
+          {saleLocations.map((saleLocation) => (
+            <option key={saleLocation.id} value={saleLocation.id}>
+              {saleLocation.locationname}
+            </option>
+          ))}
+        </select>
+      </div>
 
-            <div style={{ backgroundColor: '#c7a6ac', padding: '2rem', borderRadius: '8px', minWidth: '500px' }}>
-                <h2 style={{ backgroundColor: '#8d4a5b', padding: '2rem', color: 'white', borderRadius: '8px' }} >Aftale</h2>
+      <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'space-between' }}>
+        <button
+          onClick={handleSubmit}
+          disabled={!isFormValid || submitting}
+          style={{
+            flex: 1,
+            padding: '0.75rem',
+            backgroundColor: isFormValid && !submitting ? '#8d4a5b' : 'grey',
+            color: 'white',
+            border: 'none',
+            borderRadius: '0.25rem',
+            cursor: isFormValid && !submitting ? 'pointer' : 'not-allowed',
+          }}
+        >
+          Ok
+        </button>
+        <button
+          onClick={onClose}
+          disabled={submitting}
+          style={{
+            flex: 1,
+            padding: '0.75rem',
+            backgroundColor: !submitting ? '#8d4a5b' : 'grey',
+            color: 'white',
+            border: 'none',
+            borderRadius: '0.25rem',
+            cursor: !submitting ? 'pointer' : 'not-allowed',
+          }}
+        >
+          Annuler
+        </button>
+      </div>
+    </div>
 
+    {/* Responsive CSS */}
+    <style>{`
+      @media (min-width: 768px) {
+        .modal-content {
+          padding: 2rem;
+        }
+      }
+    `}</style>
+  </div>
+);
 
-                <div>
-                    <label htmlFor="startDateTimePicker"><strong>Start:</strong></label><br />
-                    <DatePicker
-                        id='startDateTimePicker'
-                        selected={startDateTime}
-                        onChange={handleStartDateChange}
-                        showTimeSelect
-                        timeCaption="Tid"
-                        timeIntervals={60}
-                        dateFormat="dd-MM-yyyy HH:mm"
-                        timeFormat="HH:mm"
-                        locale={da}
-                        placeholderText="Vælg startdato og tid"
-                        customInput={<CustomInput />}
-                    />
-                </div>
-                <div>
-                    <label htmlFor="endDateTimePicker"><strong>Slut:</strong></label><br />
-                    <DatePicker
-                        id='endDateTimePicker'
-                        selected={endDateTime}
-                        onChange={handleEndDateChange}
-                        timeCaption="Tid"
-                        showTimeSelect
-                        timeIntervals={60}
-                        dateFormat="dd-MM-yyyy HH:mm"
-                        timeFormat="HH:mm"
-                        locale={da}
-                        placeholderText="Vælg slutdato og tid"
-                        // Restrict end date to the same day as start
-                        minDate={startDateTime ? startDateTime : undefined}
-                        maxDate={startDateTime ? startDateTime : undefined}
-                        // Restrict time to after start time on same day
-                     /*    minTime={
-                            startDateTime
-                                ? startDateTime
-                                : undefined
-                        }
-                        maxTime={startDateTime ? new Date(startDateTime.setHours(23, 59, 59, 999)) : undefined} */
-                        customInput={<CustomInput />}
-                    />
-                </div>
-
-                <div style={{ marginBottom: '1rem' }}>
-                    <label htmlFor="selectSaleLocation"><strong>Vælg stadeplads:</strong></label><br />
-                    <div style={{ height: 20 }}>
-                        <select
-                            style={{
-                                width: '100%',          // Make it fill the container
-                                height: '40px',         // Increase the height
-                                fontSize: '16px',       // Make text bigger
-                                padding: '0.5rem',      // Add some padding
-                                borderRadius: '4px'     // Optional: rounded corners
-                            }}
-                            id='selectSaleLocation'
-                            value={selectedSaleLocationId ?? ""}
-                            onChange={(e) => setSelectedSaleLocationId(Number(e.target.value))}
-                        >
-                            <option value="" disabled>
-                                Vælg en lokation
-                            </option>
-                            {saleLocations.map((saleLocation) => (
-                                <option key={saleLocation.id} value={saleLocation.id}>
-                                    {saleLocation.locationname}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                </div>
-
-                <button
-                    onClick={handleSubmit}
-                    disabled={!isFormValid}
-                    style={{
-                        marginTop: '1rem',
-                        padding: '0.5rem 1rem',
-                        backgroundColor: isFormValid && !submitting ? '#8d4a5b' : 'grey',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: isFormValid && !submitting ? 'pointer' : 'not-allowed',
-                        marginRight: '0.5rem',
-                    }}
-                > Ok</button>
-
-
-                <button
-                    onClick={onClose}
-                    disabled={submitting}
-                    style={{
-                        marginTop: '1rem',
-                        padding: '0.5rem 1rem',
-                        backgroundColor: !submitting ? '#8d4a5b' : 'grey',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: !submitting ? 'pointer' : 'not-allowed',
-                        marginRight: '0.5rem',
-                    }}
-                > Annuler</button>
-
-            </div>
-        </div>
-    )
 };
 
 
