@@ -195,6 +195,7 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
       zIndex: 1000,
       padding: '1rem',
       boxSizing: 'border-box',
+        marginLeft: 'auto',
     }}
   >
     <div
