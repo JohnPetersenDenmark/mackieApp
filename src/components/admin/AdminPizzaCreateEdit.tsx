@@ -326,219 +326,226 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
     if (!isOpen) return null;
 
     return (
+    <div
+        style={{
+         position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: '#8d4a5b',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 1000,
+        }}
+    >
+
         <div
             style={{
-                position: 'fixed',
-                top: 0, left: 0, right: 0, bottom: 0,
-                backgroundColor: '#8d4a5b',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                zIndex: 1000,
+                backgroundColor: '#c7a6ac',
+        padding: '2rem',
+        borderRadius: '8px',
+        minWidth: '300px',
+        width: '90%',
+        maxWidth: '500px',
+        maxHeight: '90vh',
+        overflowY: 'auto',
             }}
         >
+            <h2 style={{ backgroundColor: '#8d4a5b', padding: '2rem', color: 'white', borderRadius: '8px', fontSize: '1.5rem' }}>Pizza</h2>
 
-            <div style={{ backgroundColor: '#c7a6ac', padding: '2rem', borderRadius: '8px', minWidth: '500px' }}>
-                <h2 style={{ backgroundColor: '#8d4a5b', padding: '2rem', color: 'white', borderRadius: '8px' }} >Pizza</h2>
-
-
-                <div style={{ marginBottom: '1rem', fontSize: '20px', fontWeight: '200' }}>
-                    <label htmlFor="pizzanumber">Pizzanummer:</label><br />
-                    <input
-                        id="pizzanumber"
-                        type="text"
-                        value={pizzaNumber}
-                        onChange={(e) => setPizzaNumber(e.target.value)}
-                        onBlur={() => setPizzaNumberTouched(true)}
-                        placeholder="Pizzanummer"
-                        style={{
-                            width: '100%',
-                            padding: '0.5rem',
-                            marginTop: '0.25rem',
-                            borderColor: !isPizzaNumberValid && pizzaNumberTouched ? 'red' : undefined,
-                            borderWidth: '1.5px',
-                            borderStyle: 'solid',
-                            borderRadius: '4px',
-                        }}
-                        disabled={submitting}
-                    />
-                </div>
-
-                <div style={{ marginBottom: '1rem', fontSize: '20px', fontWeight: 200 }}>
-                    <label htmlFor="pizzaname">Pizzanavn:</label><br />
-                    <input
-                        id="pizzaname"
-                        type="text"
-                        value={pizzaName}
-                        onChange={(e) => setPizzaName(e.target.value)}
-                        onBlur={() => setPizzaNameTouched(true)}
-
-
-                        placeholder="Pizzanavn"
-                        style={{
-                            width: '100%',
-                            padding: '0.5rem',
-                            marginTop: '0.25rem',
-                            borderColor: !isPizzaNameValid && pizzaNameTouched ? 'red' : undefined,
-                            borderWidth: '1.5px',
-                            borderStyle: 'solid',
-                            borderRadius: '4px',
-                        }}
-                        disabled={submitting}
-                    />
-                </div>
-
-                <div style={{ marginBottom: '1rem', fontSize: '20px', fontWeight: 200 }}>
-                    <label htmlFor="pizzadescription">Beskrivelse:</label><br />
-                    <input
-                        id="pizzadescription"
-                        type="text"
-                        value={pizzaDescription}
-                        onChange={(e) => setPizzaDescription(e.target.value)}
-                        onBlur={() => setPizzaDescriptionTouched(true)}
-                        placeholder="Pizzabeskrivelse"
-                        style={{
-                            width: '100%',
-                            padding: '0.5rem',
-                            marginTop: '0.25rem',
-                            borderColor: !isPizzaDescriptionValid && pizzaDescriptionTouched ? 'red' : undefined,
-                            borderWidth: '1.5px',
-                            borderStyle: 'solid',
-                            borderRadius: '4px',
-                        }}
-                        disabled={submitting}
-                    />
-                </div>
-
-                <div style={{ marginBottom: '1rem', fontSize: '20px', fontWeight: 200 }}>
-                    <label htmlFor="pricebeforediscount">Pris før rabat:</label><br />
-                    <input
-                        id="pricebeforediscount"
-                        type="text"
-                         readOnly
-                        value={pizzaPriceBeforeDiscount.replaceAll('.', ',')}
-                        onChange={handlePriceBeforeDiscount}
-                        onBlur={handleOnBlurPriceBeforeDiscount}
-                        placeholder="Vejl. udsalgspris"
-                       
-                        style={{
-                            width: '100%',
-                            padding: '0.5rem',
-                            marginTop: '0.25rem',
-                            borderColor: !isPriceBeforeDiscountValid && pizzaPriceBeforeDiscountTouched ? 'red' : undefined,
-                            borderWidth: '1.5px',
-                            borderStyle: 'solid',
-                            borderRadius: '4px',
-                        }}
-                        disabled={submitting}
-                    />
-                </div>
-
-                <div style={{ marginBottom: '1rem', fontSize: '20px', fontWeight: 200 }}>
-                    <label htmlFor="xyz">Rabat i %:</label><br />
-                    <input
-                        id="xyz"
-                        type="text"
-                        //value={pizzaDiscountPercentage.replaceAll('.', ',')}
-                        value={pizzaDiscountPercentage}
-                        onChange={handleDiscountPercentage}
-                        onBlur={handleOnBlurDiscount}
-                        placeholder="Rabat i %"
-                        style={{
-                            width: '100%',
-                            padding: '0.5rem',
-                            marginTop: '0.25rem',
-                            borderColor: !isPizzaDiscountValid && pizzaDiscountPercentageTouched ? 'red' : undefined,
-                            borderWidth: '1.5px',
-                            borderStyle: 'solid',
-                            borderRadius: '4px',
-                        }}
-                        disabled={submitting}
-                    />
-                </div>
-                <div style={{ marginBottom: '1rem', fontSize: '20px', fontWeight: 200 }}>
-                    <label htmlFor="priceafterdiscount">Pris efter rabat:</label><br />
-                    <input
-                        id="priceafterdiscount"
-                        type="text"
-                        value={pizzaPriceAfterDiscount.replaceAll('.', ',')}
-                        onChange={handlePriceAfterDiscount}
-                        onBlur={handleOnBlurPriceAfterDiscount}
-                        placeholder="Vejl. udsalgspris"
-                        style={{
-                            width: '100%',
-                            padding: '0.5rem',
-                            marginTop: '0.25rem',
-                            borderColor: !isPriceAfterDiscountValid && pizzaPriceAfterDiscountTouched ? 'red' : undefined,
-                            borderWidth: '1.5px',
-                            borderStyle: 'solid',
-                            borderRadius: '4px',
-                        }}
-                        disabled={submitting}
-                    />
-                </div>
-
-
-
-                <div
+            <div style={{ marginBottom: '1rem', fontSize: '1.25rem', fontWeight: '200' }}>
+                <label htmlFor="pizzanumber">Pizzanummer:</label><br />
+                <input
+                    id="pizzanumber"
+                    type="text"
+                    value={pizzaNumber}
+                    onChange={(e) => setPizzaNumber(e.target.value)}
+                    onBlur={() => setPizzaNumberTouched(true)}
+                    placeholder="Pizzanummer"
                     style={{
-                        marginBottom: '1rem',
-                        display: 'flex',           // Makes children align horizontally
-                        alignItems: 'center',      // Optional: Vertically centers items
-                        gap: '1rem'                // Optional: Spacing between image and FileInput
-                    }}
-                >
-                    <div>
-                        <img
-                            src={config.API_BASE_URL + pizzaImageurl}
-                            style={{
-                                maxWidth: '200px',
-                                height: 'auto',
-                                marginTop: '5px'
-                            }}
-                        />
-                    </div>
-
-                    <div>
-                        <FileInput onFileSelect={handleFileSelect} />
-                    </div>
-                </div>
-
-
-                <button
-                    onClick={handleSubmit}
-                    disabled={!isFormValid || submitting}
-                    style={{
-                        marginTop: '1rem',
-                        padding: '0.5rem 1rem',
-                        backgroundColor: isFormValid && !submitting ? '#8d4a5b' : 'grey',
-                        color: 'white',
-                        border: 'none',
+                        width: '100%',
+                        padding: '0.5rem',
+                        marginTop: '0.25rem',
+                        borderColor: !isPizzaNumberValid && pizzaNumberTouched ? 'red' : undefined,
+                        borderWidth: '1.5px',
+                        borderStyle: 'solid',
                         borderRadius: '4px',
-                        cursor: isFormValid && !submitting ? 'pointer' : 'not-allowed',
-                        marginRight: '0.5rem',
                     }}
-                > Ok</button>
-
-
-                <button
-                    onClick={onClose}
                     disabled={submitting}
-                    style={{
-                        marginTop: '1rem',
-                        padding: '0.5rem 1rem',
-                        backgroundColor: !submitting ? '#8d4a5b' : 'grey',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: !submitting ? 'pointer' : 'not-allowed',
-                        marginRight: '0.5rem',
-                    }}
-                > Annuler</button>
-
+                />
             </div>
+
+            <div style={{ marginBottom: '1rem', fontSize: '1.25rem', fontWeight: 200 }}>
+                <label htmlFor="pizzaname">Pizzanavn:</label><br />
+                <input
+                    id="pizzaname"
+                    type="text"
+                    value={pizzaName}
+                    onChange={(e) => setPizzaName(e.target.value)}
+                    onBlur={() => setPizzaNameTouched(true)}
+                    placeholder="Pizzanavn"
+                    style={{
+                        width: '100%',
+                        padding: '0.5rem',
+                        marginTop: '0.25rem',
+                        borderColor: !isPizzaNameValid && pizzaNameTouched ? 'red' : undefined,
+                        borderWidth: '1.5px',
+                        borderStyle: 'solid',
+                        borderRadius: '4px',
+                    }}
+                    disabled={submitting}
+                />
+            </div>
+
+            <div style={{ marginBottom: '1rem', fontSize: '1.25rem', fontWeight: 200 }}>
+                <label htmlFor="pizzadescription">Beskrivelse:</label><br />
+                <input
+                    id="pizzadescription"
+                    type="text"
+                    value={pizzaDescription}
+                    onChange={(e) => setPizzaDescription(e.target.value)}
+                    onBlur={() => setPizzaDescriptionTouched(true)}
+                    placeholder="Pizzabeskrivelse"
+                    style={{
+                        width: '100%',
+                        padding: '0.5rem',
+                        marginTop: '0.25rem',
+                        borderColor: !isPizzaDescriptionValid && pizzaDescriptionTouched ? 'red' : undefined,
+                        borderWidth: '1.5px',
+                        borderStyle: 'solid',
+                        borderRadius: '4px',
+                    }}
+                    disabled={submitting}
+                />
+            </div>
+
+            <div style={{ marginBottom: '1rem', fontSize: '1.25rem', fontWeight: 200 }}>
+                <label htmlFor="pricebeforediscount">Pris før rabat:</label><br />
+                <input
+                    id="pricebeforediscount"
+                    type="text"
+                    readOnly
+                    value={pizzaPriceBeforeDiscount.replaceAll('.', ',')}
+                    onChange={handlePriceBeforeDiscount}
+                    onBlur={handleOnBlurPriceBeforeDiscount}
+                    placeholder="Vejl. udsalgspris"
+                    style={{
+                        width: '100%',
+                        padding: '0.5rem',
+                        marginTop: '0.25rem',
+                        borderColor: !isPriceBeforeDiscountValid && pizzaPriceBeforeDiscountTouched ? 'red' : undefined,
+                        borderWidth: '1.5px',
+                        borderStyle: 'solid',
+                        borderRadius: '4px',
+                    }}
+                    disabled={submitting}
+                />
+            </div>
+
+            <div style={{ marginBottom: '1rem', fontSize: '1.25rem', fontWeight: 200 }}>
+                <label htmlFor="xyz">Rabat i %:</label><br />
+                <input
+                    id="xyz"
+                    type="text"
+                    value={pizzaDiscountPercentage}
+                    onChange={handleDiscountPercentage}
+                    onBlur={handleOnBlurDiscount}
+                    placeholder="Rabat i %"
+                    style={{
+                        width: '100%',
+                        padding: '0.5rem',
+                        marginTop: '0.25rem',
+                        borderColor: !isPizzaDiscountValid && pizzaDiscountPercentageTouched ? 'red' : undefined,
+                        borderWidth: '1.5px',
+                        borderStyle: 'solid',
+                        borderRadius: '4px',
+                    }}
+                    disabled={submitting}
+                />
+            </div>
+
+            <div style={{ marginBottom: '1rem', fontSize: '1.25rem', fontWeight: 200 }}>
+                <label htmlFor="priceafterdiscount">Pris efter rabat:</label><br />
+                <input
+                    id="priceafterdiscount"
+                    type="text"
+                    value={pizzaPriceAfterDiscount.replaceAll('.', ',')}
+                    onChange={handlePriceAfterDiscount}
+                    onBlur={handleOnBlurPriceAfterDiscount}
+                    placeholder="Vejl. udsalgspris"
+                    style={{
+                        width: '100%',
+                        padding: '0.5rem',
+                        marginTop: '0.25rem',
+                        borderColor: !isPriceAfterDiscountValid && pizzaPriceAfterDiscountTouched ? 'red' : undefined,
+                        borderWidth: '1.5px',
+                        borderStyle: 'solid',
+                        borderRadius: '4px',
+                    }}
+                    disabled={submitting}
+                />
+            </div>
+
+            <div
+                style={{
+                    marginBottom: '1rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '1rem'
+                }}
+            >
+                <div>
+                    <img
+                        src={config.API_BASE_URL + pizzaImageurl}
+                        style={{
+                            maxWidth: '200px',
+                            height: 'auto',
+                            marginTop: '5px'
+                        }}
+                    />
+                </div>
+
+                <div>
+                    <FileInput onFileSelect={handleFileSelect} />
+                </div>
+            </div>
+
+            <button
+                onClick={handleSubmit}
+                disabled={!isFormValid || submitting}
+                style={{
+                    marginTop: '1rem',
+                    padding: '0.5rem 1rem',
+                    backgroundColor: isFormValid && !submitting ? '#8d4a5b' : 'grey',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: isFormValid && !submitting ? 'pointer' : 'not-allowed',
+                    marginRight: '0.5rem',
+                }}
+            > Ok</button>
+
+            <button
+                onClick={onClose}
+                disabled={submitting}
+                style={{
+                    marginTop: '1rem',
+                    padding: '0.5rem 1rem',
+                    backgroundColor: !submitting ? '#8d4a5b' : 'grey',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: !submitting ? 'pointer' : 'not-allowed',
+                    marginRight: '0.5rem',
+                }}
+            > Annuler</button>
         </div>
-    )
+    </div>
+)
+
 
 }
 

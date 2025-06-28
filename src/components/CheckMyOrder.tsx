@@ -83,21 +83,33 @@ const CheckMyOrder: React.FC<CheckOrderModalProps> = ({ isOpen, onOrderFetched ,
   };
 
   if (!isOpen) return null;
+
   return (
 
 
     <div
       style={{
-        position: 'fixed',
-        top: 0, left: 0, right: 0, bottom: 0,
-        backgroundColor: '#8d4a5b',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        zIndex: 1000,
+            position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: '#8d4a5b',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 1000,
+      overflowY: 'auto',
+      padding: '1rem'
       }}
     >
-      <div style={{ backgroundColor: '#c7a6ac', padding: '2rem', borderRadius: '8px', minWidth: '500px' }}>
+      <div style={{     backgroundColor: '#c7a6ac',
+        padding: '1rem',
+        borderRadius: '8px',
+        minWidth: '300px',
+        width: '100%',
+        maxWidth: '500px',
+        boxSizing: 'border-box', }}>
         <h2 style={{ backgroundColor: '#8d4a5b', padding: '2rem', color: 'white',  borderRadius: '8px' }} >Se din bestilling hos Mackies Pizza Truck</h2>
 
         {/* Email input */}

@@ -311,8 +311,8 @@ const AdminOrders: React.FC = () => {
       color: '#22191b',
       fontWeight: 200,
       textAlign: 'center' as const,
-      maxWidth: 1200,
-      margin: '0 auto',
+      maxWidth: 1400,
+      margin: 'auto',
     },
     headerGrid: {
       display: 'grid',
@@ -449,7 +449,8 @@ const AdminOrders: React.FC = () => {
   return (
     <>
       <style>{mediaQueries}</style>
-      <div style={{ ...styles.container, width: '100vw', overflowX: 'hidden' }}>
+      {/* <div style={{ styles.container, width: '100vw', overflowX: 'hidden' }}> */}
+          <div style={ styles.container}>
         <TestRealTimeUpdate doNotify={handleNewOrderArrived} />
         <div style={styles.headerGrid}>
           <input

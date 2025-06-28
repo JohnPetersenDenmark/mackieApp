@@ -42,7 +42,7 @@ const AdminToppingCreateEdit: React.FC<ToppingModalProps> = ({ isOpen, onClose, 
             setToppingName(toppingToEdit.name);
             setToppingDescription(toppingToEdit.description);
             setToppingImageurl(toppingToEdit.imageurl)
-             setToppingPrice(toppingToEdit.price.toFixed(2))
+            setToppingPrice(toppingToEdit.price.toFixed(2))
         }
         else {
             setToppingName('');
@@ -60,15 +60,15 @@ const AdminToppingCreateEdit: React.FC<ToppingModalProps> = ({ isOpen, onClose, 
     const handleSubmit = async () => {
         const toppingData = {
             id: toppingToEdit !== null ? toppingToEdit.id : 0,
-             name: toppingName,          
+            name: toppingName,
             description: toppingDescription,
             imageurl: toppingImageurl,
-            price: toppingPrice.replaceAll(',', '.'),           
+            price: toppingPrice.replaceAll(',', '.'),
             producttype: 0
         }
 
         const url = config.API_BASE_URL + '/Admin/addorupdatetopping'
-        
+
         try {
             const response = await axios.post(url, toppingData);
             onClose();
@@ -128,7 +128,10 @@ const AdminToppingCreateEdit: React.FC<ToppingModalProps> = ({ isOpen, onClose, 
         <div
             style={{
                 position: 'fixed',
-                top: 0, left: 0, right: 0, bottom: 0,
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
                 backgroundColor: '#8d4a5b',
                 display: 'flex',
                 justifyContent: 'center',
@@ -137,7 +140,14 @@ const AdminToppingCreateEdit: React.FC<ToppingModalProps> = ({ isOpen, onClose, 
             }}
         >
 
-            <div style={{ backgroundColor: '#c7a6ac', padding: '2rem', borderRadius: '8px', minWidth: '500px' }}>
+            <div style={{   backgroundColor: '#c7a6ac',
+        padding: '1rem',
+        borderRadius: '8px',
+        minWidth: '300px',
+        width: '90%',
+        maxWidth: '500px',
+        maxHeight: '90vh',
+        overflowY: 'auto', }}>
                 <h2 style={{ backgroundColor: '#8d4a5b', padding: '2rem', color: 'white', borderRadius: '8px' }} >Topping</h2>
 
 
