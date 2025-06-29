@@ -5,6 +5,7 @@ import { Outlet } from "react-router-dom";
 import TruckLocationList from './TruckLocationList';
 import config from '../config';
 import TermsOfSale from './TermsOfSale';
+import { filterTruckLocationsByTodaysDate } from '../types/MiscFunctions';
 
 import React, { useEffect, useState } from 'react';
 import OrderModal from './OrderModal';
@@ -68,7 +69,9 @@ export default function Layout() {
 
     axios.get<TruckLocation[]>(config.API_BASE_URL + '/Home/truckcalendarlocationlist')
       .then(response => {
-        const sortedTruckcalendarlocations = response.data.sort((a, b) => {
+
+           let locationsFromTodayAndForward = filterTruckLocationsByTodaysDate(response.data);
+        const sortedTruckcalendarlocations = locationsFromTodayAndForward.sort((a, b) => {
           //    const timeDiffInMilliSeconds = new Date(b.startdatetime + "Z").getTime() - new Date(a.startdatetime + "Z").getTime();
           const timeDiffInMilliSeconds = parseDanishDateTime(a.startdatetime).getTime() - parseDanishDateTime(b.startdatetime).getTime();
           return timeDiffInMilliSeconds;

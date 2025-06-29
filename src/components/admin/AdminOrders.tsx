@@ -4,6 +4,10 @@ import { Order } from '../../types/Order';
 import TestRealTimeUpdate from '../TestRealTimeUpdate';
 import config from '../../config';
 import { TruckLocation } from '../../types/TruckLocation';
+import { filterOrderByTodaysDate } from '../../types/MiscFunctions';
+import { filterTruckLocationsByTodaysDate } from '../../types/MiscFunctions';
+import { parseDanishDateTime } from '../../types/MiscFunctions';
+
 
 
 const AdminOrders: React.FC = () => {
@@ -121,7 +125,7 @@ const AdminOrders: React.FC = () => {
 
   const displayedOrders = searchQuery.trim() === '' ? orders : filteredOrders;
 
-  function parseDanishDateTime(dateTimeStr: string): Date {
+ /*  function parseDanishDateTime(dateTimeStr: string): Date {
 
 
     try {
@@ -143,9 +147,10 @@ const AdminOrders: React.FC = () => {
     }
 
  
-  }
+  } */
 
-  function formatDateToDanish(date: Date): string {
+  
+function formatDateToDanish(date: Date): string {
     const options: Intl.DateTimeFormatOptions = {
       timeZone: "Europe/Copenhagen",
       day: "2-digit",
@@ -161,8 +166,7 @@ const AdminOrders: React.FC = () => {
 
     return `${get("day")}-${get("month")}-${get("year")} ${get("hour")}:${get("minute")}`;
   }
-
-  const filterOrderByTodaysDate = ((sorders: Order[]) => {
+/*   const filterOrderByTodaysDate = ((sorders: Order[]) => {
     const now = new Date();
     const year = now.getUTCFullYear();
     const month = now.getUTCMonth(); // 0-based
@@ -185,9 +189,9 @@ const AdminOrders: React.FC = () => {
       }
     });
     return filteredOrdersByDate
-  });
+  }); */
 
-  const filterTruckLocationsByTodaysDate = ((slocations: TruckLocation[]) => {
+ /*  const filterTruckLocationsByTodaysDate = ((slocations: TruckLocation[]) => {
     const now = new Date();
     const year = now.getUTCFullYear();
     const month = now.getUTCMonth(); // 0-based
@@ -209,7 +213,7 @@ const AdminOrders: React.FC = () => {
       }
     });
     return filteredLocationsByDate
-  });
+  }); */
 
   const handleEditOrder = (order: Order) => {
     setOrderToEdit(order);
