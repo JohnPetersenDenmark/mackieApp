@@ -7,6 +7,7 @@ import { TruckLocation } from '../../types/TruckLocation';
 import { filterOrderByTodaysDate } from '../../types/MiscFunctions';
 import { filterTruckLocationsByTodaysDate } from '../../types/MiscFunctions';
 import { parseDanishDateTime } from '../../types/MiscFunctions';
+import ClipLoader from 'react-spinners/ClipLoader';
 
 
 
@@ -26,67 +27,55 @@ const AdminOrders: React.FC = () => {
   const [isEditOrderModalOpen, setsEditOrderModalOpen] = useState(false);
   const [orderToEdit, setOrderToEdit] = useState<Order | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loadingOrders, setLoadingOrders] = useState(false);
+  const [loadingLocations, setLoadingLocations] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   let NewOrder: Order | null;
 
+
+
   useEffect(() => {
-    const url: string = config.API_BASE_URL + '/Home/orderlist';
-
-    axios
-      .get<Order[]>(url)
-      .then((response) => {
-
-        let ordersFromTodayAndForward = filterOrderByTodaysDate(response.data);
-
-        const sortedOrders = ordersFromTodayAndForward.sort((a, b) => {
-
-          // const timeDiffInMilliSeconds = new Date(b.modifieddatetime + "Z").getTime() - new Date(a.modifieddatetime + "Z").getTime();
-          const timeDiffInMilliSeconds = parseDanishDateTime(b.locationstartdatetime).getTime() - parseDanishDateTime(a.locationstartdatetime).getTime();
-          return timeDiffInMilliSeconds;
-        });
-
-        setAllOrdersSorted(sortedOrders) // keep a list with all fetched order and sorted
-
+    const fetchData = async () => {
+      try {
+        setLoadingOrders(true);
+        const ordersResponse = await axios.get<Order[]>(config.API_BASE_URL + '/Home/orderlist');
+        let ordersFromTodayAndForward = filterOrderByTodaysDate(ordersResponse.data);
+        const sortedOrders = ordersFromTodayAndForward.sort((a, b) => parseDanishDateTime(b.locationstartdatetime).getTime() - parseDanishDateTime(a.locationstartdatetime).getTime());
+        setAllOrdersSorted(sortedOrders);
         if (selectedLocationId) {
-          let filteredByLocation = filterOrdersByLocation(sortedOrders, selectedLocationId)
+          let filteredByLocation = filterOrdersByLocation(sortedOrders, selectedLocationId);
           setOrders(filteredByLocation);
-        }
-        else {
+        } else {
           setOrders(sortedOrders);
         }
-
-        setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err) {
         setError('Failed to load orders');
-        setLoading(false);
         console.error(err);
-      });
+      } finally {
+        setLoadingOrders(false);
+      }
 
-
-    axios.get<TruckLocation[]>(config.API_BASE_URL + '/Home/truckcalendarlocationlist')
-      .then(response => {
-
-        let locationsAfterTodayAndForward = filterTruckLocationsByTodaysDate(response.data)
-
-        const sortedTruckcalendarlocations = locationsAfterTodayAndForward.sort((a, b) => {
-          const timeDiffInMilliSeconds = parseDanishDateTime(a.startdatetime).getTime() - parseDanishDateTime(b.startdatetime).getTime();
-          return timeDiffInMilliSeconds;
-        });
+      try {
+        setLoadingLocations(true);
+        const locationsResponse = await axios.get<TruckLocation[]>(config.API_BASE_URL + '/Home/truckcalendarlocationlist');
+        let locationsAfterTodayAndForward = filterTruckLocationsByTodaysDate(locationsResponse.data);
+        const sortedTruckcalendarlocations = locationsAfterTodayAndForward.sort((a, b) => parseDanishDateTime(a.startdatetime).getTime() - parseDanishDateTime(b.startdatetime).getTime());
         setLocations(sortedTruckcalendarlocations);
-        setLoading(false);
-      })
-      .catch(err => {
+      } catch (err) {
         setError('Failed to load locations');
-        setLoading(false);
         console.error(err);
-      });
+      } finally {
+        setLoadingLocations(false);
+      }
+    };
+
+    fetchData();
 
 
   }, [newOrderArrived, reload]);
+
 
   const handleNewOrderArrived = (data: Order) => {
     setNewOrderArrived(true);
@@ -111,11 +100,10 @@ const AdminOrders: React.FC = () => {
 
   const highlightText = (text: string, query: string) => {
     if (!query) return text;
-      if (!text) 
-      {
-          return text;
-      }
-       
+    if (!text) {
+      return text;
+    }
+
     const regex = new RegExp(`(${query})`, 'gi');
     const parts = text.split(regex);
     return parts.map((part, i) =>
@@ -125,32 +113,32 @@ const AdminOrders: React.FC = () => {
 
   const displayedOrders = searchQuery.trim() === '' ? orders : filteredOrders;
 
- /*  function parseDanishDateTime(dateTimeStr: string): Date {
-
-
-    try {
-        // Split into date and time
-    const [dateStr, timeStr] = dateTimeStr.split(' ');
-
-    // Parse date part
-    const [day, month, year] = dateStr.split('-').map(Number);
-
-    // Parse time part
-    const [hour, minute] = timeStr.split(':').map(Number);
-
-    // JS Date months are 0-indexed
-    return new Date(year, month - 1, day, hour, minute);
-
-    } catch (error) {
-     var x = 1;
-     return new Date
-    }
-
+  /*  function parseDanishDateTime(dateTimeStr: string): Date {
  
-  } */
-
+ 
+     try {
+         // Split into date and time
+     const [dateStr, timeStr] = dateTimeStr.split(' ');
+ 
+     // Parse date part
+     const [day, month, year] = dateStr.split('-').map(Number);
+ 
+     // Parse time part
+     const [hour, minute] = timeStr.split(':').map(Number);
+ 
+     // JS Date months are 0-indexed
+     return new Date(year, month - 1, day, hour, minute);
+ 
+     } catch (error) {
+      var x = 1;
+      return new Date
+     }
+ 
   
-function formatDateToDanish(date: Date): string {
+   } */
+
+
+  function formatDateToDanish(date: Date): string {
     const options: Intl.DateTimeFormatOptions = {
       timeZone: "Europe/Copenhagen",
       day: "2-digit",
@@ -166,54 +154,54 @@ function formatDateToDanish(date: Date): string {
 
     return `${get("day")}-${get("month")}-${get("year")} ${get("hour")}:${get("minute")}`;
   }
-/*   const filterOrderByTodaysDate = ((sorders: Order[]) => {
-    const now = new Date();
-    const year = now.getUTCFullYear();
-    const month = now.getUTCMonth(); // 0-based
-    const day = now.getUTCDate();
+  /*   const filterOrderByTodaysDate = ((sorders: Order[]) => {
+      const now = new Date();
+      const year = now.getUTCFullYear();
+      const month = now.getUTCMonth(); // 0-based
+      const day = now.getUTCDate();
+  
+      // Create start and end times in UTC
+      const startTimeToday = new Date(Date.UTC(year, month, day, 0, 10, 0));  // today 00:10:00 UTC
+      const endTimeToday = new Date(Date.UTC(year, month, day, 23, 59, 59));  // today 23:59:59 UTC
+  
+      let filteredOrdersByDate: Order[] = []
+  
+      sorders.forEach(order => {
+        // const created = parseDanishDateTime(order.createddatetime); // assumes createdAt is ISO UTC string
+  
+        const locationDate = parseDanishDateTime(order.locationstartdatetime); // assumes createdAt is ISO UTC string
+  
+        // if (created >= startTime && created <= endTime) {
+        if (locationDate >= startTimeToday) {
+          filteredOrdersByDate.push(order);
+        }
+      });
+      return filteredOrdersByDate
+    }); */
 
-    // Create start and end times in UTC
-    const startTimeToday = new Date(Date.UTC(year, month, day, 0, 10, 0));  // today 00:10:00 UTC
-    const endTimeToday = new Date(Date.UTC(year, month, day, 23, 59, 59));  // today 23:59:59 UTC
-
-    let filteredOrdersByDate: Order[] = []
-
-    sorders.forEach(order => {
-      // const created = parseDanishDateTime(order.createddatetime); // assumes createdAt is ISO UTC string
-
-      const locationDate = parseDanishDateTime(order.locationstartdatetime); // assumes createdAt is ISO UTC string
-
-      // if (created >= startTime && created <= endTime) {
-      if (locationDate >= startTimeToday) {
-        filteredOrdersByDate.push(order);
-      }
-    });
-    return filteredOrdersByDate
-  }); */
-
- /*  const filterTruckLocationsByTodaysDate = ((slocations: TruckLocation[]) => {
-    const now = new Date();
-    const year = now.getUTCFullYear();
-    const month = now.getUTCMonth(); // 0-based
-    const day = now.getUTCDate();
-
-    // Create start and end times in UTC
-    const startTime = new Date(Date.UTC(year, month, day, 0, 10, 0));  // today 00:10:00 UTC
-    const endTime = new Date(Date.UTC(year, month, day, 23, 59, 59));  // today 23:59:59 UTC
-
-    let filteredLocationsByDate: TruckLocation[] = []
-
-    slocations.forEach(location => {
-      // const created = parseDanishDateTime(order.createddatetime); // assumes createdAt is ISO UTC string
-
-      const locationDate = parseDanishDateTime(location.startdatetime); // assumes createdAt is ISO UTC string
-
-      if (locationDate >= startTime) {
-        filteredLocationsByDate.push(location);
-      }
-    });
-    return filteredLocationsByDate
-  }); */
+  /*  const filterTruckLocationsByTodaysDate = ((slocations: TruckLocation[]) => {
+     const now = new Date();
+     const year = now.getUTCFullYear();
+     const month = now.getUTCMonth(); // 0-based
+     const day = now.getUTCDate();
+ 
+     // Create start and end times in UTC
+     const startTime = new Date(Date.UTC(year, month, day, 0, 10, 0));  // today 00:10:00 UTC
+     const endTime = new Date(Date.UTC(year, month, day, 23, 59, 59));  // today 23:59:59 UTC
+ 
+     let filteredLocationsByDate: TruckLocation[] = []
+ 
+     slocations.forEach(location => {
+       // const created = parseDanishDateTime(order.createddatetime); // assumes createdAt is ISO UTC string
+ 
+       const locationDate = parseDanishDateTime(location.startdatetime); // assumes createdAt is ISO UTC string
+ 
+       if (locationDate >= startTime) {
+         filteredLocationsByDate.push(location);
+       }
+     });
+     return filteredLocationsByDate
+   }); */
 
   const handleEditOrder = (order: Order) => {
     setOrderToEdit(order);
@@ -454,7 +442,7 @@ function formatDateToDanish(date: Date): string {
     <>
       <style>{mediaQueries}</style>
       {/* <div style={{ styles.container, width: '100vw', overflowX: 'hidden' }}> */}
-          <div style={ styles.container}>
+      <div style={styles.container}>
         <TestRealTimeUpdate doNotify={handleNewOrderArrived} />
         <div style={styles.headerGrid}>
           <input
@@ -489,7 +477,7 @@ function formatDateToDanish(date: Date): string {
 
         {/* Inner wrapper to constrain max width and add side padding */}
         <div style={{ maxWidth: 900, margin: '0 auto', padding: '0 10px', textAlign: 'left' }}>
-          {loading && <div>Loading orders...</div>}
+          {loadingOrders || loadingLocations && <div><ClipLoader size={50} color="#8d4a5b" /></div>}
           {error && <div style={{ color: 'red' }}>{error}</div>}
 
           {displayedOrders.map((curOrder) => {
@@ -513,7 +501,7 @@ function formatDateToDanish(date: Date): string {
                 </div>
 
                 <div className="ordersGridHeader" style={styles.ordersGridHeader}>
-                 
+
                   <div>Best nr.:  {highlightText(curOrder.customerorderCode, searchQuery)}</div>
                   <div>Kunde: {highlightText(curOrder.customerName, searchQuery)}</div>
                   <div>Telefon: {curOrder.phone}</div>

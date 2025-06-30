@@ -6,9 +6,11 @@ import config from '../../config';
 
 import AdminCalendarCreateEdit from "./AdminCalendarCreateEdit"
 
+import ClipLoader from 'react-spinners/ClipLoader';
+
 interface AdminCalendarProps {
   isOpen: boolean;
-  onClose: () =>  void;
+  onClose: () => void;
 }
 
 
@@ -18,7 +20,7 @@ const AdminCalendar: React.FC = () => {
   const [isCreateEditCalendarModalOpen, setIsCreateEditCalendarModalOpen] = useState(false);
   const [truckLocationToEdit, setTruckLocationToEdit] = useState<TruckLocation | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
 
@@ -26,6 +28,7 @@ const AdminCalendar: React.FC = () => {
   useEffect(() => {
     const url: string = config.API_BASE_URL + '/Home/truckcalendarlocationlist'
 
+    setLoading(true);
     axios.get<TruckLocation[]>(url)
       .then(response => {
 
@@ -71,7 +74,7 @@ const AdminCalendar: React.FC = () => {
           setError('Fejl');
           console.error(error);
         } finally {
-          setSubmitting(false);
+          setSubmitting(false); 
         }
       };
 
@@ -110,6 +113,10 @@ const AdminCalendar: React.FC = () => {
       >
         <div style={{ textAlign: 'center', fontSize: '2.25rem', margin: 'auto' }}>Kalender</div>
 
+        <div style={{ textAlign: 'center', fontSize: '2.25rem', margin: 'auto' }}>
+          {loading ? <ClipLoader size={50} color="#8d4a5b" /> : ''}
+          {/* <ClipLoader size={50} color="#8d4a5b" />  */}
+          </div>
 
 
 
@@ -127,6 +134,11 @@ const AdminCalendar: React.FC = () => {
               background: '#ffffff',
             }}
           >
+
+
+
+
+
             <div style={{ flex: '1', padding: '0.5rem' }}>{curLocation.locationname}</div>
             <div style={{ flex: '1', padding: '0.5rem' }}>{curLocation.startdatetime}</div>
             <div style={{ flex: '1', padding: '0.5rem' }}>{curLocation.enddatetime}</div>
@@ -149,7 +161,7 @@ const AdminCalendar: React.FC = () => {
 
         {/* "New" location */}
         <div
-      
+
           style={{
             border: '1px solid #ccc',
             padding: '1rem',

@@ -19,6 +19,7 @@ import { TruckLocation } from '../types/TruckLocation';
 import CheckMyOrder from './CheckMyOrder';
 import AdminDashBoard from './admin/AdminDashBoard';
 import { Order } from '../types/Order';
+import ClipLoader from 'react-spinners/ClipLoader';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -42,7 +43,7 @@ export default function Layout() {
 
 
 
-  useEffect(() => {
+  /* useEffect(() => {
     axios.get<Pizza[]>(config.API_BASE_URL + '/Home/pizzalist')
       .then(response => {
         const allPizzas = response.data;
@@ -85,7 +86,46 @@ export default function Layout() {
         console.error(err);
       });
 
-  }, []);
+  }, []); */
+
+useEffect(() => {
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [pizzasResult, toppingsResult, locationsResult] = await Promise.allSettled([
+        axios.get<Pizza[]>(config.API_BASE_URL + '/Home/pizzalist'),
+        axios.get<Topping[]>(config.API_BASE_URL + '/Home/toppinglist'),
+        axios.get<TruckLocation[]>(config.API_BASE_URL + '/Home/truckcalendarlocationlist')
+      ]);
+
+      if (pizzasResult.status === 'fulfilled') {
+        setPizzas(pizzasResult.value.data);
+      } else {
+        setError('Failed to load pizzas');
+      }
+
+      if (toppingsResult.status === 'fulfilled') {
+        setToppings(toppingsResult.value.data);
+      } else {
+        setError('Failed to load toppings');
+      }
+
+      if (locationsResult.status === 'fulfilled') {
+        let locationsFromTodayAndForward = filterTruckLocationsByTodaysDate(locationsResult.value.data);
+        const sortedTruckcalendarlocations = locationsFromTodayAndForward.sort((a, b) => parseDanishDateTime(a.startdatetime).getTime() - parseDanishDateTime(b.startdatetime).getTime());
+        setLocations(sortedTruckcalendarlocations);
+      } else {
+        setError('Failed to load locations');
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, []);
 
   function parseDanishDateTime(dateTimeStr: string): Date {
     // Split into date and time
@@ -353,7 +393,8 @@ export default function Layout() {
               <p style={{ textAlign: 'center', fontSize: '15px', fontWeight: 700, color: '#ffffff' }}>
                 Det er nemt og originalt
               </p>
-         
+
+          {loading && <div><ClipLoader size={50} color="#8d4a5b" /></div>}   
 
              <PizzaList pizzas={pizzas} />
 

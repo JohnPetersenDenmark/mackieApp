@@ -8,6 +8,7 @@ import { Payment } from "../types/Payment";
 import { TruckLocation } from '../types/TruckLocation';
 import config from '../config';
 import "./OrderModal.css";
+import ClipLoader from 'react-spinners/ClipLoader';
 //import FrisbiiCheckoutButton from './FrisbiiCheckoutButton';
 
 import FlatpayCheckout from './FlatpayCheckout';
@@ -340,8 +341,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
       setSubmitSuccess('Bestilling sendt! Tak for din ordre.');
       setSubmittedOrderSuccessfully(true);
       setCreatedOrder(response.data)
-      // Optionally reset form or close modal after success:
-      // onClose();
+     
     } catch (error) {
       setSubmitError('Kunne ikke sende bestillingen. Prøv igen senere.');
       console.error(error);
@@ -531,7 +531,9 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
           disabled={!isFormValid || submitting || submittedOrderSuccessfully}
           className="submit-btn"
         >
-          {submitting ? 'Sender...' : 'Send Bestilling'}
+          {/* {submitting ? 'Sender...' : 'Send Bestilling'} */}
+
+            {submitting ?  <div><ClipLoader size={50} color="#8d4a5b" /></div> : 'Send bestilling'}   
         </button>
 
 
