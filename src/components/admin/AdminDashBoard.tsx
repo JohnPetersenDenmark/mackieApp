@@ -44,7 +44,7 @@ const AdminDashBoard: React.FC = () => {
                 {activeMenu === 'Kalender' && <AdminCalendar />}
                 {activeMenu === 'Bestillinger' && <AdminOrders />}
                 {activeMenu === 'Pakkeliste' && <AdminPackingList />}
-                {activeMenu === 'Menuer' && <AdminMenues / >}
+                {activeMenu === 'Menuer' && <AdminMenues />}
                 {/* {activeMenu === 'Indstillinger' && <AdminSettings />} */}
                 {/* {activeMenu === 'Brugere' && <AdminUsers />} */}
             </div>
