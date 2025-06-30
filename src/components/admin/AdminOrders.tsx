@@ -8,6 +8,7 @@ import { filterOrderByTodaysDate } from '../../types/MiscFunctions';
 import { filterTruckLocationsByTodaysDate } from '../../types/MiscFunctions';
 import { parseDanishDateTime } from '../../types/MiscFunctions';
 import ClipLoader from 'react-spinners/ClipLoader';
+import AxiosClientWithToken from '../../types/AxiosClientWithToken';
 
 
 
@@ -34,13 +35,30 @@ const AdminOrders: React.FC = () => {
 
   let NewOrder: Order | null;
 
-
+  let token: string;
 
   useEffect(() => {
     const fetchData = async () => {
+
       try {
-        setLoadingOrders(true);
-        const ordersResponse = await axios.get<Order[]>(config.API_BASE_URL + '/Home/orderlist');
+
+         setLoadingOrders(true);     
+
+
+        let tokenData = localStorage.getItem('authToken');
+        if (tokenData) {
+          const parsed = JSON.parse(tokenData);
+          token = parsed.token;
+        }
+       
+        let url = config.API_BASE_URL + '/Home/orderlist'
+        let ordersResponse = await axios.get<Order[]>(url, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+
+
         let ordersFromTodayAndForward = filterOrderByTodaysDate(ordersResponse.data);
         const sortedOrders = ordersFromTodayAndForward.sort((a, b) => parseDanishDateTime(b.locationstartdatetime).getTime() - parseDanishDateTime(a.locationstartdatetime).getTime());
         setAllOrdersSorted(sortedOrders);

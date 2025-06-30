@@ -42,7 +42,7 @@ const Login: React.FC<LoginModalProps> = ({ isOpen, onLoggedIn, onClose }) => {
     try {
       setSubmitting(true);
       const response = await axios.post(config.API_BASE_URL + '/Login/login', userData);
-      localStorage.setItem('authToken', response.data);
+      localStorage.setItem('authToken', JSON.stringify(response.data));
       onLoggedIn(true);
       onClose();
     } catch (error) {
