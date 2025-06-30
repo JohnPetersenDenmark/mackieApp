@@ -8,7 +8,7 @@ import AdminCalendarCreateEdit from "./AdminCalendarCreateEdit"
 
 interface AdminCalendarProps {
   isOpen: boolean;
-  onClose: () => void;
+  onClose: () =>  void;
 }
 
 
