@@ -15,11 +15,11 @@ const AdminPlaces: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const url = config.API_BASE_URL + '/Home/locationlist';
-
+   
+ const fetchData = async () => {
     
     try {
-      const locationsResponse: any = AxiosClientGet('/Home/locationlist', true);
+      const locationsResponse: any = await AxiosClientGet('/Home/locationlist', true);
 
       setLocations(locationsResponse);
       setLoading(false);
@@ -31,6 +31,11 @@ const AdminPlaces: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  }
+
+  fetchData();
+
+
   }, [isCreateEditLocationModalOpen, submitting]);
 
   const handleEdit = (location: SaleLocation) => {
@@ -59,6 +64,7 @@ const AdminPlaces: React.FC = () => {
   };
 
   const handleNewLocation = () => {
+     setLocationToEdit(null);
     setIsCreateEditLocationModalOpen(true);
   };
 

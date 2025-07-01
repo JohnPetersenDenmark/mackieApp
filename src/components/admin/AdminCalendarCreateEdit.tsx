@@ -44,9 +44,9 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
 
 
   useEffect(() => {
-
+const fetchData = async () => {
     try {
-      const locationsResponse: any = AxiosClientGet('/Home/locationlist', true);
+      const locationsResponse: any = await AxiosClientGet('/Home/locationlist', true);
 
       setSaleLocations(locationsResponse);
 
@@ -55,6 +55,8 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
     } finally {
 
     }
+  }
+  fetchData();
 
   }, []); // Only fetch once on mount
 
