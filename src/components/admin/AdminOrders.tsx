@@ -8,7 +8,7 @@ import { filterOrderByTodaysDate } from '../../types/MiscFunctions';
 import { filterTruckLocationsByTodaysDate } from '../../types/MiscFunctions';
 import { parseDanishDateTime } from '../../types/MiscFunctions';
 import ClipLoader from 'react-spinners/ClipLoader';
-import {AxiosClientGet, AxiosClientPost} from '../../types/AxiosClient';
+import {AxiosClientGet, AxiosClientPost, AxiosClientDelete} from '../../types/AxiosClient';
 
 
 
@@ -72,7 +72,7 @@ const AdminOrders: React.FC = () => {
 
       try {
         setLoadingLocations(true);
-       //  const locationsResponse = await axios.get<TruckLocation[]>(config.API_BASE_URL + '/Home/truckcalendarlocationlist');
+       
          const locationsResponse = await AxiosClientGet('/Home/truckcalendarlocationlist', false);
         let locationsAfterTodayAndForward = filterTruckLocationsByTodaysDate(locationsResponse);
         const sortedTruckcalendarlocations = locationsAfterTodayAndForward.sort((a, b) => parseDanishDateTime(a.startdatetime).getTime() - parseDanishDateTime(b.startdatetime).getTime());
@@ -227,8 +227,8 @@ const AdminOrders: React.FC = () => {
       const deleteOrder = async () => {
         try {
           setSubmitting(true);
-          const url = config.API_BASE_URL + '/Admin/removeorder/' + order.id;
-          await axios.delete(url);
+         
+          await AxiosClientDelete('/Admin/removeorder/' + order.id, true)
           setReload(prev => prev + 1);
         } catch (error) {
           setError('Failed to delete order');
@@ -247,12 +247,7 @@ const AdminOrders: React.FC = () => {
         try {
           setSubmitting(true);
 
-          AxiosClientPost('/Home/orderremovecomment',{ id: order.id }, true )
-        /*   const url = config.API_BASE_URL + '/Home/orderremovecomment';
-          await axios.post(url, { id: order.id }, {
-            headers: { 'Content-Type': 'application/json' },
-            withCredentials: true
-          }); */
+          AxiosClientPost('/Home/orderremovecomment',{ id: order.id }, true )       
           setReload(prev => prev + 1);
         } catch (error) {
           setError('Failed to update order');

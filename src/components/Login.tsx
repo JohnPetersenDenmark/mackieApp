@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import config from '../config';
+import {AxiosClientGet, AxiosClientPost} from '../types/AxiosClient';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -41,8 +42,8 @@ const Login: React.FC<LoginModalProps> = ({ isOpen, onLoggedIn, onClose }) => {
     };
     try {
       setSubmitting(true);
-      const response = await axios.post(config.API_BASE_URL + '/Login/login', userData);
-      localStorage.setItem('authToken', JSON.stringify(response.data));
+      const response = await AxiosClientPost( '/Login/login', userData, false);
+      localStorage.setItem('authToken', JSON.stringify(response));
       onLoggedIn(true);
       onClose();
     } catch (error) {

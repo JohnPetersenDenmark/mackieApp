@@ -9,6 +9,7 @@ import { TruckLocation } from '../types/TruckLocation';
 import config from '../config';
 import "./OrderModal.css";
 import ClipLoader from 'react-spinners/ClipLoader';
+import {AxiosClientGet, AxiosClientPost} from '../types/AxiosClient';
 //import FrisbiiCheckoutButton from './FrisbiiCheckoutButton';
 
 import FlatpayCheckout from './FlatpayCheckout';
@@ -240,7 +241,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
   const handlePaymentStatus = (payment: Payment) => {
 
     try {
-      const response = axios.post(config.API_BASE_URL + '/Home/createorderpayment', payment);
+      const response = AxiosClientPost('/Home/createorderpayment', payment, false);
 
     } catch (error) {
 
@@ -330,17 +331,17 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
     };
 
     try {
-      let response;
+      let response : any;
       if (existingOrder === null) {
-        response = await axios.post(config.API_BASE_URL + '/Home/createorder', orderData);
+        response = await AxiosClientPost( '/Home/createorder', orderData , false);
       }
       else {
-        response = await axios.post(config.API_BASE_URL + '/Home/updateorder', orderData);
+        response = await AxiosClientPost( '/Home/updateorder', orderData, false);
       }
 
       setSubmitSuccess('Bestilling sendt! Tak for din ordre.');
       setSubmittedOrderSuccessfully(true);
-      setCreatedOrder(response.data)
+      setCreatedOrder(response)
      
     } catch (error) {
       setSubmitError('Kunne ikke sende bestillingen. Prøv igen senere.');

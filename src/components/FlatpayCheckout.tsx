@@ -3,6 +3,7 @@ import axios from "axios";
 import config from "../config";
 import { Order } from "../types/Order";
 import { Payment } from "../types/Payment";
+import { AxiosClientGet, AxiosClientPost , AxiosClientDelete}  from '../types/AxiosClient';
 
 type CreateSessionPayload = {
     orderId: string;
@@ -44,10 +45,10 @@ const FlatpayCheckout: React.FC<CheckoutProps> = ({ createdOrderA, onPaymentStat
         const getFlatPaySessionId = async (payLoad: CreateSessionPayload) => {
             try {
 
-                const url = config.API_BASE_URL + "/payments/create-session";
-                const response = await axios.post(url, payLoad);
+              
+                let response : any = await AxiosClientPost("/payments/create-session", payLoad, false)
 
-                rp = new window.Reepay.EmbeddedCheckout(response.data.id, {
+                rp = new window.Reepay.EmbeddedCheckout(response.id, {
                     html_element: "rp_container",
                 });
 

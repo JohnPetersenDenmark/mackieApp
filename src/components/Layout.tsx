@@ -6,6 +6,7 @@ import TruckLocationList from './TruckLocationList';
 import config from '../config';
 import TermsOfSale from './TermsOfSale';
 import { filterTruckLocationsByTodaysDate } from '../types/MiscFunctions';
+import {AxiosClientGet, AxiosClientPost} from '../types/AxiosClient';
 
 import React, { useEffect, useState } from 'react';
 import OrderModal from './OrderModal';
@@ -40,53 +41,7 @@ export default function Layout() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [loggedIn, setLoggedIn] = useState(false);
-
-
-
-  /* useEffect(() => {
-    axios.get<Pizza[]>(config.API_BASE_URL + '/Home/pizzalist')
-      .then(response => {
-        const allPizzas = response.data;
-        setPizzas(allPizzas);
-        setLoading(false);
-      })
-      .catch(err => {
-        setError('Failed to load pizzas');
-        setLoading(false);
-        console.error(err);
-      });
-
-    axios.get<Topping[]>(config.API_BASE_URL + '/Home/toppinglist')
-      .then(response => {
-        const allToppings = response.data;
-        setToppings(allToppings);
-        setLoading(false);
-      })
-      .catch(err => {
-        setError('Failed to load pizzas');
-        setLoading(false);
-        console.error(err);
-      });
-
-    axios.get<TruckLocation[]>(config.API_BASE_URL + '/Home/truckcalendarlocationlist')
-      .then(response => {
-
-           let locationsFromTodayAndForward = filterTruckLocationsByTodaysDate(response.data);
-        const sortedTruckcalendarlocations = locationsFromTodayAndForward.sort((a, b) => {
-          //    const timeDiffInMilliSeconds = new Date(b.startdatetime + "Z").getTime() - new Date(a.startdatetime + "Z").getTime();
-          const timeDiffInMilliSeconds = parseDanishDateTime(a.startdatetime).getTime() - parseDanishDateTime(b.startdatetime).getTime();
-          return timeDiffInMilliSeconds;
-        });
-        setLocations(sortedTruckcalendarlocations);
-        setLoading(false);
-      })
-      .catch(err => {
-        setError('Failed to load locations');
-        setLoading(false);
-        console.error(err);
-      });
-
-  }, []); */
+  
 
 useEffect(() => {
   const fetchData = async () => {
@@ -95,7 +50,8 @@ useEffect(() => {
       const [pizzasResult, toppingsResult, locationsResult] = await Promise.allSettled([
         axios.get<Pizza[]>(config.API_BASE_URL + '/Home/pizzalist'),
         axios.get<Topping[]>(config.API_BASE_URL + '/Home/toppinglist'),
-        axios.get<TruckLocation[]>(config.API_BASE_URL + '/Home/truckcalendarlocationlist')
+         axios.get<TruckLocation[]>(config.API_BASE_URL + '/Home/truckcalendarlocationlist'),
+       // AxiosClientGet( '/Home/truckcalendarlocationlist' , false)
       ]);
 
       if (pizzasResult.status === 'fulfilled') {

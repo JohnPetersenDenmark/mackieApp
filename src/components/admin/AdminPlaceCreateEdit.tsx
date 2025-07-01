@@ -3,6 +3,8 @@ import axios from 'axios';
 //import { useNavigate } from 'react-router-dom';
 import { SaleLocation } from '../../types/SaleLocation';
 import config from '../../config';
+import {AxiosClientGet, AxiosClientPost} from '../../types/AxiosClient';
+
 
 interface LocationModalProps {
     isOpen: boolean;
@@ -48,9 +50,9 @@ const AdminPlaceCreateEdit: React.FC<LocationModalProps> = ({ isOpen, onClose, l
         }
 
         
-        const url = config.API_BASE_URL + '/Admin/addorupdatelocation'
+        
         try {
-            const response = await axios.post(url, placeData);
+            const response = await  AxiosClientPost('/Admin/addorupdatelocation', placeData , true);
             onClose();
         } catch (error) {
             setSubmitError('Fejl');

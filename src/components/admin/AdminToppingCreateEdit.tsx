@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Topping } from '../../types/Topping';
 import FileInput from "../../components/FileInput"
 import config from '../../config';
+import {AxiosClientGet, AxiosClientPost} from '../../types/AxiosClient';
 
 
 interface ToppingModalProps {
@@ -67,10 +68,10 @@ const AdminToppingCreateEdit: React.FC<ToppingModalProps> = ({ isOpen, onClose, 
             producttype: 0
         }
 
-        const url = config.API_BASE_URL + '/Admin/addorupdatetopping'
+       // const url = config.API_BASE_URL + '/Admin/addorupdatetopping'
 
-        try {
-            const response = await axios.post(url, toppingData);
+        try {           
+             AxiosClientPost('/Admin/addorupdatetopping', toppingData, true)
             onClose();
         } catch (error) {
             setSubmitError('Fejl');

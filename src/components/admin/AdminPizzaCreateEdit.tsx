@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Pizza } from '../../types/Pizza';
 import FileInput from "../../components/FileInput"
 import config from '../../config';
+import {AxiosClientGet, AxiosClientPost} from '../../types/AxiosClient';
 
 
 interface PizzaModalProps {
@@ -115,9 +116,9 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
         if (selectedFile) {
             await handleUpload();
         }
-        const url = config.API_BASE_URL + '/Admin/addorupdatepizza'
-        try {
-            const response = await axios.post(url, pizzaData);
+      //  const url = config.API_BASE_URL + '/Admin/addorupdatepizza'
+        try {           
+            AxiosClientPost('/Admin/addorupdatepizza', pizzaData, true);
             onClose();
         } catch (error) {
             setSubmitError('Fejl');

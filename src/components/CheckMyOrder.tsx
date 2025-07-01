@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Order } from '../types/Order';
+import {AxiosClientGet, AxiosClientPost} from '../types/AxiosClient';
 import config from '../config';
 
 
@@ -68,11 +69,11 @@ const CheckMyOrder: React.FC<CheckOrderModalProps> = ({ isOpen, onOrderFetched ,
     
 
     try {
-      const response = await axios.post(config.API_BASE_URL + '/Home/getorderbyid', orderData);
+      const response : any = await AxiosClientPost('/Home/getorderbyid', orderData, false);
 
-      var curOrder: Order = response.data;
+      var curOrder = response;
       //  setSubmitSuccess('Ordren er fundet');
-      onOrderFetched(response.data);
+      onOrderFetched(response);
 
     } catch (error) {
       setSubmitError('Kunne ikke sende bestillingen. Prøv igen senere.');

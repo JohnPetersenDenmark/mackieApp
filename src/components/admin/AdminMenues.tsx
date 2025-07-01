@@ -6,6 +6,8 @@ import { Topping } from '../../types/Topping';
 import AdminPizzaCreateEdit from './AdminPizzaCreateEdit';
 import AdminToppingCreateEdit from './AdminToppingCreateEdit';
 import config from '../../config';
+import { AxiosClientGet, AxiosClientPost , AxiosClientDelete}  from '../../types/AxiosClient';
+
 import {
   AdminContainer,
   SectionWrapper,
@@ -44,8 +46,8 @@ const AdminMenues: React.FC = () => {
   useEffect(() => {
     const fetchPizzas = async () => {
       try {
-        const response = await axios.get<Pizza[]>(`${config.API_BASE_URL}/Home/pizzalist`);
-        setPizzas(response.data);
+        const response = await AxiosClientGet('/Home/pizzalist', false);
+        setPizzas(response);
       } catch {
         setError('Failed to load pizzas');
       }
@@ -53,8 +55,8 @@ const AdminMenues: React.FC = () => {
 
     const fetchToppings = async () => {
       try {
-        const response = await axios.get<Topping[]>(`${config.API_BASE_URL}/Home/toppinglist`);
-        setToppings(response.data);
+        const response = await AxiosClientGet('/Home/toppinglist', false);
+        setToppings(response);
       } catch {
         setError('Failed to load toppings');
       }
@@ -67,7 +69,7 @@ const AdminMenues: React.FC = () => {
   const handleDeletePizza = async (pizza: Pizza) => {
     try {
       setSubmitting(true);
-      await axios.delete(`${config.API_BASE_URL}/Admin/removepizza/${pizza.id}`);
+      await AxiosClientDelete('/Admin/removepizza/' + pizza.id, true);
     } catch {
       setError('Failed to delete pizza');
     } finally {
@@ -77,8 +79,8 @@ const AdminMenues: React.FC = () => {
 
   const handleDeleteTopping = async (topping: Topping) => {
     try {
-      setSubmitting(true);
-      await axios.delete(`${config.API_BASE_URL}/Admin/removetopping/${topping.id}`);
+      setSubmitting(true);    
+      await AxiosClientDelete('/Admin/removetopping/' + topping.id, true);
     } catch {
       setError('Failed to delete topping');
     } finally {

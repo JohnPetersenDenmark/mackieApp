@@ -5,6 +5,7 @@ import { TruckLocation } from '../../types/TruckLocation';
 import config from '../../config';
 
 import AdminCalendarCreateEdit from "./AdminCalendarCreateEdit"
+import { AxiosClientGet, AxiosClientPost , AxiosClientDelete}  from '../../types/AxiosClient';
 
 import ClipLoader from 'react-spinners/ClipLoader';
 
@@ -24,28 +25,29 @@ const AdminCalendar: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
 
-
   useEffect(() => {
-    const url: string = config.API_BASE_URL + '/Home/truckcalendarlocationlist'
-
-    setLoading(true);
-    axios.get<TruckLocation[]>(url)
-      .then(response => {
-
-        const sortedTruckcalendarlocations = response.data.sort((a, b) => {
+   
+    const fetchData = async () => {
+        setLoading(true);
+      try {
+        const locationsResponse = await AxiosClientGet('/Home/truckcalendarlocationlist', false);
+        const sortedTruckcalendarlocations = locationsResponse.sort((a, b) => {
           const timeDiffInMilliSeconds = parseDanishDateTime(a.startdatetime).getTime() - parseDanishDateTime(b.startdatetime).getTime();
           return timeDiffInMilliSeconds;
         });
         setTruckLocations(sortedTruckcalendarlocations);
-
-        setTruckLocations(response.data);
         setLoading(false);
-      })
-      .catch(err => {
+
+      } catch (err) {
         setError('Failed to load locations');
         setLoading(false);
         console.error(err);
-      });
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
 
   }, [isCreateEditCalendarModalOpen, submitting]);
 
@@ -67,14 +69,13 @@ const AdminCalendar: React.FC = () => {
     if (truckLocation !== null) {
       const deleteTruckLocation = async () => {
         try {
-          setSubmitting(true);
-          const url = config.API_BASE_URL + '/Admin/removetrucklocation/' + truckLocation.id;
-          await axios.delete(url);
+          setSubmitting(true);        
+          AxiosClientDelete('/Admin/removetrucklocation/' + truckLocation.id, true)
         } catch (error) {
           setError('Fejl');
           console.error(error);
         } finally {
-          setSubmitting(false); 
+          setSubmitting(false);
         }
       };
 
@@ -116,7 +117,7 @@ const AdminCalendar: React.FC = () => {
         <div style={{ textAlign: 'center', fontSize: '2.25rem', margin: 'auto' }}>
           {loading ? <ClipLoader size={50} color="#8d4a5b" /> : ''}
           {/* <ClipLoader size={50} color="#8d4a5b" />  */}
-          </div>
+        </div>
 
 
 

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { SaleLocation } from '../../types/SaleLocation';
+import { AxiosClientGet, AxiosClientPost , AxiosClientDelete} from '../../types/AxiosClient';
 
 import AdminPlaceCreateEdit from './AdminPlaceCreateEdit';
 import config from '../../config';
@@ -16,17 +17,20 @@ const AdminPlaces: React.FC = () => {
   useEffect(() => {
     const url = config.API_BASE_URL + '/Home/locationlist';
 
-    axios
-      .get<SaleLocation[]>(url)
-      .then((response) => {
-        setLocations(response.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError('Failed to load locations');
-        setLoading(false);
-        console.error(err);
-      });
+    
+    try {
+      const locationsResponse: any = AxiosClientGet('/Home/locationlist', true);
+
+      setLocations(locationsResponse);
+      setLoading(false);
+
+    } catch (err) {
+      setError('Failed to load locations');
+      setLoading(false);
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   }, [isCreateEditLocationModalOpen, submitting]);
 
   const handleEdit = (location: SaleLocation) => {
@@ -39,8 +43,10 @@ const AdminPlaces: React.FC = () => {
       const deleteLocation = async () => {
         try {
           setSubmitting(true);
-          const url = config.API_BASE_URL + '/Admin/removelocation/' + location.id;
-          await axios.delete(url);
+          
+          await AxiosClientDelete('/Admin/removelocation/' + location.id, true)
+
+          
         } catch (error) {
           setError('Fejl');
           console.error(error);
