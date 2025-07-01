@@ -8,7 +8,7 @@ import { filterOrderByTodaysDate } from '../../types/MiscFunctions';
 import { filterTruckLocationsByTodaysDate } from '../../types/MiscFunctions';
 import { parseDanishDateTime } from '../../types/MiscFunctions';
 import ClipLoader from 'react-spinners/ClipLoader';
-import AxiosClientWithToken from '../../types/AxiosClientWithToken';
+import AxiosClient from '../../types/AxiosClient';
 
 
 
@@ -40,45 +40,41 @@ const AdminOrders: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
 
+
       try {
+        setLoadingOrders(true);
 
-         setLoadingOrders(true);     
+        const ordersResponse = await AxiosClient('/Home/orderlist', true);
 
+        const ordersFromTodayAndForward = filterOrderByTodaysDate(ordersResponse);
+        const sortedOrders = ordersFromTodayAndForward.sort(
+          (a, b) =>
+            parseDanishDateTime(b.locationstartdatetime).getTime() -
+            parseDanishDateTime(a.locationstartdatetime).getTime()
+        );
 
-        let tokenData = localStorage.getItem('authToken');
-        if (tokenData) {
-          const parsed = JSON.parse(tokenData);
-          token = parsed.token;
-        }
-       
-        let url = config.API_BASE_URL + '/Home/orderlist'
-        let ordersResponse = await axios.get<Order[]>(url, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        })
-
-
-        let ordersFromTodayAndForward = filterOrderByTodaysDate(ordersResponse.data);
-        const sortedOrders = ordersFromTodayAndForward.sort((a, b) => parseDanishDateTime(b.locationstartdatetime).getTime() - parseDanishDateTime(a.locationstartdatetime).getTime());
         setAllOrdersSorted(sortedOrders);
+
         if (selectedLocationId) {
-          let filteredByLocation = filterOrdersByLocation(sortedOrders, selectedLocationId);
+          const filteredByLocation = filterOrdersByLocation(sortedOrders, selectedLocationId);
           setOrders(filteredByLocation);
         } else {
           setOrders(sortedOrders);
         }
-      } catch (err) {
-        setError('Failed to load orders');
+      } catch (err: any) {
+        setError(err.message || 'Failed to load orders');
         console.error(err);
       } finally {
         setLoadingOrders(false);
       }
 
+
+
       try {
         setLoadingLocations(true);
-        const locationsResponse = await axios.get<TruckLocation[]>(config.API_BASE_URL + '/Home/truckcalendarlocationlist');
-        let locationsAfterTodayAndForward = filterTruckLocationsByTodaysDate(locationsResponse.data);
+       //  const locationsResponse = await axios.get<TruckLocation[]>(config.API_BASE_URL + '/Home/truckcalendarlocationlist');
+         const locationsResponse = await AxiosClient('/Home/truckcalendarlocationlist', false);
+        let locationsAfterTodayAndForward = filterTruckLocationsByTodaysDate(locationsResponse);
         const sortedTruckcalendarlocations = locationsAfterTodayAndForward.sort((a, b) => parseDanishDateTime(a.startdatetime).getTime() - parseDanishDateTime(b.startdatetime).getTime());
         setLocations(sortedTruckcalendarlocations);
       } catch (err) {
