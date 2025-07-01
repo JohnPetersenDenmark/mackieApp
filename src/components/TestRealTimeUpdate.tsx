@@ -3,6 +3,7 @@ import * as signalR from '@microsoft/signalr';
 import axios from 'axios';
 import { Order } from '../types/Order';
 import config from '../config';
+import {AxiosClientGet, AxiosClientPost} from '../types/AxiosClient';
 
 interface ChildComponentProps {
   doNotify: (data: Order) => void;
@@ -21,9 +22,10 @@ const TestRealTimeUpdate: React.FC<ChildComponentProps> = ({doNotify}) => {
     
     const fetchOrders = async () => {
       try {
-        const url = config.API_BASE_URL + '/Home/orderlist';
-        const response = await axios.get<Order[]>(url);
-        const sortedOrders = response.data.sort(
+       /*  const url = config.API_BASE_URL + '/Home/orderlist';
+        const response = await axios.get<Order[]>(url); */
+         const ordersResponse: Order[]= await AxiosClientGet('/Home/orderlist', true);
+        const sortedOrders = ordersResponse.sort(
           (a, b) => new Date(b.modifieddatetime).getTime() - new Date(a.modifieddatetime).getTime()
         );
         setOrders(sortedOrders);

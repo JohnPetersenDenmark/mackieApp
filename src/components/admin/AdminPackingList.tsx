@@ -4,6 +4,7 @@ import { Order } from '../../types/Order';
 import { OrderItem } from '../../types/OrderItem';
 import TestRealTimeUpdate from '../TestRealTimeUpdate';
 import config from '../../config';
+import { AxiosClientGet, AxiosClientPost } from '../../types/AxiosClient';
 
 
 
@@ -35,14 +36,16 @@ const AdminPackingList: React.FC = () => {
 
 
   useEffect(() => {
-    const url: string = config.API_BASE_URL + '/Home/orderlist';
+    const fetchData = async () => {
 
-    axios
-      .get<Order[]>(url)
 
-      .then((response) => {
+      try {
+        setLoading(true);
 
-        const filteredByDate = filterOrderByDate(response.data);
+        const ordersResponse = await AxiosClientGet('/Home/orderlist', true);
+
+        const filteredByDate = filterOrderByDate(ordersResponse);
+
         const filteredOrdersByNoComment = filteredByNoComment(filteredByDate);
 
         const orderLinesArray: OrderItem[] = [];
@@ -59,39 +62,19 @@ const AdminPackingList: React.FC = () => {
         const va = GroupOrderLinesByPizzaProductId(orderLinesArray);
         setGroupedOrderLinesNoComment(va);
 
-
-
         const filteredByHaveCommentArray = filteredByHaveComment(filteredByDate);
         setOrdersWithComment(filteredByHaveCommentArray);
-        /*   const orderLinesArrayComment: OrderItem[] = [];
-          let tmpOrderCommentArray: string[] = [];
-  
-          filteredByHaveCommentArray.forEach(order => {
-            let index = 0;
-            order.orderlines.forEach(orderLine => {
-              if (orderLine.producttype === 0)  // type 0 is pizza
-              {
-                orderLinesArrayComment.push(orderLine)
-                tmpOrderCommentArray.push(order.comment);
-                index++;
-              }
-  
-            });
-          }); */
 
-        //setOrderCommentArray(tmpOrderCommentArray);
-
-        /*  const sortedLinesComment = [...orderLinesArrayComment].sort((a, b) => a.productid - b.productid);
-         const va1 = GroupOrderLinesByPizzaProductId(sortedLinesComment); */
-        // setGroupedOrderLinesWithComment(va1);
-
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError('Failed to load orders');
-        setLoading(false);
+      } catch (err: any) {
+        setError(err.message || 'Failed to load orders');
         console.error(err);
-      });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+
   }, []);
 
 
@@ -193,11 +176,11 @@ const AdminPackingList: React.FC = () => {
         width: '100%',
         boxSizing: 'border-box',
         marginTop: 50,
-         marginLeft: 0,
+        marginLeft: 0,
         overflowX: 'hidden',
       }}
     >
-      <div style={{ margin: '20px 0', textAlign: 'left', fontSize: '30px', color : '#8d4a5b' , fontWeight: 700}}> Standard</div>
+      <div style={{ margin: '20px 0', textAlign: 'left', fontSize: '30px', color: '#8d4a5b', fontWeight: 700 }}> Standard</div>
 
       <div style={{ margin: '20px 0', textAlign: 'left' }}>
         {groupedOrderLinesNoComment?.map((group, idx) => (
@@ -230,7 +213,7 @@ const AdminPackingList: React.FC = () => {
 
 
 
-      <div style={{ margin: '20px 0', textAlign: 'left', fontSize: '30px', color : '#8d4a5b' , fontWeight: 700 }}>Special</div>
+      <div style={{ margin: '20px 0', textAlign: 'left', fontSize: '30px', color: '#8d4a5b', fontWeight: 700 }}>Special</div>
 
       <div style={{ margin: '20px 0', textAlign: 'left' }}>
         {ordersWithComment?.map((order, idx) => (
@@ -242,15 +225,15 @@ const AdminPackingList: React.FC = () => {
               background: '#8d4a5b',
               padding: '15px',
               marginBottom: '30px',
-              fontWeight : 700,
-              color : '#ffffff'
+              fontWeight: 700,
+              color: '#ffffff'
             }}
           >
             {/* Order Header */}
             <div style={{ display: 'flex', flexWrap: 'wrap', marginBottom: '10px' }}>
               <div style={{ flex: '1 1 30%', minWidth: '100px' }}>{order.customerorderCode}</div>
               <div style={{ flex: '2 1 20%', minWidth: '150px' }}>{order.customerName}</div>
-              <div style={{ flex: '3 1 50%', minWidth: '150px'  ,  background: 'green'}}>{order.comment}</div>
+              <div style={{ flex: '3 1 50%', minWidth: '150px', background: 'green' }}>{order.comment}</div>
             </div>
 
             {/* Order Lines */}
@@ -263,15 +246,15 @@ const AdminPackingList: React.FC = () => {
                   alignItems: 'center',
                   padding: '10px',
                   borderTop: '1px solid #ccc',
-                  fontWeight : 200,
+                  fontWeight: 200,
                   flexWrap: 'wrap',
                   background: '#fff',
-                  color : '#000000'
+                  color: '#000000'
                 }}
               >
                 <div style={{ flex: '1 1 30%', minWidth: '150px' }}>{orderLine.pizzanumber}</div>
                 <div style={{ flex: '2 1 20%', minWidth: '150px' }}>{orderLine.productname}</div>
-                <div style={{ flex: '3 1 50%', minWidth: '100px' , textAlign: 'right'  }}>{orderLine.quantity}</div>
+                <div style={{ flex: '3 1 50%', minWidth: '100px', textAlign: 'right' }}>{orderLine.quantity}</div>
               </div>
             ))}
           </div>

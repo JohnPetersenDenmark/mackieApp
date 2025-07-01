@@ -8,7 +8,7 @@ import { filterOrderByTodaysDate } from '../../types/MiscFunctions';
 import { filterTruckLocationsByTodaysDate } from '../../types/MiscFunctions';
 import { parseDanishDateTime } from '../../types/MiscFunctions';
 import ClipLoader from 'react-spinners/ClipLoader';
-import AxiosClient from '../../types/AxiosClient';
+import {AxiosClientGet, AxiosClientPost} from '../../types/AxiosClient';
 
 
 
@@ -44,7 +44,7 @@ const AdminOrders: React.FC = () => {
       try {
         setLoadingOrders(true);
 
-        const ordersResponse = await AxiosClient('/Home/orderlist', true);
+        const ordersResponse = await AxiosClientGet('/Home/orderlist', true);
 
         const ordersFromTodayAndForward = filterOrderByTodaysDate(ordersResponse);
         const sortedOrders = ordersFromTodayAndForward.sort(
@@ -73,7 +73,7 @@ const AdminOrders: React.FC = () => {
       try {
         setLoadingLocations(true);
        //  const locationsResponse = await axios.get<TruckLocation[]>(config.API_BASE_URL + '/Home/truckcalendarlocationlist');
-         const locationsResponse = await AxiosClient('/Home/truckcalendarlocationlist', false);
+         const locationsResponse = await AxiosClientGet('/Home/truckcalendarlocationlist', false);
         let locationsAfterTodayAndForward = filterTruckLocationsByTodaysDate(locationsResponse);
         const sortedTruckcalendarlocations = locationsAfterTodayAndForward.sort((a, b) => parseDanishDateTime(a.startdatetime).getTime() - parseDanishDateTime(b.startdatetime).getTime());
         setLocations(sortedTruckcalendarlocations);
@@ -246,11 +246,13 @@ const AdminOrders: React.FC = () => {
       const updateOrder = async () => {
         try {
           setSubmitting(true);
-          const url = config.API_BASE_URL + '/Home/orderremovecomment';
+
+          AxiosClientPost('/Home/orderremovecomment',{ id: order.id }, true )
+        /*   const url = config.API_BASE_URL + '/Home/orderremovecomment';
           await axios.post(url, { id: order.id }, {
             headers: { 'Content-Type': 'application/json' },
             withCredentials: true
-          });
+          }); */
           setReload(prev => prev + 1);
         } catch (error) {
           setError('Failed to update order');
