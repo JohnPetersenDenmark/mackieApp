@@ -8,7 +8,7 @@ import { filterOrderByTodaysDate } from '../../types/MiscFunctions';
 import { filterTruckLocationsByTodaysDate } from '../../types/MiscFunctions';
 import { parseDanishDateTime } from '../../types/MiscFunctions';
 import ClipLoader from 'react-spinners/ClipLoader';
-import {AxiosClientGet, AxiosClientPost, AxiosClientDelete} from '../../types/AxiosClient';
+import { AxiosClientGet, AxiosClientPost, AxiosClientDelete } from '../../types/AxiosClient';
 
 
 
@@ -72,8 +72,8 @@ const AdminOrders: React.FC = () => {
 
       try {
         setLoadingLocations(true);
-       
-         const locationsResponse = await AxiosClientGet('/Home/truckcalendarlocationlist', false);
+
+        const locationsResponse = await AxiosClientGet('/Home/truckcalendarlocationlist', false);
         let locationsAfterTodayAndForward = filterTruckLocationsByTodaysDate(locationsResponse);
         const sortedTruckcalendarlocations = locationsAfterTodayAndForward.sort((a, b) => parseDanishDateTime(a.startdatetime).getTime() - parseDanishDateTime(b.startdatetime).getTime());
         setLocations(sortedTruckcalendarlocations);
@@ -227,7 +227,7 @@ const AdminOrders: React.FC = () => {
       const deleteOrder = async () => {
         try {
           setSubmitting(true);
-         
+
           await AxiosClientDelete('/Admin/removeorder/' + order.id, true)
           setReload(prev => prev + 1);
         } catch (error) {
@@ -247,7 +247,7 @@ const AdminOrders: React.FC = () => {
         try {
           setSubmitting(true);
 
-          AxiosClientPost('/Home/orderremovecomment',{ id: order.id }, true )       
+          AxiosClientPost('/Home/orderremovecomment', { id: order.id }, true)
           setReload(prev => prev + 1);
         } catch (error) {
           setError('Failed to update order');
@@ -314,7 +314,7 @@ const AdminOrders: React.FC = () => {
       color: '#22191b',
       fontWeight: 200,
       textAlign: 'center' as const,
-      maxWidth: 1400,
+      // maxWidth: 1400,
       margin: 'auto',
     },
     headerGrid: {
@@ -338,7 +338,8 @@ const AdminOrders: React.FC = () => {
       fontSize: '2rem',
       fontWeight: 600,
       color: '#22191b',
-      textAlign: 'left' as const,
+      margin: '20px',
+      textAlign: 'center' as const,
     },
     orderCard: {
       border: '1px solid #ccc',
@@ -454,6 +455,8 @@ const AdminOrders: React.FC = () => {
       <style>{mediaQueries}</style>
       {/* <div style={{ styles.container, width: '100vw', overflowX: 'hidden' }}> */}
       <div style={styles.container}>
+        <div style={styles.title}>Bestillinger</div>
+
         <TestRealTimeUpdate doNotify={handleNewOrderArrived} />
         <div style={styles.headerGrid}>
           <input
@@ -483,12 +486,12 @@ const AdminOrders: React.FC = () => {
 
 
           </div>
-          <div style={styles.title}>Bestillinger</div>
+
         </div>
 
         {/* Inner wrapper to constrain max width and add side padding */}
-        <div style={{ maxWidth: 900, margin: '0 auto', padding: '0 10px', textAlign: 'left' }}>
-          {loadingOrders || loadingLocations && <div><ClipLoader size={50} color="#8d4a5b" /></div>}
+        <div style={{ padding: '0 10px', textAlign: 'left' }}>
+          {loadingOrders || loadingLocations ? <div><ClipLoader size={50} color="#8d4a5b" /></div> : ''}
           {error && <div style={{ color: 'red' }}>{error}</div>}
 
           {displayedOrders.map((curOrder) => {

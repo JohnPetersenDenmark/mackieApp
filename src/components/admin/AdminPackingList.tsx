@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Order } from '../../types/Order';
 import { OrderItem } from '../../types/OrderItem';
+import ClipLoader from 'react-spinners/ClipLoader';
 import TestRealTimeUpdate from '../TestRealTimeUpdate';
 import config from '../../config';
 import { AxiosClientGet, AxiosClientPost } from '../../types/AxiosClient';
@@ -180,8 +181,14 @@ const AdminPackingList: React.FC = () => {
         overflowX: 'hidden',
       }}
     >
-      <div style={{ margin: '20px 0', textAlign: 'left', fontSize: '30px', color: '#8d4a5b', fontWeight: 700 }}> Standard</div>
+             <div style={{ fontSize: '2rem',
+      fontWeight: 600,
+      color: '#22191b',
+      margin: '20px',
+      textAlign: 'center' as const,}}>Pakkeliste</div>
 
+      <div style={{ margin: '20px 0', textAlign: 'left', fontSize: '30px', color: '#8d4a5b', fontWeight: 700 }}> Standard</div>
+      {loading ? <div><ClipLoader size={50} color="#8d4a5b" /></div> : ''}
       <div style={{ margin: '20px 0', textAlign: 'left' }}>
         {groupedOrderLinesNoComment?.map((group, idx) => (
           <div

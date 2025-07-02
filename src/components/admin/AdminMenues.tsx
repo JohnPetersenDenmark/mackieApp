@@ -6,7 +6,7 @@ import { Topping } from '../../types/Topping';
 import AdminPizzaCreateEdit from './AdminPizzaCreateEdit';
 import AdminToppingCreateEdit from './AdminToppingCreateEdit';
 import config from '../../config';
-import { AxiosClientGet, AxiosClientPost , AxiosClientDelete}  from '../../types/AxiosClient';
+import { AxiosClientGet, AxiosClientPost, AxiosClientDelete } from '../../types/AxiosClient';
 
 import {
   AdminContainer,
@@ -24,7 +24,7 @@ import {
 // ✅ Full-width responsive container
 const Container = styled.div`
   width: 100%;
-  max-width: 960px;
+ 
   margin: 0 auto;
   padding: 10px;
   box-sizing: border-box;
@@ -79,7 +79,7 @@ const AdminMenues: React.FC = () => {
 
   const handleDeleteTopping = async (topping: Topping) => {
     try {
-      setSubmitting(true);    
+      setSubmitting(true);
       await AxiosClientDelete('/Admin/removetopping/' + topping.id, true);
     } catch {
       setError('Failed to delete topping');
@@ -102,7 +102,11 @@ const AdminMenues: React.FC = () => {
         toppingToEdit={toppingToEdit}
       />
 
-      <SectionTitle>Menuer</SectionTitle>
+      <div style={{ fontSize: '2rem',
+      fontWeight: 600,
+      color: '#22191b',
+      margin: '20px',
+      textAlign: 'center' as const,}}>Menuer</div>
 
       {/* Pizzas Section */}
       <SectionWrapper bgColor='#ffffff' >
@@ -111,7 +115,7 @@ const AdminMenues: React.FC = () => {
           <div>Nr.</div>
           <div>Navn</div>
           <div>Beskrivelse</div>
-         {/*  <div>Pris før rabat</div>
+          {/*  <div>Pris før rabat</div>
           <div>Rabat %</div> */}
           <div>Pris efter rabat</div>
           <div></div>
@@ -126,7 +130,7 @@ const AdminMenues: React.FC = () => {
             <div>{pizza.pizzanumber}</div>
             <div>{pizza.name}</div>
             <div>{pizza.description}</div>
-          {/*   <div>{pizza.discountprice.toFixed(2).replace('.', ',')}</div>
+            {/*   <div>{pizza.discountprice.toFixed(2).replace('.', ',')}</div>
             <div>{pizza.discountpercentage}</div> */}
             <div>{pizza.price.toFixed(2).replace('.', ',')}</div>
             <div>
@@ -162,14 +166,14 @@ const AdminMenues: React.FC = () => {
       </SectionWrapper>
 
       {/* Toppings Section */}
-      <SectionWrapper bgColor="beige">
+      <SectionWrapper bgColor="white">
         <GridHeaderTopping>
           <div></div>
           <div>Tilbehør</div>
           <div>Beskrivelse</div>
           <div>Pris</div>
 
-<div></div>
+          <div></div>
           <div></div>
 
         </GridHeaderTopping>

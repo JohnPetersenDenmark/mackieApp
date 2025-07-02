@@ -5,7 +5,7 @@ import { TruckLocation } from '../../types/TruckLocation';
 import config from '../../config';
 
 import AdminCalendarCreateEdit from "./AdminCalendarCreateEdit"
-import { AxiosClientGet, AxiosClientPost , AxiosClientDelete}  from '../../types/AxiosClient';
+import { AxiosClientGet, AxiosClientPost, AxiosClientDelete } from '../../types/AxiosClient';
 
 import ClipLoader from 'react-spinners/ClipLoader';
 
@@ -26,9 +26,9 @@ const AdminCalendar: React.FC = () => {
 
 
   useEffect(() => {
-   
+
     const fetchData = async () => {
-        setLoading(true);
+      setLoading(true);
       try {
         const locationsResponse = await AxiosClientGet('/Home/truckcalendarlocationlist', false);
         const sortedTruckcalendarlocations = locationsResponse.sort((a, b) => {
@@ -69,7 +69,7 @@ const AdminCalendar: React.FC = () => {
     if (truckLocation !== null) {
       const deleteTruckLocation = async () => {
         try {
-          setSubmitting(true);        
+          setSubmitting(true);
           AxiosClientDelete('/Admin/removetrucklocation/' + truckLocation.id, true)
         } catch (error) {
           setError('Fejl');
@@ -93,7 +93,7 @@ const AdminCalendar: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: '1rem', width: '100%', margin: 'auto' }}>
+    <div style={{ padding: '1rem', width: '100%', margin: '0' }}>
       <AdminCalendarCreateEdit
         isOpen={isCreateEditCalendarModalOpen}
         onClose={handleCloseCreateEditPlaceModal}
@@ -112,9 +112,13 @@ const AdminCalendar: React.FC = () => {
 
         }}
       >
-        <div style={{ textAlign: 'center', fontSize: '2.25rem', margin: 'auto' }}>Kalender</div>
+        <div style={{ fontSize: '2rem',
+      fontWeight: 600,
+      color: '#22191b',
+      margin: '20px',
+      textAlign: 'center' as const,}}>Kalender</div>
 
-        <div style={{ textAlign: 'center', fontSize: '2.25rem', margin: 'auto' }}>
+        <div style={{ textAlign: 'center', margin: 'auto' }}>
           {loading ? <ClipLoader size={50} color="#8d4a5b" /> : ''}
           {/* <ClipLoader size={50} color="#8d4a5b" />  */}
         </div>
@@ -129,6 +133,7 @@ const AdminCalendar: React.FC = () => {
               display: 'flex',
               flexWrap: 'wrap',
               gap: '1rem',
+              fontSize: '20px',
               marginBottom: '1rem',
               border: '1px solid grey',
               borderRadius: '5px',
@@ -137,10 +142,7 @@ const AdminCalendar: React.FC = () => {
           >
 
 
-
-
-
-            <div style={{ flex: '1', padding: '0.5rem' }}>{curLocation.locationname}</div>
+            <div className="calendar-card-title" style={{ flex: '1', padding: '0.5rem'}}>{curLocation.locationname}</div>
             <div style={{ flex: '1', padding: '0.5rem' }}>{curLocation.startdatetime}</div>
             <div style={{ flex: '1', padding: '0.5rem' }}>{curLocation.enddatetime}</div>
             <div style={{ flex: '1', padding: '0.5rem' }}>
@@ -150,15 +152,20 @@ const AdminCalendar: React.FC = () => {
           </div>
         ))}
 
-        <style>
-          {`
-        @media (max-width: 768px) {
-          .calendar-card div {
-            flex: 1 1 100% !important;
-          }
-        }
-      `}
-        </style>
+    <style>
+  {`
+    @media (max-width: 768px) {
+      .calendar-card div {
+        flex: 1 1 100% !important;
+      }
+
+      .calendar-card-title {
+        background-color: #8d4a5b;
+        color: #ffffff;
+      }
+    }
+  `}
+</style>
 
         {/* "New" location */}
         <div
@@ -185,15 +192,6 @@ const AdminCalendar: React.FC = () => {
         </div>
 
       </div>
-
-      {/* Responsive CSS */}
-      <style>{`
-      @media (min-width: 1024px) {
-        .calendar-card {
-          flex: 1 1 100%;
-        }
-      }
-    `}</style>
     </div>
   )
 

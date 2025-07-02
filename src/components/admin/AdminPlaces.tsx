@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { SaleLocation } from '../../types/SaleLocation';
-import { AxiosClientGet, AxiosClientPost , AxiosClientDelete} from '../../types/AxiosClient';
+import { AxiosClientGet, AxiosClientPost, AxiosClientDelete } from '../../types/AxiosClient';
 
 import AdminPlaceCreateEdit from './AdminPlaceCreateEdit';
 import config from '../../config';
@@ -15,25 +15,25 @@ const AdminPlaces: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-   
- const fetchData = async () => {
-    
-    try {
-      const locationsResponse: any = await AxiosClientGet('/Home/locationlist', true);
 
-      setLocations(locationsResponse);
-      setLoading(false);
+    const fetchData = async () => {
 
-    } catch (err) {
-      setError('Failed to load locations');
-      setLoading(false);
-      console.error(err);
-    } finally {
-      setLoading(false);
+      try {
+        const locationsResponse: any = await AxiosClientGet('/Home/locationlist', true);
+
+        setLocations(locationsResponse);
+        setLoading(false);
+
+      } catch (err) {
+        setError('Failed to load locations');
+        setLoading(false);
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
     }
-  }
 
-  fetchData();
+    fetchData();
 
 
   }, [isCreateEditLocationModalOpen, submitting]);
@@ -48,10 +48,10 @@ const AdminPlaces: React.FC = () => {
       const deleteLocation = async () => {
         try {
           setSubmitting(true);
-          
+
           await AxiosClientDelete('/Admin/removelocation/' + location.id, true)
 
-          
+
         } catch (error) {
           setError('Fejl');
           console.error(error);
@@ -64,7 +64,7 @@ const AdminPlaces: React.FC = () => {
   };
 
   const handleNewLocation = () => {
-     setLocationToEdit(null);
+    setLocationToEdit(null);
     setIsCreateEditLocationModalOpen(true);
   };
 
@@ -75,14 +75,14 @@ const AdminPlaces: React.FC = () => {
 
   return (
     <div
+      className="location-frame"
       style={{
         border: '1px solid grey',
-        borderRadius: '5px',
-        background: '#8d4a5b',
+        borderRadius: '5px',       
         fontSize: '20px',
         color: '#22191b',
         fontWeight: 200,
-        maxWidth: 1400,
+
         margin: 'auto',
       }}
     >
@@ -92,7 +92,13 @@ const AdminPlaces: React.FC = () => {
         locationToEdit={locationToEdit}
       />
 
-      <div style={{ maxWidth: 1400, margin: 'auto', padding: '1rem' }}>
+       <div style={{ fontSize: '2rem',
+      fontWeight: 600,
+      color: '#ffffff',
+      margin: '20px',
+      textAlign: 'center' as const,}}>Stadepladser</div>
+
+      <div style={{ margin: 'auto', padding: '1rem' }}>
         {locations.map((location) => (
           <div key={location.id} style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', border: '1px solid grey', borderRadius: '5px', background: '#ffffff', }}>
             <div style={{ flex: '1', padding: '0.5rem' }}>{location.id}</div>
@@ -118,6 +124,15 @@ const AdminPlaces: React.FC = () => {
           </div>
         ))}
       </div>
+      <style>
+        {`
+          @media (max-width: 768px) {    
+          .location-frame {
+                      background-color: #8d4a5b;
+      }
+    }
+  `}
+      </style>
       <div
         style={{
           border: '1px dashed #ccc',
