@@ -44,19 +44,19 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
 
 
   useEffect(() => {
-const fetchData = async () => {
-    try {
-      const locationsResponse: any = await AxiosClientGet('/Home/locationlist', true);
+    const fetchData = async () => {
+      try {
+        const locationsResponse: any = await AxiosClientGet('/Home/locationlist', true);
 
-      setSaleLocations(locationsResponse);
+        setSaleLocations(locationsResponse);
 
-    } catch (err) {
-      console.error(err);
-    } finally {
+      } catch (err) {
+        console.error(err);
+      } finally {
 
+      }
     }
-  }
-  fetchData();
+    fetchData();
 
   }, []); // Only fetch once on mount
 
@@ -143,6 +143,8 @@ const fetchData = async () => {
   };
 
 
+
+
   if (!isOpen) return null;
 
   return (
@@ -160,7 +162,7 @@ const fetchData = async () => {
         zIndex: 1000,
         padding: '1rem',
         boxSizing: 'border-box',
-        marginLeft: 'auto',
+        marginLeft: '0',
       }}
     >
       <div
@@ -189,19 +191,70 @@ const fetchData = async () => {
 
         <div style={{ marginBottom: '1rem' }}>
           <label htmlFor="startDateTimePicker" style={{ fontWeight: 'bold' }}>Start:</label><br />
-          <DatePicker
-            id="startDateTimePicker"
-            selected={startDateTime}
-            onChange={handleStartDateChange}
-            showTimeSelect
-            timeCaption="Tid"
-            timeIntervals={60}
-            dateFormat="dd-MM-yyyy HH:mm"
-            timeFormat="HH:mm"
-            locale={da}
-            placeholderText="Vælg startdato og tid"
-            customInput={<CustomInput />}
-          />
+         <DatePicker
+    id="startDateTimePicker"
+    selected={startDateTime}
+    onChange={handleStartDateChange}
+    showTimeSelect
+    timeCaption="Tid"
+    timeIntervals={60}
+    dateFormat="dd-MM-yyyy HH:mm"
+    timeFormat="HH:mm"
+    locale={da}
+    placeholderText="Vælg startdato og tid"
+    customInput={<CustomInput />}
+    calendarClassName="large-datepicker"
+    className="custom-datepicker-input"
+    withPortal
+  />
+  {/* Inline <style> to inject calendar styles */}
+  <style>{`
+    .custom-datepicker-input {
+      width: 100%;
+      font-size: 18px;
+      padding: 12px;
+      height: 50px;
+      box-sizing: border-box;
+    }
+
+    .large-datepicker {
+      transform: scale(1.3);
+      transform-origin: top left;
+      font-size: 18px;
+    }
+
+    .large-datepicker .react-datepicker__day {
+      padding: 0.75rem;
+    }
+
+    /* Overlay background behind popup */
+    .react-datepicker__portal {
+      background-color: #8d4a5b;
+      z-index: 9999;
+    }
+
+    .react-datepicker-popper {
+      z-index: 10000;
+    }
+
+    @media (max-width: 600px) {
+      .large-datepicker {
+        transform: scale(1); 
+        font-size: 16px;
+        width: 95vw;
+        max-width: 100vw;
+      }
+
+      .large-datepicker .react-datepicker__day {
+        padding: 0.5rem;
+      }
+
+      .custom-datepicker-input {
+        font-size: 16px;
+        height: 46px;
+      }
+    }
+  `}</style>
         </div>
 
         <div style={{ marginBottom: '1rem' }}>
@@ -220,6 +273,9 @@ const fetchData = async () => {
             minDate={startDateTime || undefined}
             maxDate={startDateTime || undefined}
             customInput={<CustomInput />}
+              calendarClassName="large-datepicker"
+    className="custom-datepicker-input"
+    withPortal
           />
         </div>
 

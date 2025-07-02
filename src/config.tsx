@@ -6,11 +6,11 @@ const config = {
   PAYMENT_ACCEPT_URL: "http://localhost:3000/payment-success" 
  
  
-   /*  API_BASE_URL: "https://api.mackies-pizza.dk",
+   /*  API_BASE_URL: "https://api.mackies-pizza.dk", 
    PAYMENT_CANCEL_URL: "https://mackies-pizza.dk/payment-cancel",
 
-  PAYMENT_ACCEPT_URL: "https://mackies-pizza.dk/payment-success"  */
-
+  PAYMENT_ACCEPT_URL: "https://mackies-pizza.dk/payment-success" 
+ */
  
 
 
