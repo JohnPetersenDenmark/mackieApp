@@ -94,7 +94,7 @@ const AdminPlaces: React.FC = () => {
 
        <div style={{ fontSize: '2rem',
       fontWeight: 600,
-      color: '#ffffff',
+     color: '#22191b',
       margin: '20px',
       textAlign: 'center' as const,}}>Stadepladser</div>
 
