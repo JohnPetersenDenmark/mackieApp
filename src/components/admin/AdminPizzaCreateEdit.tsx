@@ -161,10 +161,31 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
             newValueAsString = newValueAsString.replaceAll('.', ',');
 
             setPizzaPriceBeforeDiscount(newValueAsString);
+
+           
+            let priceAfterDiscountString = pizzaPriceAfterDiscount;
+            priceAfterDiscountString = priceAfterDiscountString.replaceAll(',', '.')
+            
+            let priceAfterDiscount  = Number(priceAfterDiscountString);             
+            if (isNaN(priceAfterDiscount)) {
+                setPizzaDiscountPercentage("0,00");
+                return;
+            }
+
+            if (priceAfterDiscount > newValueAsNumber)
+            {
+                 setPizzaDiscountPercentage("0,00");
+                return;
+            }         
+            let percentageNumber = ((  newValueAsNumber - priceAfterDiscount) / newValueAsNumber) * 100
+            let percentageAsString = percentageNumber.toFixed(1);
+            percentageAsString = percentageAsString.replaceAll('.', ',');
+             setPizzaDiscountPercentage(percentageAsString);
+
         }
     };
 
-    const handleDiscountPercentage = (e: React.ChangeEvent<HTMLInputElement>) => {
+   /*  const handleDiscountPercentage = (e: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = e.target.value;
 
         if (inputValue === '') {
@@ -181,7 +202,7 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
             //let fixedWith1Decimals = newValueAsNumber.toString().replaceAll('.', ',');
             setPizzaDiscountPercentage(normalizeNumber);
         }
-    };
+    }; */
 
     const handleOnBlurDiscount = (e: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -256,32 +277,33 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
             let newValueAsNumber = Number(newValue);
             if (isNaN(newValueAsNumber)) {
                 setPizzaPriceAfterDiscount('0,00');
+                return;
+            }
+            let newValueAsString = newValueAsNumber.toFixed(2);
+            newValueAsString = newValueAsString.replaceAll('.', ',');
+            setPizzaPriceAfterDiscount(newValueAsString);
 
+
+            let priceBeforeDiscountString = pizzaPriceBeforeDiscount;
+            priceBeforeDiscountString = priceBeforeDiscountString.replaceAll(',', '.');
+
+              let priceBeforeDiscount  = Number(priceBeforeDiscountString);   
+
+            if (isNaN(priceBeforeDiscount)) {
+                setPizzaDiscountPercentage("0,00");
                 return;
             }
 
-            let newValueAsString = newValueAsNumber.toFixed(2);
-            newValueAsString = newValueAsString.replaceAll('.', ',');
+            if (newValueAsNumber > priceBeforeDiscount)
+            {
+                 setPizzaDiscountPercentage("0,00"); 
+                return;
+            }         
+            let percentageNumber = ((  priceBeforeDiscount - newValueAsNumber) / priceBeforeDiscount) * 100
+            let percentageAsString = percentageNumber.toFixed(1);
+            percentageAsString = percentageAsString.replaceAll('.', ',');
+             setPizzaDiscountPercentage(percentageAsString);
 
-            if (pizzaDiscountPercentage) {
-                let pizzaDiscountPercentageNumber = 0;
-                pizzaDiscountPercentageNumber = Number(pizzaDiscountPercentage.replaceAll(',', '.'))
-
-
-                let tmp = (1 - (pizzaDiscountPercentageNumber / 100))
-                let x = newValueAsNumber / tmp
-                let PriceBeforeDiscountAsString = x.toFixed(2).replaceAll('.', ',');;
-                setPizzaPriceBeforeDiscount(PriceBeforeDiscountAsString);
-                /*   let tmpVal = (newValueAsNumber * pizzaDiscountPercentageNumber) / 100
-                  let tmpVal1 = newValueAsNumber + tmpVal;
-                  let PriceBeforeDiscountAsString = tmpVal1.toFixed(2).replaceAll('.', ',');;
-                  setPizzaPriceBeforeDiscount(PriceBeforeDiscountAsString); */
-            }
-            else {
-                setPizzaPriceBeforeDiscount(newValueAsString);
-            }
-
-            setPizzaPriceAfterDiscount(newValueAsString);
         }
     };
 
@@ -426,8 +448,7 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
                 <label htmlFor="pricebeforediscount">Pris før rabat:</label><br />
                 <input
                     id="pricebeforediscount"
-                    type="text"
-                    readOnly
+                    type="text"                    
                     value={pizzaPriceBeforeDiscount.replaceAll('.', ',')}
                     onChange={handlePriceBeforeDiscount}
                     onBlur={handleOnBlurPriceBeforeDiscount}
@@ -450,9 +471,10 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
                 <input
                     id="xyz"
                     type="text"
+                    readOnly
                     value={pizzaDiscountPercentage}
-                    onChange={handleDiscountPercentage}
-                    onBlur={handleOnBlurDiscount}
+                   /*  onChange={handleDiscountPercentage}
+                    onBlur={handleOnBlurDiscount} */
                     placeholder="Rabat i %"
                     style={{
                         width: '100%',
