@@ -96,20 +96,20 @@ const TermsOfSale: React.FC<TermsOfSaleModalProps> = ({ isOpen, onClose }) => {
               <p>Østergade 10, 8983 Gjerlev J</p>
             </div>
 
-            <div style={{ flex: '1 1 150px', padding: '1rem', fontSize: '15px', margin: 0 }}>
+          {/*   <div style={{ flex: '1 1 150px', padding: '1rem', fontSize: '15px', margin: 0 }}>
               <p>Telefon:</p>
               <p>+45 5152 1216</p>
-            </div>
+            </div> */}
 
             <div style={{ flex: '1 1 150px', padding: '1rem', fontSize: '15px', margin: 0 }}>
               <p>Email:</p>
               <p>admin@mackies-pizza.dk</p>
             </div>
-
+{/* 
             <div style={{ flex: '1 1 150px', padding: '1rem', fontSize: '15px', margin: 0 }}>
               <p>MobilePay:</p>
               <p>5152 1216</p>
-            </div>
+            </div> */}
           </div>
             <div className="terms-flag-selector">
                 <span>
