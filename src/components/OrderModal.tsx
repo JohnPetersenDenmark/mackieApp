@@ -9,7 +9,7 @@ import { TruckLocation } from '../types/TruckLocation';
 import config from '../config';
 import "./OrderModal.css";
 import ClipLoader from 'react-spinners/ClipLoader';
-import {AxiosClientGet, AxiosClientPost} from '../types/AxiosClient';
+import { AxiosClientGet, AxiosClientPost } from '../types/AxiosClient';
 //import FrisbiiCheckoutButton from './FrisbiiCheckoutButton';
 
 import FlatpayCheckout from './FlatpayCheckout';
@@ -331,18 +331,18 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
     };
 
     try {
-      let response : any;
+      let response: any;
       if (existingOrder === null) {
-        response = await AxiosClientPost( '/Home/createorder', orderData , false);
+        response = await AxiosClientPost('/Home/createorder', orderData, false);
       }
       else {
-        response = await AxiosClientPost( '/Home/updateorder', orderData, false);
+        response = await AxiosClientPost('/Home/updateorder', orderData, false);
       }
 
       setSubmitSuccess('Bestilling sendt! Tak for din ordre.');
       setSubmittedOrderSuccessfully(true);
       setCreatedOrder(response)
-     
+
     } catch (error) {
       setSubmitError('Kunne ikke sende bestillingen. Prøv igen senere.');
       console.error(error);
@@ -433,7 +433,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
           <p style={{ color: 'red', marginTop: '0.25rem' }}>Indtast venligst en gyldig emailadresse.</p>
         )}
 
- <hr />
+        <hr />
         {/* Pizza list */}
         {orderItemsPizza.map((item, index) => (
           <div key={item.productid} className="pizza-item-container">
@@ -522,8 +522,8 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
         <hr />
         <p><strong>Total: {getTotal()} kr</strong></p>
 
-          {submitError && <p style={{ color: 'red' }}>{submitError}</p>}
-            {submitSuccess && <p style={{ color: 'green' }}>{submitSuccess}</p>}
+        {submitError && <p style={{ color: 'red' }}>{submitError}</p>}
+        {submitSuccess && <p style={{ color: 'green' }}>{submitSuccess}</p>}
 
         {/* Buttons */}
 
@@ -534,7 +534,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
         >
           {/* {submitting ? 'Sender...' : 'Send Bestilling'} */}
 
-            {submitting ?  <div><ClipLoader size={50} color="#8d4a5b" /></div> : 'Send bestilling'}   
+          {submitting ? <div><ClipLoader size={50} color="#8d4a5b" /></div> : 'Send bestilling'}
         </button>
 
 
@@ -547,15 +547,15 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
         </button>
 
 
-        {/*   <button
+       {/*  <button
           onClick={handleGoToPayment}
           disabled={!submittedOrderSuccessfully}
           className="close-btn"
         >
           Betaling
-        </button> */}
+        </button>
 
-        {/* {goToPayment ? <FlatpayCheckout createdOrderA={createdOrder} onPaymentStatus={handlePaymentStatus} onClose={handleCloseCheckout} /> : ''} */}
+        {goToPayment ? <FlatpayCheckout createdOrderA={createdOrder} onPaymentStatus={handlePaymentStatus} onClose={handleCloseCheckout} /> : ''} */}
 
 
       </div>
