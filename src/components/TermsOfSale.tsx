@@ -19,46 +19,153 @@ const TermsOfSale: React.FC<TermsOfSaleModalProps> = ({ isOpen, onClose }) => {
             case "da":
                 return (
                     <>
-                        <h1>Salgs- og leveringsbetingelser</h1>
-                        <p>Disse salgs- og leveringsbetingelser gælder for køb af varer på vores hjemmeside. Ved at afgive en bestilling accepterer du betingelserne nedenfor.</p>
-                        <h2>1. Bestilling og betaling</h2>
-                        <p>Alle priser er angivet i DKK og inkl. moms. Betaling kan ske med kreditkort, MobilePay eller andre angivne betalingsmetoder.</p>
-                        <h2>2. Levering</h2>
-                        <p>Vi leverer inden for vores leveringsområde. Den forventede leveringstid er 30-60 minutter. Du kan vælge mellem rå (ubagte) pizzaer til hjemmebagning eller færdigbagte pizzaer klar til servering.</p>
-                        <h2>3. Fortrydelsesret</h2>
-                        <p>Da vores produkter er madvarer fremstillet efter din bestilling, er der ingen fortrydelsesret i henhold til forbrugeraftaleloven § 18, stk. 2, nr. 4. Dette gælder både for rå og færdigbagte pizzaer.</p>
-                        <h2>4. Reklamation</h2>
-                        <p>Kontakt os hurtigst muligt på [din email / telefon] ved fejl i din ordre.</p>
+                        <h1>✅ Handelsbetingelser for Mackies Pizza Truck</h1>
+                        <p><strong>Virksomhed:</strong> Mackies Pizza Truck<br />
+                            <strong>CVR:</strong> 15475285<br />
+                            <strong>Ejer:</strong> Niels Wolthers<br />
+                            <strong>Adresse:</strong> Østergade 10, 8983 Gjerlev J<br />
+                            <strong>Email:</strong> nielswolthers@hotmail.com<br />
+                            <strong>Lovvalg:</strong> Danmark</p>
+
+                        <hr />
+
+                        <h2>Handelsbetingelser</h2>
+                        <p>Velkommen til Mackies Pizza Truck. Ved at bestille og afhente pizzaer hos os accepterer du følgende betingelser:</p>
+
+                        <ol>
+                            <li><strong>Generelt</strong><br />
+                                Disse betingelser gælder for alle køb hos Mackies Pizza Truck.
+                            </li>
+                            <li><strong>Virksomhedsoplysninger</strong><br />
+                                Mackies Pizza Truck drives af Niels Wolthers med CVR 15475285, beliggende på Østergade 10, 8983 Gjerlev J.
+                            </li>
+                            <li><strong>Produkter og priser</strong><br />
+                                Alle priser er angivet i DKK og inkluderer moms.
+                            </li>
+                            <li><strong>Betaling</strong><br />
+                                Betaling kan ske på følgende måder:<br />
+                                - Kredit- eller betalingskort via Flatpay online ved bestilling<br />
+                                - Kontant betaling ved afhentning ved trucken<br />
+                                - Betaling med kort via truckens kassesystem ved afhentning<br />
+                                Betaling skal være gennemført før eller ved afhentning.
+                            </li>
+                            <li><strong>Afhentning</strong><br />
+                                Pizzaerne afhentes ved Mackies Pizza Truck på den placering og det tidspunkt, der fremgår af vores hjemmeside. Vi offentliggør altid en uges fremtidig kalender med dato, tid og lokation for truckens standplads.
+                            </li>
+                            <li><strong>Fortrydelsesret og returnering</strong><br />
+                                Da der er tale om fødevarer, gælder der ikke fortrydelsesret. Skulle der være fejl i ordren, bedes kunden kontakte os hurtigst muligt for løsning.
+                            </li>
+                            <li><strong>Ansvarsbegrænsning</strong><br />
+                                Vi er ikke ansvarlige for indirekte tab eller følgefejl.
+                            </li>
+                            <li><strong>Lovvalg og værneting</strong><br />
+                                Disse betingelser er underlagt dansk lovgivning, og tvister afgøres ved danske domstole.
+                            </li>
+                            <li><strong>Lovvalg og værneting (detaljeret)</strong><br />
+                                Disse handelsbetingelser er underlagt og skal fortolkes i overensstemmelse med lovgivningen i Kongeriget Danmark. Enhver tvist, der opstår som følge af eller i forbindelse med disse betingelser, skal afgøres ved de danske domstole med eksklusiv jurisdiktion.
+                            </li>
+                        </ol>
                     </>
                 );
             case "en":
                 return (
                     <>
-                        <h1>Terms of Sale and Delivery</h1>
-                        <p>These terms of sale apply to purchases made on our website. By placing an order, you agree to these terms.</p>
-                        <h2>1. Orders and payment</h2>
-                        <p>All prices are stated in DKK and include VAT. Payment can be made by credit card, MobilePay, or other specified methods.</p>
-                        <h2>2. Delivery</h2>
-                        <p>We deliver within our delivery area. Expected delivery time is 30-60 minutes. You can choose between raw (unbaked) pizzas for baking at home or ready-baked pizzas for immediate consumption.</p>
-                        <h2>3. Right of cancellation</h2>
-                        <p>As our products are food items made to your specifications, no right of cancellation applies under the Danish Consumer Contracts Act § 18, section 2, no. 4. This applies to both raw and ready-baked pizzas.</p>
-                        <h2>4. Complaints</h2>
-                        <p>Please contact us immediately at [your email / phone] if there is a problem with your order.</p>
+                        <h1>✅ Terms & Conditions for Mackies Pizza Truck</h1>
+                        <p><strong>Business name:</strong> Mackies Pizza Truck<br />
+                            <strong>CVR (Company Reg. No.):</strong> 15475285<br />
+                            <strong>Owner:</strong> Niels Wolthers<br />
+                            <strong>Address:</strong> Østergade 10, 8983 Gjerlev J, Denmark<br />
+                            <strong>Email:</strong> nielswolthers@hotmail.com<br />
+                            <strong>Governing Law:</strong> Denmark</p>
+
+                        <hr />
+
+                        <h2>Terms & Conditions</h2>
+                        <p>Welcome to Mackies Pizza Truck. By ordering and picking up pizzas from us, you accept the following terms:</p>
+
+                        <ol>
+                            <li><strong>General</strong><br />
+                                These terms apply to all purchases from Mackies Pizza Truck.
+                            </li>
+                            <li><strong>Company Information</strong><br />
+                                Mackies Pizza Truck is operated by Niels Wolthers, CVR 15475285, located at Østergade 10, 8983 Gjerlev J.
+                            </li>
+                            <li><strong>Products and Prices</strong><br />
+                                All prices are stated in DKK and include VAT.
+                            </li>
+                            <li><strong>Payment</strong><br />
+                                Payment can be made in the following ways:<br />
+                                - By credit/debit card via Flatpay online when ordering<br />
+                                - By cash at the truck upon pickup<br />
+                                - By card via the truck’s point-of-sale system at pickup<br />
+                                Payment must be completed before or at the time of pickup.
+                            </li>
+                            <li><strong>Pickup</strong><br />
+                                Pizzas are picked up from Mackies Pizza Truck at the location and time listed on our website. We publish a weekly calendar showing the upcoming locations and times.
+                            </li>
+                            <li><strong>Right of Withdrawal and Returns</strong><br />
+                                As the products are food items, no right of withdrawal applies. If there is an error in your order, please contact us promptly to resolve it.
+                            </li>
+                            <li><strong>Limitation of Liability</strong><br />
+                                We are not liable for indirect losses or consequential damages.
+                            </li>
+                            <li><strong>Governing Law and Jurisdiction</strong><br />
+                                These terms are governed by Danish law, and disputes will be settled by the Danish courts.
+                            </li>
+                            <li><strong>Detailed Governing Law Clause</strong><br />
+                                These terms and conditions are subject to and shall be interpreted in accordance with the laws of the Kingdom of Denmark. Any dispute arising out of or in connection with these terms shall be settled exclusively by the Danish courts.
+                            </li>
+                        </ol>
                     </>
                 );
             case "de":
                 return (
                     <>
-                        <h1>Verkaufs- und Lieferbedingungen</h1>
-                        <p>Diese Verkaufs- und Lieferbedingungen gelten für Bestellungen über unsere Website. Mit Ihrer Bestellung akzeptieren Sie diese Bedingungen.</p>
-                        <h2>1. Bestellung und Bezahlung</h2>
-                        <p>Alle Preise sind in DKK inkl. MwSt. angegeben. Die Zahlung kann per Kreditkarte, MobilePay oder anderen angegebenen Zahlungsmethoden erfolgen.</p>
-                        <h2>2. Lieferung</h2>
-                        <p>Wir liefern innerhalb unseres Liefergebiets. Die voraussichtliche Lieferzeit beträgt 30-60 Minuten. Sie können zwischen rohen (ungebackenen) Pizzen zum Selbstbacken oder fertig gebackenen Pizzen zur sofortigen Verzehr wählen.</p>
-                        <h2>3. Widerrufsrecht</h2>
-                        <p>Da unsere Produkte Lebensmittel sind, die nach Ihren Vorgaben zubereitet werden, besteht kein Widerrufsrecht gemäß dem dänischen Verbrauchervertragsgesetz § 18 Abs. 2 Nr. 4. Dies gilt sowohl für rohe als auch für fertig gebackene Pizzen.</p>
-                        <h2>4. Reklamation</h2>
-                        <p>Bitte kontaktieren Sie uns umgehend unter [Ihre E-Mail / Telefonnummer], wenn es ein Problem mit Ihrer Bestellung gibt.</p>
+                        <h1>✅ Allgemeine Geschäftsbedingungen (AGB) für Mackies Pizza Truck</h1>
+                        <p><strong>Unternehmen:</strong> Mackies Pizza Truck<br />
+                            <strong>USt-IdNr. (CVR):</strong> 15475285<br />
+                            <strong>Adresse:</strong> Østergade 10, 8983 Gjerlev J, Dänemark<br />
+                            <strong>E-Mail:</strong> nielswolthers@hotmail.com<br />
+                            <strong>Anwendbares Recht:</strong> Dänemark</p>
+
+                        <hr />
+
+                        <h2>AGB</h2>
+                        <p>Willkommen bei Mackies Pizza Truck. Durch die Bestellung und Abholung von Pizza bei uns akzeptieren Sie die folgenden Bedingungen:</p>
+
+                        <ol>
+                            <li><strong>Allgemeines</strong><br />
+                                Diese Bedingungen gelten für alle Einkäufe bei Mackies Pizza Truck.
+                            </li>
+                            <li><strong>Unternehmensinformationen</strong><br />
+                                Mackies Pizza Truck wird von Niels Wolthers betrieben, CVR 15475285, mit Sitz in Østergade 10, 8983 Gjerlev J.
+                            </li>
+                            <li><strong>Produkte und Preise</strong><br />
+                                Alle Preise sind in DKK angegeben und enthalten die gesetzliche Mehrwertsteuer.
+                            </li>
+                            <li><strong>Zahlung</strong><br />
+                                Die Zahlung kann auf folgende Weise erfolgen:<br />
+                                - Online per Kredit- oder Debitkarte über Flatpay bei der Bestellung<br />
+                                - Barzahlung bei Abholung am Truck<br />
+                                - Kartenzahlung über das Kassensystem am Truck<br />
+                                Die Zahlung muss vor oder bei der Abholung abgeschlossen sein.
+                            </li>
+                            <li><strong>Abholung</strong><br />
+                                Die Pizzen werden am Mackies Pizza Truck an dem auf unserer Website angegebenen Ort und zur angegebenen Zeit abgeholt. Wir veröffentlichen wöchentlich einen Kalender mit Datum, Uhrzeit und Standort des Trucks.
+                            </li>
+                            <li><strong>Widerrufsrecht und Rückgabe</strong><br />
+                                Da es sich um Lebensmittel handelt, besteht kein Widerrufsrecht. Bei Fehlern in der Bestellung kontaktieren Sie uns bitte umgehend zur Klärung.
+                            </li>
+                            <li><strong>Haftungsbeschränkung</strong><br />
+                                Wir haften nicht für indirekte Schäden oder Folgeschäden.
+                            </li>
+                            <li><strong>Gerichtsstand und anwendbares Recht</strong><br />
+                                Diese Bedingungen unterliegen dem dänischen Recht. Streitigkeiten werden ausschließlich vor dänischen Gerichten verhandelt.
+                            </li>
+                            <li><strong>Detaillierte Klausel zum anwendbaren Recht</strong><br />
+                                Diese Geschäftsbedingungen unterliegen dem Recht des Königreichs Dänemark und sind entsprechend auszulegen. Alle Streitigkeiten im Zusammenhang mit diesen Bedingungen werden ausschließlich vor dänischen Gerichten ausgetragen.
+                            </li>
+                        </ol>
                     </>
                 );
             default:
@@ -68,49 +175,7 @@ const TermsOfSale: React.FC<TermsOfSaleModalProps> = ({ isOpen, onClose }) => {
 
     return (
         <div className="terms-container">
-                     <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '0rem',
-              background: '#8d4a5b',
-              color: '#ffffff',
-            }}
-          >
-            <div style={{ flex: '1 1 150px', padding: '1rem', fontSize: '15px', margin: 0 }}>
-              <p>
-                <span  style={{ cursor: 'pointer', color: '#ffffff' }}>
-                  Mackies Pizza Truck
-                </span>
-              </p>
-              <p>{new Date().getFullYear()} Mackie's Pizza Truck</p>
-            </div>
 
-            <div style={{ flex: '1 1 150px', padding: '1rem', fontSize: '15px', margin: 0 }}>
-              <p>Cvr nr.:</p>
-              <p>15475285</p>
-            </div>
-
-            <div style={{ flex: '1 1 150px', padding: '1rem', fontSize: '15px', margin: 0 }}>
-              <p>Adresse:</p>
-              <p>Østergade 10, 8983 Gjerlev J</p>
-            </div>
-
-          {/*   <div style={{ flex: '1 1 150px', padding: '1rem', fontSize: '15px', margin: 0 }}>
-              <p>Telefon:</p>
-              <p>+45 5152 1216</p>
-            </div> */}
-
-            <div style={{ flex: '1 1 150px', padding: '1rem', fontSize: '15px', margin: 0 }}>
-              <p>Email:</p>
-              <p>admin@mackies-pizza.dk</p>
-            </div>
-{/* 
-            <div style={{ flex: '1 1 150px', padding: '1rem', fontSize: '15px', margin: 0 }}>
-              <p>MobilePay:</p>
-              <p>5152 1216</p>
-            </div> */}
-          </div>
             <div className="terms-flag-selector">
                 <span>
                     <img
@@ -128,7 +193,7 @@ const TermsOfSale: React.FC<TermsOfSaleModalProps> = ({ isOpen, onClose }) => {
                         style={{ cursor: 'pointer', width: '24px', height: '24px' }}
                     />
                 </span>
-               <span>
+                <span>
                     <img
                         src="/images/flagGermany.png"
                         alt="de"

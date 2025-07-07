@@ -547,7 +547,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
         </button>
 
 
-       {/*  <button
+       <button
           onClick={handleGoToPayment}
           disabled={!submittedOrderSuccessfully}
           className="close-btn"
@@ -555,8 +555,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
           Betaling
         </button>
 
-        {goToPayment ? <FlatpayCheckout createdOrderA={createdOrder} onPaymentStatus={handlePaymentStatus} onClose={handleCloseCheckout} /> : ''} */}
-
+        {goToPayment ? <FlatpayCheckout createdOrderA={createdOrder} onPaymentStatus={handlePaymentStatus} onClose={handleCloseCheckout} /> : ''} 
 
       </div>
     </div >

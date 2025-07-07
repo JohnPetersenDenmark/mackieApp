@@ -21,6 +21,7 @@ import CheckMyOrder from './CheckMyOrder';
 import AdminDashBoard from './admin/AdminDashBoard';
 import { Order } from '../types/Order';
 import ClipLoader from 'react-spinners/ClipLoader';
+import Privacy from './Privacy';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -114,6 +115,10 @@ useEffect(() => {
     setIsTermsOfSaleModalOpen(false);
   };
 
+   const handleClosePrivacyModal = () => {
+    setIsPrivacyModalOpen(false);
+  };
+
   const handleLoginClick = () => {
     setIsLoginModalOpen(true);
   };
@@ -131,6 +136,7 @@ useEffect(() => {
   const [isLoginModalOpen, setIsLoginModalOpen] = React.useState(false);
   const [isCheckOrderModalOpen, setIsCheckOrderModalOpen] = React.useState(false);
   const [isTermsOfSaleModalOpen, setIsTermsOfSaleModalOpen] = React.useState(false);
+  const [isPrivacyModalOpen, setIsPrivacyModalOpen] = React.useState(false);
 
   const handleCheckOrderClick = () => {
     setIsCheckOrderModalOpen(true);
@@ -138,6 +144,10 @@ useEffect(() => {
 
   const handleTermsOfSaleClick = () => {
     setIsTermsOfSaleModalOpen(true);
+  };
+
+   const handlePrivacyClick = () => {
+     setIsPrivacyModalOpen(true);
   };
 
   const handleCheckCloseOrderModal = () => {
@@ -198,6 +208,10 @@ useEffect(() => {
             onClose={handleCloseTermsOfSaleModal}
           />
 
+          <Privacy 
+           isOpen={isPrivacyModalOpen}
+            onClose={handleClosePrivacyModal} />
+
           {/* HEADER */}
           {/*   <header style={{ background: '#8d4a5b', padding: '1rem', color: '#22191b', height: '50px', display: 'flex', alignItems: 'center' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 1fr', gap: '1rem' }}>
@@ -257,6 +271,15 @@ useEffect(() => {
                 style={{ cursor: 'pointer', color: '#22191b' }}
               >
                 Handelsbetingelser
+              </span>
+            </div>
+
+              <div style={{ flex: '1 1 250px', background: '#8d4a5b', padding: '1rem', margin: 0, fontSize: '24px', }}>
+              <span
+                onClick={handlePrivacyClick}
+                style={{ cursor: 'pointer', color: '#22191b' }}
+              >
+                Privatlivspolitik
               </span>
             </div>
 
