@@ -37,7 +37,7 @@ const AdminDashBoard: React.FC = () => {
                 <div style={{ cursor: 'pointer', marginLeft: '100px' }} onClick={() => setActiveMenu('Pakkeliste')}>Pakkeliste</div>
                 <div style={{ cursor: 'pointer', marginLeft: '100px' }} onClick={() => setActiveMenu('Menuer')}>Menuer</div>
                 {/* <div  style={{ cursor: 'pointer' }} onClick={() => setActiveMenu('Indstillinger')}>Indstillinger</div> */}
-                {/* <div  style={{ cursor: 'pointer' }} onClick={() => setActiveMenu('Brugere')}>Brugere</div> */}
+                 <div  style={{ cursor: 'pointer' , marginLeft: '100px'}} onClick={() => setActiveMenu('Brugere')}>Brugere</div> 
 
                 {/* {activeMenu === 'Dashboard' && <AdminSalePerMenu />} */}
                 {activeMenu === 'Stadepladser' && <AdminPlaces />}
@@ -46,7 +46,7 @@ const AdminDashBoard: React.FC = () => {
                 {activeMenu === 'Pakkeliste' && <AdminPackingList />}
                 {activeMenu === 'Menuer' && <AdminMenues />}
                 {/* {activeMenu === 'Indstillinger' && <AdminSettings />} */}
-                {/* {activeMenu === 'Brugere' && <AdminUsers />} */}
+                {activeMenu === 'Brugere' && <AdminUsers />} 
             </div>
         </>
 

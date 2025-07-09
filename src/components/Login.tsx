@@ -42,8 +42,9 @@ const Login: React.FC<LoginModalProps> = ({ isOpen, onLoggedIn, onClose }) => {
     };
     try {
       setSubmitting(true);
-      const response = await AxiosClientPost( '/Login/login', userData, false);
+      const response = await AxiosClientPost( '/Login/login', userData, false);      
       localStorage.setItem('authToken', JSON.stringify(response));
+      const userInfo = await AxiosClientGet( '/Login/currentuser',  true);
       onLoggedIn(true);
       onClose();
     } catch (error) {
