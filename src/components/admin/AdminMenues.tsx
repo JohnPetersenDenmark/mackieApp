@@ -42,6 +42,7 @@ const AdminMenues: React.FC = () => {
   const [isCreateEditToppingModalOpen, setIsCreateEditToppingModalOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+   const [reload, setReload] = useState(0); 
 
   useEffect(() => {
     const fetchPizzas = async () => {
@@ -64,12 +65,13 @@ const AdminMenues: React.FC = () => {
 
     fetchPizzas();
     fetchToppings();
-  }, [isCreateEditPizzaModalOpen, isCreateEditToppingModalOpen, submitting]);
+  }, [isCreateEditPizzaModalOpen, isCreateEditToppingModalOpen, submitting, reload]);
 
   const handleDeletePizza = async (pizza: Pizza) => {
     try {
       setSubmitting(true);
       await AxiosClientDelete('/Admin/removepizza/' + pizza.id, true);
+      setReload(prev => prev + 1);
     } catch {
       setError('Failed to delete pizza');
     } finally {
@@ -88,17 +90,28 @@ const AdminMenues: React.FC = () => {
     }
   };
 
+  const handleCloseCreateEditPizzaModal = () => { 
+    setIsCreateEditPizzaModalOpen(false);
+      setReload(prev => prev + 1);
+  };
+
+   const handleCloseCreateEditToppingModal = () => { 
+    setIsCreateEditToppingModalOpen(false);
+      setReload(prev => prev + 1);
+  };
+
+
   return (
     <Container>
       <AdminPizzaCreateEdit
         isOpen={isCreateEditPizzaModalOpen}
-        onClose={() => setIsCreateEditPizzaModalOpen(false)}
+        onClose={() => handleCloseCreateEditPizzaModal()}
         pizzaToEdit={pizzaToEdit}
       />
 
       <AdminToppingCreateEdit
         isOpen={isCreateEditToppingModalOpen}
-        onClose={() => setIsCreateEditToppingModalOpen(false)}
+        onClose={() => handleCloseCreateEditToppingModal()}
         toppingToEdit={toppingToEdit}
       />
 

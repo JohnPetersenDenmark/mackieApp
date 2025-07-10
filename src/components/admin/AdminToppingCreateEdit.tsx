@@ -71,7 +71,7 @@ const AdminToppingCreateEdit: React.FC<ToppingModalProps> = ({ isOpen, onClose, 
        // const url = config.API_BASE_URL + '/Admin/addorupdatetopping'
 
         try {           
-             AxiosClientPost('/Admin/addorupdatetopping', toppingData, true)
+             await AxiosClientPost('/Admin/addorupdatetopping', toppingData, true)
             onClose();
         } catch (error) {
             setSubmitError('Fejl');

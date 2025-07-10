@@ -18,6 +18,7 @@ const AdminUsers: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [isCreateEditUserModalOpen, setIsCreateEditUserModalOpen] = useState(false);
+  const [reload, setReload] = useState(0); 
 
   useEffect(() => {
 
@@ -41,7 +42,7 @@ const AdminUsers: React.FC = () => {
     fetchData();
 
 
-  }, []);
+  }, [reload]);
 
   const handleEdit = (user: User) => {
     setUserToEdit(user);
@@ -54,7 +55,7 @@ const AdminUsers: React.FC = () => {
         try {
           setSubmitting(true);
 
-        //  await AxiosClientDelete('/Admin/remoocation/' + location.id, true)
+          await AxiosClientDelete('/Login/removeuser/' + user.id, true)
 
 
         } catch (error) {
@@ -62,20 +63,24 @@ const AdminUsers: React.FC = () => {
           console.error(error);
         } finally {
           setSubmitting(false);
+           setReload(prev => prev + 1);
         }
       };
       deleteUser();
+      
     }
   };
 
    const handleNewUser = () => {
-    setUserToEdit(null);
     setIsCreateEditUserModalOpen(true);
+    setUserToEdit(null);
+    
   };
 
  const handleCloseCreateEditUserModal = () => {
   setUserToEdit(null);
     setIsCreateEditUserModalOpen(false);
+      setReload(prev => prev + 1);
   };
 
   return (

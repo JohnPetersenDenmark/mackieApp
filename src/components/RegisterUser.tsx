@@ -33,10 +33,12 @@ const RegisterUser: React.FC<RegisterModalProps> = ({ isOpen, userToEdit, onClos
     const isDisplayNameValid = displayname.length > 0;
     const isFormValid = isPasswordValid && isUserNameValid;
 
+    let x = 1;
+
     useEffect(() => {
         if (!isOpen) return;
 
-        if (userToEdit != null) {
+        if (userToEdit !== null) {
 
             setUserId(userToEdit.id)
 
@@ -65,7 +67,7 @@ const RegisterUser: React.FC<RegisterModalProps> = ({ isOpen, userToEdit, onClos
         setDisplayNameTouched(false);
 
         setSubmitting(false);
-    }, [isOpen, userToEdit]);
+    }, [isOpen]);
 
     const handleSubmit = async () => {
         const userData = {
@@ -86,15 +88,15 @@ const RegisterUser: React.FC<RegisterModalProps> = ({ isOpen, userToEdit, onClos
             }
             const response = await AxiosClientPost(url, userData, false);
 
-            
-           
+            onClose();
+
 
         } catch (error) {
             setSubmitError('Fejl');
             console.error(error);
         } finally {
             setSubmitting(false);
-             onClose();
+
         }
     };
 
@@ -149,6 +151,9 @@ const RegisterUser: React.FC<RegisterModalProps> = ({ isOpen, userToEdit, onClos
                         onBlur={() => setUserNameTouched(true)}
                         placeholder="Indtast bruger/email"
                         style={{
+                            backgroundColor: disableUsernameChangeable ? 'white' : 'white',
+                            color: disableUsernameChangeable ? '#999' : 'black',
+                            cursor: disableUsernameChangeable ? 'not-allowed' : 'text',
                             width: '100%',
                             padding: '0.5rem',
                             marginTop: '0.25rem',

@@ -7,6 +7,7 @@ import config from '../config';
 import TermsOfSale from './TermsOfSale';
 import { filterTruckLocationsByTodaysDate } from '../types/MiscFunctions';
 import {AxiosClientGet, AxiosClientPost} from '../types/AxiosClient';
+import { useCurrentUser  } from "./CurrentUser";
 
 import React, { useEffect, useState } from 'react';
 import OrderModal from './OrderModal';
@@ -155,6 +156,8 @@ useEffect(() => {
     setOrder(null);
   };
 
+   const currentUser = useCurrentUser();
+
   return (
 
     <>
@@ -290,6 +293,10 @@ useEffect(() => {
               >
                 Se min bestilling
               </span>
+            </div>
+
+            <div style={{ flex: '1 1 250px', background: '#8d4a5b', padding: '1rem', margin: 0, fontSize: '24px', }}>
+            {currentUser  ? currentUser.displayname : 'It is null'}
             </div>
 
             <div style={{ flex: '1 1 250px', background: '#8d4a5b', padding: '1rem', fontSize: '24px', }}>

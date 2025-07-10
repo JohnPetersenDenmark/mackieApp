@@ -118,7 +118,7 @@ const AdminPizzaCreateEdit: React.FC<PizzaModalProps> = ({ isOpen, onClose, pizz
         }
       //  const url = config.API_BASE_URL + '/Admin/addorupdatepizza'
         try {           
-            AxiosClientPost('/Admin/addorupdatepizza', pizzaData, true);
+            await AxiosClientPost('/Admin/addorupdatepizza', pizzaData, true);
             onClose();
         } catch (error) {
             setSubmitError('Fejl');

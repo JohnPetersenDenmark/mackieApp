@@ -128,10 +128,8 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
 
     }
 
-
-
     try {
-      const response = AxiosClientPost('/Admin/addorupdatetruckcalendarlocation', placeData, true);
+      const response = await AxiosClientPost('/Admin/addorupdatetruckcalendarlocation', placeData, true);
       onClose();
     } catch (error) {
       setSubmitError('Fejl');
@@ -191,24 +189,24 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
 
         <div style={{ marginBottom: '1rem' }}>
           <label htmlFor="startDateTimePicker" style={{ fontWeight: 'bold' }}>Start:</label><br />
-         <DatePicker
-    id="startDateTimePicker"
-    selected={startDateTime}
-    onChange={handleStartDateChange}
-    showTimeSelect
-    timeCaption="Tid"
-    timeIntervals={60}
-    dateFormat="dd-MM-yyyy HH:mm"
-    timeFormat="HH:mm"
-    locale={da}
-    placeholderText="Vælg startdato og tid"
-    customInput={<CustomInput />}
-    calendarClassName="large-datepicker"
-    className="custom-datepicker-input"
-    withPortal
-  />
-  {/* Inline <style> to inject calendar styles */}
-  <style>{`
+          <DatePicker
+            id="startDateTimePicker"
+            selected={startDateTime}
+            onChange={handleStartDateChange}
+            showTimeSelect
+            timeCaption="Tid"
+            timeIntervals={60}
+            dateFormat="dd-MM-yyyy HH:mm"
+            timeFormat="HH:mm"
+            locale={da}
+            placeholderText="Vælg startdato og tid"
+            customInput={<CustomInput />}
+            calendarClassName="large-datepicker"
+            className="custom-datepicker-input"
+            withPortal
+          />
+          {/* Inline <style> to inject calendar styles */}
+          <style>{`
     .custom-datepicker-input {
       width: 100%;
       font-size: 18px;
@@ -273,9 +271,9 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
             minDate={startDateTime || undefined}
             maxDate={startDateTime || undefined}
             customInput={<CustomInput />}
-              calendarClassName="large-datepicker"
-    className="custom-datepicker-input"
-    withPortal
+            calendarClassName="large-datepicker"
+            className="custom-datepicker-input"
+            withPortal
           />
         </div>
 

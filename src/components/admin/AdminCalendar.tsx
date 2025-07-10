@@ -23,6 +23,7 @@ const AdminCalendar: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [reload, setReload] = useState(0); 
 
 
   useEffect(() => {
@@ -49,7 +50,7 @@ const AdminCalendar: React.FC = () => {
 
     fetchData();
 
-  }, [isCreateEditCalendarModalOpen, submitting]);
+  }, [reload]);
 
   function parseDanishDateTime(dateTimeStr: string): Date {
     // Split into date and time
@@ -70,7 +71,8 @@ const AdminCalendar: React.FC = () => {
       const deleteTruckLocation = async () => {
         try {
           setSubmitting(true);
-          AxiosClientDelete('/Admin/removetrucklocation/' + truckLocation.id, true)
+          await AxiosClientDelete('/Admin/removetrucklocation/' + truckLocation.id, true)
+           setReload(prev => prev + 1);
         } catch (error) {
           setError('Fejl');
           console.error(error);
@@ -80,7 +82,10 @@ const AdminCalendar: React.FC = () => {
       };
 
       deleteTruckLocation();  // Call the inner async function
+      
     }
+
+   
   };
 
   const handleNewLocation = () => {
@@ -89,6 +94,7 @@ const AdminCalendar: React.FC = () => {
   };
 
   const handleCloseCreateEditPlaceModal = () => {
+    setReload(prev => prev + 1);
     setIsCreateEditCalendarModalOpen(false);
   };
 
