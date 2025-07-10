@@ -6,11 +6,12 @@ import {AxiosClientGet, AxiosClientPost} from '../types/AxiosClient';
 
 interface LoginModalProps {
   isOpen: boolean;
-  onLoggedIn: (loggedIn: boolean) => void;
+ // onLoggedIn: (loggedIn: boolean) => void;
   onClose: () => void;
 }
 
-const Login: React.FC<LoginModalProps> = ({ isOpen, onLoggedIn, onClose }) => {
+// const Login: React.FC<LoginModalProps> = ({ isOpen, onLoggedIn, onClose }) => {
+  const Login: React.FC<LoginModalProps> = ({ isOpen,  onClose }) => {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -45,7 +46,7 @@ const Login: React.FC<LoginModalProps> = ({ isOpen, onLoggedIn, onClose }) => {
       const response = await AxiosClientPost( '/Login/login', userData, false);      
       localStorage.setItem('authToken', JSON.stringify(response));
       
-      onLoggedIn(true);
+    //  onLoggedIn(true);
       onClose();
     } catch (error) {
       setSubmitError('Fejl');

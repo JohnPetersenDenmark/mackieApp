@@ -18,7 +18,7 @@ const AdminUsers: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [isCreateEditUserModalOpen, setIsCreateEditUserModalOpen] = useState(false);
-  const [reload, setReload] = useState(0); 
+  const [reload, setReload] = useState(0);
 
   useEffect(() => {
 
@@ -63,24 +63,24 @@ const AdminUsers: React.FC = () => {
           console.error(error);
         } finally {
           setSubmitting(false);
-           setReload(prev => prev + 1);
+          setReload(prev => prev + 1);
         }
       };
       deleteUser();
-      
+
     }
   };
 
-   const handleNewUser = () => {
+  const handleNewUser = () => {
     setIsCreateEditUserModalOpen(true);
     setUserToEdit(null);
-    
+
   };
 
- const handleCloseCreateEditUserModal = () => {
-  setUserToEdit(null);
+  const handleCloseCreateEditUserModal = () => {
+    setUserToEdit(null);
     setIsCreateEditUserModalOpen(false);
-      setReload(prev => prev + 1);
+    setReload(prev => prev + 1);
   };
 
   return (
@@ -96,10 +96,10 @@ const AdminUsers: React.FC = () => {
         margin: 'auto',
       }}
     >
-  
+
       <RegisterUser
         isOpen={isCreateEditUserModalOpen}
-        userToEdit ={userToEdit}
+        userToEdit={userToEdit}
         onClose={handleCloseCreateEditUserModal} />
 
       <div style={{

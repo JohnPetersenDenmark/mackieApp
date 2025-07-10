@@ -7,20 +7,24 @@ import AdminMenues from './AdminMenues'
 import AdminSettings from './AdminSettings'
 import AdminUsers from './AdminUsers'
 import AdminPackingList from './AdminPackingList';
+import { CurrentUser, useCurrentUser } from "../../components/CurrentUser";
 
+interface DashboardModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+}
 
-
-const AdminDashBoard: React.FC = () => {
+const AdminDashBoard: React.FC<DashboardModalProps> = ({ isOpen, onClose }) => {
 
     const [activeMenu, setActiveMenu] = useState('Bestillinger');
+
+    const { user, authStatus } = useCurrentUser();
 
     return (
         <>
             <div
                 style={{
-               /*      display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: '1rem', */
+
                     fontSize: '30px',
                     color: '#8d4a5b',
                     fontWeight: 700,
@@ -30,6 +34,27 @@ const AdminDashBoard: React.FC = () => {
                 }}
             >
 
+                <div style={{ color: '#000000', textAlign: 'right', marginLeft: '100px' }}>  {user ? user.displayname : ''}</div>
+
+                <div style={{ color: '#000000', textAlign: 'right', marginLeft: '100px' }}>
+
+
+                    <button
+                        onClick={onClose}
+
+                        style={{
+                            marginTop: '1rem',
+                            padding: '0.5rem 1rem',
+                            backgroundColor: '#8d4a5b',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            marginRight: '0.5rem',
+                        }}
+                    > Hjem</button>
+                </div>
+
                 {/* <div  style={{ cursor: 'pointer' }} onClick={() => setActiveMenu('Dashboard')}>Dashboard</div> */}
                 <div style={{ cursor: 'pointer', marginLeft: '100px' }} onClick={() => setActiveMenu('Stadepladser')}>Stadepladser</div>
                 <div style={{ cursor: 'pointer', marginLeft: '100px' }} onClick={() => setActiveMenu('Kalender')}>Kalender</div>
@@ -37,7 +62,7 @@ const AdminDashBoard: React.FC = () => {
                 <div style={{ cursor: 'pointer', marginLeft: '100px' }} onClick={() => setActiveMenu('Pakkeliste')}>Pakkeliste</div>
                 <div style={{ cursor: 'pointer', marginLeft: '100px' }} onClick={() => setActiveMenu('Menuer')}>Menuer</div>
                 {/* <div  style={{ cursor: 'pointer' }} onClick={() => setActiveMenu('Indstillinger')}>Indstillinger</div> */}
-                 <div  style={{ cursor: 'pointer' , marginLeft: '100px'}} onClick={() => setActiveMenu('Brugere')}>Brugere</div> 
+                <div style={{ cursor: 'pointer', marginLeft: '100px' }} onClick={() => setActiveMenu('Brugere')}>Brugere</div>
 
                 {/* {activeMenu === 'Dashboard' && <AdminSalePerMenu />} */}
                 {activeMenu === 'Stadepladser' && <AdminPlaces />}
@@ -46,7 +71,7 @@ const AdminDashBoard: React.FC = () => {
                 {activeMenu === 'Pakkeliste' && <AdminPackingList />}
                 {activeMenu === 'Menuer' && <AdminMenues />}
                 {/* {activeMenu === 'Indstillinger' && <AdminSettings />} */}
-                {activeMenu === 'Brugere' && <AdminUsers />} 
+                {activeMenu === 'Brugere' && <AdminUsers />}
             </div>
         </>
 

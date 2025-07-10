@@ -137,7 +137,7 @@ const RegisterUser: React.FC<RegisterModalProps> = ({ isOpen, userToEdit, onClos
                         textAlign: 'center',
                     }}
                 >
-                    Login
+                    Ny bruger
                 </h2>
 
                 {/* Email input */}

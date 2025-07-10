@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 type CurrentUserType = {
   userName: string;
@@ -8,16 +9,32 @@ type CurrentUserType = {
   roles: string[];
 };
 
-export const UserContext = createContext<CurrentUserType | null>(null);
-export const useCurrentUser = () => useContext(UserContext);
+type UserContextType = { 
+  user: CurrentUserType | null;
+  authStatus: "loggedIn" | "expired" | "loggedOut";
+  logout: () => void;
+};
+
+export const UserContext = createContext<UserContextType | null>(null);
+export const useCurrentUser = () => useContext(UserContext)!;
 
 export function CurrentUser({ children }: React.PropsWithChildren) {
   const [user, setUser] = useState<CurrentUserType | null>(null);
+  const [authStatus, setAuthStatus] = useState<"loggedIn" | "expired" | "loggedOut">("loggedOut");
+  const navigate = useNavigate();
+
+  const logout = () => {
+    localStorage.removeItem("authToken");
+    setUser(null);
+    setAuthStatus("loggedOut");
+    navigate("/login"); // Redirect to login
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
 
     if (!token) {
+      setAuthStatus("loggedOut");
       setUser(null);
       return;
     }
@@ -29,31 +46,31 @@ export function CurrentUser({ children }: React.PropsWithChildren) {
       if (decoded.exp > currentTime) {
         setUser({
           userName: decoded.userName,
-          email: decoded.userName,
+          email: decoded.email,
           displayname: decoded.displayname,
           roles: decoded.roles,
         });
+        setAuthStatus("loggedIn");
 
         const timeout = decoded.exp * 1000 - Date.now();
         const logoutTimer = setTimeout(() => {
-          localStorage.removeItem("token");
-          setUser(null);
+          setAuthStatus("expired");
+          logout();
         }, timeout);
 
         return () => clearTimeout(logoutTimer);
       } else {
-        localStorage.removeItem("authToken");
-        setUser(null);
+        setAuthStatus("expired");
+        logout();
       }
     } catch (err) {
       console.error("Invalid token", err);
-      localStorage.removeItem("token");
-      setUser(null);
+      logout();
     }
   }, []);
 
   return (
-    <UserContext.Provider value={user}>
+    <UserContext.Provider value={{ user, authStatus, logout }}>
       {children}
     </UserContext.Provider>
   );
