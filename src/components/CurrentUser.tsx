@@ -45,11 +45,13 @@ export function CurrentUser({ children }: React.PropsWithChildren) {
 
       if (decoded.exp > currentTime) {
         setUser({
-          userName: decoded.userName,
-          email: decoded.email,
+          userName: decoded.customusername,
+          email: decoded.customuseremail,
           displayname: decoded.displayname,
           roles: decoded.roles,
         });
+        let x = user;
+        let y = x;
         setAuthStatus("loggedIn");
 
         const timeout = decoded.exp * 1000 - Date.now();

@@ -8,17 +8,26 @@ import AdminSettings from './AdminSettings'
 import AdminUsers from './AdminUsers'
 import AdminPackingList from './AdminPackingList';
 import { CurrentUser, useCurrentUser } from "../../components/CurrentUser";
+import { useDashboardContext } from "./DashboardContext";
 
 interface DashboardModalProps {
     isOpen: boolean;
     onClose: () => void;
 }
 
-const AdminDashBoard: React.FC<DashboardModalProps> = ({ isOpen, onClose }) => {
+// const AdminDashBoard: React.FC<DashboardModalProps> = ({ isOpen, onClose }) => {
+const AdminDashBoard: React.FC = () => {
 
     const [activeMenu, setActiveMenu] = useState('Bestillinger');
 
     const { user, authStatus } = useCurrentUser();
+
+    const { isOpen, setIsOpen } = useDashboardContext();
+
+    const handleClose = () => {
+        setIsOpen(false);
+    };
+
 
     return (
         <>
@@ -40,7 +49,7 @@ const AdminDashBoard: React.FC<DashboardModalProps> = ({ isOpen, onClose }) => {
 
 
                     <button
-                        onClick={onClose}
+                        onClick={handleClose}
 
                         style={{
                             marginTop: '1rem',

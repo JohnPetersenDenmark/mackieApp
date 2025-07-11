@@ -1,9 +1,11 @@
-import { Outlet } from "react-router-dom";
 import TruckLocationList from './TruckLocationList';
 import config from '../config';
 import TermsOfSale from './TermsOfSale';
 import { filterTruckLocationsByTodaysDate } from '../types/MiscFunctions';
 import { CurrentUser, useCurrentUser } from "../components/CurrentUser";
+import { UserDropdown } from "../components/UserDropdown";
+import { useDashboardContext } from "./admin/DashboardContext";
+import { useLocation } from "react-router-dom";
 
 import React, { useEffect, useState } from 'react';
 import OrderModal from './OrderModal';
@@ -26,6 +28,8 @@ interface LayoutProps {
 
 export default function Layout() {
 
+  const { user, authStatus } = useCurrentUser();
+
   const [toppings, setToppings] = useState<Topping[]>([]);
   const [pizzas, setPizzas] = useState<Pizza[]>([]);
   const [order, setOrder] = useState<Order | null>(null);
@@ -33,7 +37,14 @@ export default function Layout() {
   const [locations, setLocations] = useState<TruckLocation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [loggedIn, setLoggedIn] = useState(false);
+   const [reload, setReload] = useState(0); 
+  
+const location = useLocation();
+
+   const { isOpen, setIsOpen } = useDashboardContext();
+ useEffect(() => {
+    setIsUserDropdownOpen(false);
+  }, [location.pathname]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,7 +84,7 @@ export default function Layout() {
     };
 
     fetchData();
-  }, []);
+  }, [reload]);
 
   function parseDanishDateTime(dateTimeStr: string): Date {
     // Split into date and time
@@ -84,9 +95,7 @@ export default function Layout() {
     return new Date(year, month - 1, day, hours, minutes);
   }
 
-  const handleLoggedIn = (loggedIn: boolean) => {
-    setLoggedIn(loggedIn)
-  }
+
 
   const handleOrderFetched = (orderData: Order) => {
     setOrder(orderData);
@@ -99,6 +108,8 @@ export default function Layout() {
   };
 
   const handleCloseLoginModal = () => {
+     setReload(prev => prev + 1);
+     window.location.reload();
     setIsLoginModalOpen(false);
   };
 
@@ -129,13 +140,14 @@ export default function Layout() {
   const [isTermsOfSaleModalOpen, setIsTermsOfSaleModalOpen] = React.useState(false);
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = React.useState(false);
   const [isDashBoardModalOpen, setIsDashboardModalOpen] = React.useState(true);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = React.useState(true);
 
 
   const handleCheckOrderClick = () => {
     setIsCheckOrderModalOpen(true);
   };
 
-   const handleDashboardClick = () => {
+  const handleDashboardClick = () => {
     setIsDashboardModalOpen(true);
   };
 
@@ -152,26 +164,28 @@ export default function Layout() {
     setOrder(null);
   };
 
-   const handleCloseDashboardModal = () => {
-    setIsDashboardModalOpen(false);  
+  const handleCloseDashboardModal = () => {
+    setIsDashboardModalOpen(false);
   };
 
-  // const currentUser = useCurrentUser();
-  const { user, authStatus } = useCurrentUser();
+  const handleCloseUserDropDownModal = () => {
+    setIsUserDropdownOpen(false);
+  };
+
+
+
 
   return (
     <>
       <main>
-        <Outlet />
+        {/* <Outlet /> */}
       </main>
 
       {/* {authStatus === 'loggedIn' && user?.displayname === 'John' ?  ( */}
 
-      {authStatus === 'loggedIn' && isDashBoardModalOpen ? (
-        <AdminDashBoard
-          isOpen={isCheckOrderModalOpen}
-          onClose={handleCloseDashboardModal}
-        />
+      {authStatus === 'loggedIn' && isOpen ? (
+        <AdminDashBoard />
+    
       ) :
 
         (
@@ -206,7 +220,6 @@ export default function Layout() {
 
             <Login
               isOpen={isLoginModalOpen}
-              //  onLoggedIn={handleLoggedIn}
               onClose={handleCloseLoginModal}
             />
 
@@ -266,13 +279,26 @@ export default function Layout() {
                 </span>
               </div>
 
-              <div style={{ flex: '1 1 250px', background: '#8d4a5b', padding: '1rem', margin: 0, fontSize: '24px', }}>
-                <span
-                  onClick={handleDashboardClick}
-                  style={{ cursor: 'pointer', color: '#22191b' }} >
-                {user ? user.displayname: ''}
-                </span>
-              </div>
+
+              {user && (
+                <div
+                  style={{
+                    position: "relative",
+                    flex: '1 1 250px',
+                    background: '#8d4a5b',
+                    color: '#ffffff',
+                    padding: '1rem',
+                    margin: 0,
+                    fontSize: '24px',
+                    cursor: "pointer"
+                  }}
+                  //  style={{ position: "relative", display: "inline-block" , background: '#8d4a5b'}}
+                  onClick={() => setIsUserDropdownOpen(prev => !prev)}
+                >
+                  {user.displayname}
+                  {isUserDropdownOpen && <UserDropdown isOpen={isUserDropdownOpen} onClose={handleCloseUserDropDownModal} />}
+                </div>
+              )}
 
               <div style={{ flex: '1 1 250px', background: '#8d4a5b', padding: '1rem', fontSize: '24px', }}>
                 <a
