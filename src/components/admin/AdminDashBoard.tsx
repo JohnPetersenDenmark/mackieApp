@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import AdminSalePerMenu from './AdminSalePerMenu'
+
 import AdminPlaces from './AdminPlaces'
 import AdminCalendar from './AdminCalendar'
 import AdminOrders from './AdminOrders'
 import AdminMenues from './AdminMenues'
+ import RevenuePerTimePeriod from '..//Statistic/RevenuePerTimePeriod'
+
 import AdminSettings from './AdminSettings'
 import AdminUsers from './AdminUsers'
 import AdminPackingList from './AdminPackingList';
@@ -64,22 +66,20 @@ const AdminDashBoard: React.FC = () => {
                     > Hjem</button>
                 </div>
 
-                {/* <div  style={{ cursor: 'pointer' }} onClick={() => setActiveMenu('Dashboard')}>Dashboard</div> */}
+                <div style={{ cursor: 'pointer', marginLeft: '100px' }} onClick={() => setActiveMenu('Revenue')}>Omsætning</div>
                 <div style={{ cursor: 'pointer', marginLeft: '100px' }} onClick={() => setActiveMenu('Stadepladser')}>Stadepladser</div>
                 <div style={{ cursor: 'pointer', marginLeft: '100px' }} onClick={() => setActiveMenu('Kalender')}>Kalender</div>
                 <div style={{ cursor: 'pointer', marginLeft: '100px' }} onClick={() => setActiveMenu('Bestillinger')}>Bestillinger</div>
                 <div style={{ cursor: 'pointer', marginLeft: '100px' }} onClick={() => setActiveMenu('Pakkeliste')}>Pakkeliste</div>
                 <div style={{ cursor: 'pointer', marginLeft: '100px' }} onClick={() => setActiveMenu('Menuer')}>Menuer</div>
-                {/* <div  style={{ cursor: 'pointer' }} onClick={() => setActiveMenu('Indstillinger')}>Indstillinger</div> */}
                 <div style={{ cursor: 'pointer', marginLeft: '100px' }} onClick={() => setActiveMenu('Brugere')}>Brugere</div>
 
-                {/* {activeMenu === 'Dashboard' && <AdminSalePerMenu />} */}
+                {activeMenu === 'Revenue' && <RevenuePerTimePeriod />}
                 {activeMenu === 'Stadepladser' && <AdminPlaces />}
                 {activeMenu === 'Kalender' && <AdminCalendar />}
                 {activeMenu === 'Bestillinger' && <AdminOrders />}
                 {activeMenu === 'Pakkeliste' && <AdminPackingList />}
                 {activeMenu === 'Menuer' && <AdminMenues />}
-                {/* {activeMenu === 'Indstillinger' && <AdminSettings />} */}
                 {activeMenu === 'Brugere' && <AdminUsers />}
             </div>
         </>
