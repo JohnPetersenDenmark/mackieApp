@@ -4,7 +4,7 @@ import AdminPlaces from './AdminPlaces'
 import AdminCalendar from './AdminCalendar'
 import AdminOrders from './AdminOrders'
 import AdminMenues from './AdminMenues'
- import RevenuePerTimePeriod from '..//Statistic/RevenuePerTimePeriod'
+ import RevenuePerTimePeriod from '../Statistic/RevenuePerTimePeriod'
 
 import AdminSettings from './AdminSettings'
 import AdminUsers from './AdminUsers'

@@ -12,6 +12,8 @@
     "@types/node": "^16.18.126",
     "@types/react-dom": "^19.1.5",
     "axios": "^1.10.0",
+    "d3-interpolate": "^3.0.1",
+    "d3-scale": "^4.0.2",
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
     "jwt-decode": "^4.0.0",

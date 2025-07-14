@@ -1,0 +1,14 @@
+.chart-wrapper {
+  width: 100%;
+  max-width: 1400px;
+  background-color: rgba(100, 100, 255, 0.1);
+  margin: 0 auto;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+@media (max-width: 600px) {
+  .chart-wrapper {
+    padding: 1rem;
+  }
+}
