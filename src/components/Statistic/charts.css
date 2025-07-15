@@ -5,10 +5,12 @@
   margin: 0 auto;
   padding: 2rem;
   box-sizing: border-box;
+  margin-left : 250px
 }
 
 @media (max-width: 600px) {
   .chart-wrapper {
+     margin-left : 0px;
     padding: 1rem;
   }
 }

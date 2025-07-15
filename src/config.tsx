@@ -8,10 +8,10 @@
 
 
  
-   API_BASE_URL: "https://api.mackies-pizza.dk", 
+    API_BASE_URL: "https://api.mackies-pizza.dk", 
    PAYMENT_CANCEL_URL: "https://mackies-pizza.dk/payment-cancel",
 
-  PAYMENT_ACCEPT_URL: "https://mackies-pizza.dk/payment-success"   
+  PAYMENT_ACCEPT_URL: "https://mackies-pizza.dk/payment-success"    
 
 /* 
    API_BASE_URL: "http://mackies-pizza.dk.web43.dandomainserver.dk"  ,

@@ -57,28 +57,32 @@ const TimePeriodSelector: React.FC<TimePeriodSelectorProps> = ({
     };
 
     return (
-        <div>
-            <div style={{ marginBottom: '1rem' }}>
-                <label htmlFor="startDatePicker" style={{ fontWeight: 'bold' }}>Start:</label><br />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', fontWeight: '200' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div style={{ fontSize: 20 }}>Start</div>
                 <DatePicker
                     id="startDatePicker"
+                    showMonthDropdown
+                    showYearDropdown
                     selected={startDate}
                     onChange={handleStartDateChange}
                     dateFormat="dd-MM-yyyy"
                     locale={da}
                     placeholderText="Vælg startdato"
-                     popperPlacement={isMobile ? "top" : "bottom-start"}
+                    popperPlacement={isMobile ? "top" : "bottom-start"}
                     customInput={<CustomInput />}
-                    // className="custom-datepicker-input"         // input field styling
-                    calendarClassName="large-datepicker"        // calendar popup styling
+                    calendarClassName="large-datepicker"
                 />
             </div>
 
-            <div style={{ marginBottom: '1rem' }}>
-                <label htmlFor="endDatePicker" style={{ fontWeight: 'bold' }}>Slut:</label><br />
+            {/* Slut */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div style={{ fontSize: 20 }}>Slut</div>
                 <DatePicker
                     id="endDatePicker"
                     selected={endDate}
+                    showMonthDropdown
+                    showYearDropdown
                     onChange={handleEndDateChange}
                     dateFormat="dd-MM-yyyy"
                     locale={da}
@@ -86,25 +90,28 @@ const TimePeriodSelector: React.FC<TimePeriodSelectorProps> = ({
                     minDate={startDate || undefined}
                     popperPlacement={isMobile ? "top" : "bottom-start"}
                     customInput={<CustomInput />}
-                    // className="custom-datepicker-input"         // input field styling
-                    calendarClassName="large-datepicker"        // calendar popup styling
+                    calendarClassName="large-datepicker"
                 />
             </div>
 
-            <button
-                onClick={onSubmit}
-                disabled={!isFormValid || submitting}
-                style={{
-                    padding: '0.75rem',
-                    backgroundColor: isFormValid && !submitting ? '#8d4a5b' : 'grey',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '0.25rem',
-                    cursor: isFormValid && !submitting ? 'pointer' : 'not-allowed',
-                }}
-            >
-                OK
-            </button>
+            {/* Button */}
+            <div>
+                <button
+                    onClick={onSubmit}
+                    disabled={!isFormValid || submitting}
+                    style={{
+                        padding: '0.5rem',
+                        backgroundColor: isFormValid && !submitting ? '#8d4a5b' : 'grey',
+                        color: 'white',
+                        height: '30px',
+                        border: 'none',
+                        borderRadius: '0.25rem',
+                        cursor: isFormValid && !submitting ? 'pointer' : 'not-allowed',
+                    }}
+                >
+                    OK
+                </button>
+            </div>
         </div>
     );
 };

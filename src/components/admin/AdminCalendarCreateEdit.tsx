@@ -8,7 +8,8 @@ import { format } from "date-fns";
 import { da } from "date-fns/locale";
 import { parse } from "date-fns";
 import config from '../../config';
-import CustomInput from "./CustomInput"; // adjust path as needed
+
+import CustomInputTruckLocation from "./CustomInputTruckLocation"; // adjust path as needed
 import { AxiosClientGet, AxiosClientPost } from '../../types/AxiosClient';
 
 
@@ -200,9 +201,9 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
             timeFormat="HH:mm"
             locale={da}
             placeholderText="Vælg startdato og tid"
-            customInput={<CustomInput />}
-            calendarClassName="large-datepicker"
-            className="custom-datepicker-input"
+            customInput={<CustomInputTruckLocation />}
+           /*  calendarClassName="large-datepicker"
+            className="custom-datepicker-input" */
             withPortal
           />
           {/* Inline <style> to inject calendar styles */}
@@ -270,9 +271,9 @@ const AdminCalendarCreateEdit: React.FC<TruckLocationModalProps> = ({ isOpen, on
             placeholderText="Vælg slutdato og tid"
             minDate={startDateTime || undefined}
             maxDate={startDateTime || undefined}
-            customInput={<CustomInput />}
-            calendarClassName="large-datepicker"
-            className="custom-datepicker-input"
+            customInput={<CustomInputTruckLocation />}
+           /*  calendarClassName="large-datepicker"
+            className="custom-datepicker-input" */
             withPortal
           />
         </div>
