@@ -1,4 +1,5 @@
 import React from "react";
+import '../Statistic/TimePeriodSelector.css';
 
 interface CustomInputProps {
   value?: string;           // Optional in case DatePicker passes undefined initially
@@ -6,7 +7,7 @@ interface CustomInputProps {
 }
 
 const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(({ value, onClick }, ref) => (
-  
+
 
   <input
     type="text"
@@ -14,13 +15,13 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(({ valu
     value={value}
     readOnly // disables manual typing
     ref={ref}
-     style={{
-        cursor: "pointer",
-        fontSize: "1.0rem",
-        padding: "0.75rem",
-        width: "80%",
-      }}
-    placeholder="MM-DD-YYYY"
+    style={{
+      cursor: "pointer",
+      fontSize: "1.0rem",
+      padding: "0.4rem",
+      width: "50%",
+    }}
+    placeholder="dd-mm-åååå"
   />
 ));
 

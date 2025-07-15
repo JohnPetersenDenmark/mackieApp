@@ -3,6 +3,9 @@ import { Order } from '../../types/Order';
 import { toZonedTime } from "date-fns-tz";
 import { da } from "date-fns/locale";
 import { parseISO, format, subDays, isAfter } from "date-fns";
+
+import TimePeriodSelector from "./TimePeriodSelector"
+
 import ClipLoader from 'react-spinners/ClipLoader';
 import {
     LineChart, PieChart, Pie, BarChart, Bar, Cell, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
@@ -23,37 +26,15 @@ interface RevenueTimePeriodModalProps {
 
 const RevenuePerTimePeriod: React.FC = () => {
 
-
+    const [startDate, setStartDate] = useState<Date | null>(null);
+    const [endDate, setEndDate] = useState<Date | null>(null);
     const [data, setData] = useState<any[] | undefined>([]);
     const [loadingOrders, setLoadingOrders] = useState(false);
 
     useEffect(() => {
-        //    if (!isOpen) return;
 
-        const fetchData = async () => {
-            try {
-                setLoadingOrders(true);
-                const ordersResponse = await AxiosClientGet('/Home/orderlist', true);
-                // const transformed = transformOrdersLast30Days(ordersResponse);
-
-                const DANISH_TZ = "Europe/Copenhagen";
-                const utcNow = new Date();
-                const utcCutoffDate = subDays(utcNow, 7);
-                const dkCutoff = toZonedTime(utcCutoffDate, DANISH_TZ);
-
-                const transformed = groupRevenuePerDay(ordersResponse, dkCutoff)
-                setData(transformed)
-
-                colors = createAnalogousColorScale("#8d4a5b", "#ffffff", 7);
-                setLoadingOrders(false);
-
-            } catch (err: any) {
-                setLoadingOrders(false);
-            }
-        }
-
-        fetchData();
-
+         colors = createAnalogousColorScale("#8d4a5b", "#ffffff", 7);
+ 
     }, []);
 
 
@@ -66,7 +47,9 @@ const RevenuePerTimePeriod: React.FC = () => {
         return Array.from({ length: count }, (_, i) => scale(i / (count - 1)));
     };
 
-    function groupRevenuePerDay(orders: Order[], cutoffDate: Date) {
+   
+
+        function groupRevenuePerDay(orders: Order[]) {
 
         interface OrderRevenue {
             totalPrice: number,
@@ -77,7 +60,7 @@ const RevenuePerTimePeriod: React.FC = () => {
 
         orders.forEach(order => {
             const date = toZonedTime(new Date(order.createddatetime), "Europe/Copenhagen");
-            if (!date || !isAfter(date, cutoffDate)) return;
+            //if (!date || !isAfter(date, cutoffDate)) return;
 
             const dayLabel = format(date, "d. MMM", { locale: da });
 
@@ -110,18 +93,16 @@ const RevenuePerTimePeriod: React.FC = () => {
     }
 
 
-
     const handleSubmit = async () => {
-        const userData = {
-
+        const dateRange = {
+            startdate: startDate ? format(startDate, 'dd-MM-yyyy') : '',
+            enddate: endDate ? format(endDate, 'dd-MM-yyyy') : ''
         };
         try {
 
-            const response = await AxiosClientPost('/Login/login', userData, false);
-            localStorage.setItem('authToken', JSON.stringify(response));
-
-            //  onLoggedIn(true);
-            //     onClose();
+            const response = await AxiosClientPost('/Home/orderlistbydateinterval', dateRange, true);
+            let groupedOrders = groupRevenuePerDay(response);
+            setData(groupedOrders);
         } catch (error) {
 
             console.error(error);
@@ -130,14 +111,20 @@ const RevenuePerTimePeriod: React.FC = () => {
         }
     };
 
-    // if (!isOpen) return null;
-
     return (
         <>
             <div className="chart-wrapper">
                 <div style={{ marginBottom: '100px' }}>
                     Omsætning for de seneste 7 dage
-                     {loadingOrders ? <div><ClipLoader size={50} color="#8d4a5b" /></div> : ''}
+                    <TimePeriodSelector
+                        startDate={startDate}
+                        endDate={endDate}
+                        onStartDateChange={setStartDate}
+                        onEndDateChange={setEndDate}
+                        onSubmit={handleSubmit}
+                        submitting={loadingOrders}
+                    />
+                    {loadingOrders ? <div><ClipLoader size={50} color="#8d4a5b" /></div> : ''}
                 </div>
 
                 <ResponsiveContainer style={{ marginLeft: '0px' }} width="100%" height={400}>
@@ -150,8 +137,6 @@ const RevenuePerTimePeriod: React.FC = () => {
                             dataKey="orderDate"
                             tick={{ fontSize: 16 }} // X-axis label size
                         />
-
-
                         <YAxis
                             tick={{ fontSize: 16 }}
                             tickFormatter={(value: number) =>
