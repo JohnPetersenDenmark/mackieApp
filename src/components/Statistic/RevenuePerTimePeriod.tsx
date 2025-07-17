@@ -3,9 +3,7 @@ import { Order } from '../../types/Order';
 import { toZonedTime } from "date-fns-tz";
 import { da } from "date-fns/locale";
 import { parseISO, format, subDays, isAfter } from "date-fns";
-
 import TimePeriodSelector from "./TimePeriodSelector"
-
 import ClipLoader from 'react-spinners/ClipLoader';
 import {
     LineChart, PieChart, Pie, BarChart, Bar, Cell, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
@@ -13,6 +11,7 @@ import {
 import { scaleLinear } from "d3-scale";
 import { interpolateHsl } from "d3-interpolate";
 import './charts.css';
+import './RevenuePerTimePeriod.css'
 
 import { AxiosClientGet, AxiosClientPost } from '../../types/AxiosClient';
 
@@ -35,6 +34,8 @@ const RevenuePerTimePeriod: React.FC = () => {
 
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
     const [selectedOrders, setSelectedOrders] = useState<Order[]>([]);
+
+    const [ordersIncludingSelectedPizza, setOrdersIncludingSelectedPizza] = useState<Order[]>([]);
 
     useEffect(() => {
 
@@ -98,9 +99,11 @@ const RevenuePerTimePeriod: React.FC = () => {
     } */
 
     function groupRevenuePerDay(orders: Order[]) {
+
         interface OrderRevenue {
             totalPrice: number;
             displayLabel: string;
+            onOrders: Order[];
         }
 
         const revenueByDay: Record<string, OrderRevenue> = {};
@@ -114,6 +117,7 @@ const RevenuePerTimePeriod: React.FC = () => {
                 revenueByDay[dateKey] = {
                     totalPrice: 0,
                     displayLabel: label,
+                    onOrders: []
                 };
             }
 
@@ -122,10 +126,13 @@ const RevenuePerTimePeriod: React.FC = () => {
                 const lineTotal = orderLine.unitprice * orderLine.quantity;
                 revenueByDay[dateKey].totalPrice += lineTotal;
             });
+
+            revenueByDay[dateKey].onOrders.push(order);
         });
 
         const revenues = Object.entries(revenueByDay).map(([orderDate, revenue]) => ({
             orderDate,
+            order: revenue.onOrders,
             label: revenue.displayLabel,
             Revenue: revenue.totalPrice,
         }));
@@ -195,6 +202,42 @@ const RevenuePerTimePeriod: React.FC = () => {
 
         }
     };
+    const handlePizzaClick = (pizzaName: string) => {
+
+        pizzaName = pizzaName.trim();
+
+        let ordersWithSelectedPizza: Order[] = [];
+        selectedOrders.forEach(order => {
+            const zonedDate = toZonedTime(new Date(order.createddatetime), "Europe/Copenhagen");
+            const dateKey = format(zonedDate, "yyyy-MM-dd"); // for sorting
+            const label = format(zonedDate, "EEE d. MMM", { locale: da }); // for display
+
+            order.orderlines.forEach(orderLine => {
+                if (orderLine.productname.trim() === pizzaName) {
+                    ordersWithSelectedPizza.push(order);
+                }
+            });
+
+            setOrdersIncludingSelectedPizza(ordersWithSelectedPizza);
+        });
+    }
+
+    function formatDateToDanish(date: Date): string {
+        const options: Intl.DateTimeFormatOptions = {
+            timeZone: "Europe/Copenhagen",
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+        };
+
+        const parts = new Intl.DateTimeFormat("da-DK", options).formatToParts(date);
+        const get = (type: string) => parts.find(p => p.type === type)?.value ?? "";
+
+        return `${get("day")}-${get("month")}-${get("year")} ${get("hour")}:${get("minute")}`;
+    }
 
     const handleSubmit = async () => {
         const dateRange = {
@@ -202,11 +245,12 @@ const RevenuePerTimePeriod: React.FC = () => {
             enddate: endDate ? format(endDate, 'dd-MM-yyyy') : ''
         };
         try {
-
+            setLoadingOrders(true)
             const response = await AxiosClientPost('/Home/orderlistbydateinterval', dateRange, true);
             setOrders(response)
             let groupedOrders = groupRevenuePerDay(response);
             setData(groupedOrders);
+            setLoadingOrders(false)
         } catch (error) {
 
             console.error(error);
@@ -346,31 +390,79 @@ const RevenuePerTimePeriod: React.FC = () => {
                     </BarChart>
                 </ResponsiveContainer>
                 {selectedDate && (
-                    <div style={{ marginTop: '2rem' }}>
-                        <h3>Detaljer for {format(new Date(selectedDate), "EEE d. MMM", { locale: da })}</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Pizza</th>
-                                    <th>Antal</th>
-                                    <th>Pris</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {groupedPizzas ?groupedPizzas.map(pizza => (
-                                    <tr key={pizza.name}>
-                                        <td>{pizza.name}</td>
-                                        <td>{pizza.quantity}</td>
-                                        <td>{pizza.unitprice.toFixed(2).replace('.', ',')} kr.</td>
-                                        <td>{pizza.total.toFixed(2).replace('.', ',')} kr.</td>
-                                    </tr>
-                                )) : ''}
-                            </tbody>
-                        </table>
-                        <button onClick={() => setSelectedDate(null)}>Luk</button>
-                    </div>
+                    <>
+                        <div style={{ marginTop: '2rem', color: '#000000', fontSize: '20px', textAlign: 'left' }}>
+                            <h3>Detaljer for {format(new Date(selectedDate), "EEE d. MMM", { locale: da })}</h3>
+
+                        </div>
+                        <div className="pizza-header-row">
+                            <div style={{ flex: 1 }}>Pizza</div>
+                            <div style={{ flex: 1, textAlign: 'right' }}>Antal</div>
+                            <div style={{ flex: 1, textAlign: 'right' }}>Pris</div>
+                            <div style={{ flex: 1, textAlign: 'right' }}>Total</div>
+                        </div>
+
+                        {groupedPizzas ? groupedPizzas.map(pizza => (
+                            <div style={{ fontSize: '20px', }} className="pizza-row" >
+                                <div style={{ flex: 1 }} onClick={() => handlePizzaClick(pizza.name)} >{pizza.name}
+
+                                </div>
+                                <div style={{ flex: 1, textAlign: 'right' }}>{pizza.quantity}</div>
+                                <div style={{ flex: 1, textAlign: 'right' }}>{pizza.unitprice.toFixed(2).replace('.', ',')} kr.</div>
+                                <div style={{ flex: 1, textAlign: 'right' }}>{pizza.total.toFixed(2).replace('.', ',')} kr.</div>
+
+                            </div>
+                        )) : ''}
+                    </>
                 )}
+
+
+
+                {ordersIncludingSelectedPizza && (
+                    <>
+                       
+                            {ordersIncludingSelectedPizza ? ordersIncludingSelectedPizza.map(order => (
+                                <>
+                                 <div className="order-wrapper">
+                                    <div className="ordersGridHeader" >
+
+                                        <div>Best nr.:  {order.customerorderCode}</div>
+                                        <div>Kunde: {order.customerName}</div>
+                                        <div>Telefon: {order.phone}</div>
+                                        <div>Email: {order.email}</div>
+                                        <div>Oprettet: {formatDateToDanish(new Date(order.createddatetime + "Z"))}</div>
+                                        <div>Ændret: {formatDateToDanish(new Date(order.modifieddatetime + "Z"))}</div>
+                                        <div>{order.payeddatetime ? "Betalt: " + formatDateToDanish(new Date(order.payeddatetime + "Z")) : ''}</div>
+
+                                    </div>
+
+                                    <div >
+                                        {order.orderlines.map((curOrderLine, lineIndex) => (
+                                            <div className="orderlineGrid" key={lineIndex} >
+                                                <div>{curOrderLine.quantity} stk.</div>
+                                                <div>
+                                                    {curOrderLine.pizzanumber} {curOrderLine.productname}
+                                                </div>
+                                                <div style={{ textAlign: 'right' }}>{curOrderLine.unitprice.toFixed(2).replace('.', ',')} kr.</div>
+                                                <div style={{ textAlign: 'right' }}>
+                                                    {(curOrderLine.unitprice * curOrderLine.quantity)
+                                                        .toFixed(2)
+                                                        .replace('.', ',')} kr.
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+</div>
+                                </>
+                            ))
+                                : ''}
+                        
+                    </>
+                )}
+
+
+
+                <button onClick={() => setSelectedDate(null)}>Luk</button>
             </div>
         </>
     )
