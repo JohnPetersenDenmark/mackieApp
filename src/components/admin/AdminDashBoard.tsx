@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import AdminPlaces from './AdminPlaces'
 import AdminCalendar from './AdminCalendar'
 import AdminOrders from './AdminOrders'
+import AdminAllOrders from './AdminAllOrders'
 import AdminMenues from './AdminMenues'
  import RevenuePerTimePeriod from '../Statistic/RevenuePerTimePeriod'
 
@@ -70,6 +71,7 @@ const AdminDashBoard: React.FC = () => {
                 <div style={{ cursor: 'pointer', marginLeft: '100px' }} onClick={() => setActiveMenu('Stadepladser')}>Stadepladser</div>
                 <div style={{ cursor: 'pointer', marginLeft: '100px' }} onClick={() => setActiveMenu('Kalender')}>Kalender</div>
                 <div style={{ cursor: 'pointer', marginLeft: '100px' }} onClick={() => setActiveMenu('Bestillinger')}>Bestillinger</div>
+                <div style={{ cursor: 'pointer', marginLeft: '100px' }} onClick={() => setActiveMenu('AlleBestillinger')}>Alle Bestillinger</div>
                 <div style={{ cursor: 'pointer', marginLeft: '100px' }} onClick={() => setActiveMenu('Pakkeliste')}>Pakkeliste</div>
                 <div style={{ cursor: 'pointer', marginLeft: '100px' }} onClick={() => setActiveMenu('Menuer')}>Menuer</div>
                 <div style={{ cursor: 'pointer', marginLeft: '100px' }} onClick={() => setActiveMenu('Brugere')}>Brugere</div>
@@ -77,7 +79,8 @@ const AdminDashBoard: React.FC = () => {
                 {activeMenu === 'Revenue' && <RevenuePerTimePeriod />}
                 {activeMenu === 'Stadepladser' && <AdminPlaces />}
                 {activeMenu === 'Kalender' && <AdminCalendar />}
-                {activeMenu === 'Bestillinger' && <AdminOrders />}
+                {activeMenu === 'AlleBestillinger' && <AdminAllOrders />}
+                  {activeMenu === 'Bestillinger' && <AdminOrders />}
                 {activeMenu === 'Pakkeliste' && <AdminPackingList />}
                 {activeMenu === 'Menuer' && <AdminMenues />}
                 {activeMenu === 'Brugere' && <AdminUsers />}

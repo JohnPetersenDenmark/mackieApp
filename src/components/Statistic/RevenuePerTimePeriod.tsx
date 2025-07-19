@@ -4,6 +4,9 @@ import { toZonedTime } from "date-fns-tz";
 import { da } from "date-fns/locale";
 import { parseISO, format, subDays, isAfter } from "date-fns";
 import TimePeriodSelector from "./TimePeriodSelector"
+import QuarterSelector from "./QuarterSelector"
+import FixedIntervalSelector from "./FixedIntervalSelector"
+
 import ClipLoader from 'react-spinners/ClipLoader';
 import {
     LineChart, PieChart, Pie, BarChart, Bar, Cell, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
@@ -35,6 +38,10 @@ const RevenuePerTimePeriod: React.FC = () => {
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
     const [selectedOrders, setSelectedOrders] = useState<Order[]>([]);
 
+
+
+    const [selectedPizzaName, setSelectedPizzaName] = useState<string | null>(null);
+
     const [ordersIncludingSelectedPizza, setOrdersIncludingSelectedPizza] = useState<Order[]>([]);
 
     useEffect(() => {
@@ -53,50 +60,6 @@ const RevenuePerTimePeriod: React.FC = () => {
         return Array.from({ length: count }, (_, i) => scale(i / (count - 1)));
     };
 
-
-
-    /* function groupRevenuePerDay(orders: Order[]) {
-
-        interface OrderRevenue {
-            totalPrice: number,
-            totalPriceStringForLabel: string,
-        }
-
-        const revenueByDay: Record<string, OrderRevenue> = {};
-
-        orders.forEach(order => {
-            const date = toZonedTime(new Date(order.createddatetime), "Europe/Copenhagen");
-            //if (!date || !isAfter(date, cutoffDate)) return;
-
-            const dayLabel = format(date, "d. MMM", { locale: da });
-
-            if (!revenueByDay[dayLabel]) {
-                let tmpOrderRevenue: OrderRevenue = {
-                    totalPrice: 0,
-                    totalPriceStringForLabel: ''
-                }
-                revenueByDay[dayLabel] = tmpOrderRevenue;
-            }
-
-            revenueByDay[dayLabel].totalPrice += order.totalPrice;
-            revenueByDay[dayLabel].totalPriceStringForLabel += order.totalPrice.toFixed(2).replaceAll('.', ',');
-        });
-
-        // Convert to array for recharts
-        let revenues = Object.entries(revenueByDay).map(([orderDate, revenue]) => ({
-            orderDate,
-            Revenue: revenue.totalPrice,
-            totalPriceStringForLabel: revenue.totalPriceStringForLabel,
-        }));
-
-        const sortedOrders = revenues.sort(
-            (a, b) =>
-                new Date(a.orderDate).getTime() -
-                new Date(b.orderDate).getTime()
-        );
-
-        return sortedOrders;
-    } */
 
     function groupRevenuePerDay(orders: Order[]) {
 
@@ -180,10 +143,10 @@ const RevenuePerTimePeriod: React.FC = () => {
         }));
     }
 
-    const handleBarClick = (data: any, orders: Order[], setSelectedDate: (date: string | null) => void, setSelectedOrders: (orders: Order[]) => void) => {
-        //  const isoDate = data?.activePayload?.[0]?.payload?.orderDate;
 
-        const isoDate = data?.payload?.orderDate;
+    const handleBarClick = (charbarData: any) => {
+
+        const isoDate = charbarData?.payload?.orderDate;
 
         if (isoDate) {
             const matchingOrders = orders.filter(order => {
@@ -202,9 +165,11 @@ const RevenuePerTimePeriod: React.FC = () => {
 
         }
     };
+
     const handlePizzaClick = (pizzaName: string) => {
 
         pizzaName = pizzaName.trim();
+        setSelectedPizzaName(pizzaName);
 
         let ordersWithSelectedPizza: Order[] = [];
         selectedOrders.forEach(order => {
@@ -218,8 +183,9 @@ const RevenuePerTimePeriod: React.FC = () => {
                 }
             });
 
-            setOrdersIncludingSelectedPizza(ordersWithSelectedPizza);
+
         });
+        setOrdersIncludingSelectedPizza(ordersWithSelectedPizza);
     }
 
     function formatDateToDanish(date: Date): string {
@@ -264,7 +230,17 @@ const RevenuePerTimePeriod: React.FC = () => {
             <div className="chart-wrapper">
                 <div style={{ marginTop: '30px' }}>
                     Omsætning
-                </div> <div style={{ marginTop: '50px' }}>
+
+                    <QuarterSelector                      
+                        onStartDateChange={setStartDate}
+                        onEndDateChange={setEndDate}                       
+                    / >
+                   
+                   <FixedIntervalSelector  onStartDateChange={setStartDate}
+                        onEndDateChange={setEndDate}      />
+
+                </div>
+                <div style={{ marginTop: '50px' }}>
                     <TimePeriodSelector
                         startDate={startDate}
                         endDate={endDate}
@@ -380,7 +356,8 @@ const RevenuePerTimePeriod: React.FC = () => {
                         />
                         {/* <Legend /> */}
                         <Bar dataKey="Revenue" fill="#8884d8"
-                            onClick={(data) => handleBarClick(data, orders, setSelectedDate, setSelectedOrders)}
+                            // onClick={(data) => handleBarClick(data, orders, setSelectedDate, setSelectedOrders)}
+                            onClick={(chartDdata) => handleBarClick(chartDdata)}
                         >
                             {data?.map((entry, index) => (
                                 <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
@@ -403,9 +380,9 @@ const RevenuePerTimePeriod: React.FC = () => {
                         </div>
 
                         {groupedPizzas ? groupedPizzas.map(pizza => (
-                            <div style={{ fontSize: '20px', }} className="pizza-row" >
-                                <div style={{ flex: 1 }} onClick={() => handlePizzaClick(pizza.name)} >{pizza.name}
-
+                            <div style={{ fontSize: '20px' }} className="pizza-row" >
+                                <div style={{ flex: 1, cursor: 'pointer' }} onClick={() => handlePizzaClick(pizza.name)} >
+                                    {pizza.name}
                                 </div>
                                 <div style={{ flex: 1, textAlign: 'right' }}>{pizza.quantity}</div>
                                 <div style={{ flex: 1, textAlign: 'right' }}>{pizza.unitprice.toFixed(2).replace('.', ',')} kr.</div>
@@ -420,13 +397,17 @@ const RevenuePerTimePeriod: React.FC = () => {
 
                 {ordersIncludingSelectedPizza && (
                     <>
-                       
-                            {ordersIncludingSelectedPizza ? ordersIncludingSelectedPizza.map(order => (
-                                <>
-                                 <div className="order-wrapper">
+
+                        {ordersIncludingSelectedPizza ? ordersIncludingSelectedPizza.map(order => (
+                            <>
+                                <div className="order-wrapper">
+                                    <div style={{ fontSize: '20px', textAlign: 'center', marginTop: '20px' }}>
+                                        Bestillingsnummer: {order.customerorderCode}
+                                    </div>
+
                                     <div className="ordersGridHeader" >
 
-                                        <div>Best nr.:  {order.customerorderCode}</div>
+
                                         <div>Kunde: {order.customerName}</div>
                                         <div>Telefon: {order.phone}</div>
                                         <div>Email: {order.email}</div>
@@ -436,27 +417,31 @@ const RevenuePerTimePeriod: React.FC = () => {
 
                                     </div>
 
-                                    <div >
+                                    <div>
                                         {order.orderlines.map((curOrderLine, lineIndex) => (
-                                            <div className="orderlineGrid" key={lineIndex} >
-                                                <div>{curOrderLine.quantity} stk.</div>
-                                                <div>
-                                                    {curOrderLine.pizzanumber} {curOrderLine.productname}
+
+                                            <div className={curOrderLine.productname.trim() === selectedPizzaName ? 'orderlineGridHeader-pizzaselected' : 'orderlineGridHeader'} >
+                                                <div className="orderline">{curOrderLine.productname}</div>
+                                                <div className="orderline">{curOrderLine.quantity} stk.</div>
+                                                <div className="orderline">
+                                                    {curOrderLine.pizzanumber}
                                                 </div>
-                                                <div style={{ textAlign: 'right' }}>{curOrderLine.unitprice.toFixed(2).replace('.', ',')} kr.</div>
-                                                <div style={{ textAlign: 'right' }}>
+
+                                                <div className="orderline" style={{ textAlign: 'right' }}>{curOrderLine.unitprice.toFixed(2).replace('.', ',')} kr.</div>
+                                                <div className="orderline" style={{ textAlign: 'right' }}>
                                                     {(curOrderLine.unitprice * curOrderLine.quantity)
                                                         .toFixed(2)
                                                         .replace('.', ',')} kr.
                                                 </div>
                                             </div>
                                         ))}
+
                                     </div>
-</div>
-                                </>
-                            ))
-                                : ''}
-                        
+                                </div>
+                            </>
+                        ))
+                            : ''}
+
                     </>
                 )}
 

@@ -12,7 +12,7 @@ import { AxiosClientGet, AxiosClientPost, AxiosClientDelete } from '../../types/
 
 
 
-const AdminOrders: React.FC = () => {
+const AdminAllOrders: React.FC = () => {
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [allOrdersSorted, setAllOrdersSorted] = useState<Order[]>([]);
@@ -46,22 +46,22 @@ const AdminOrders: React.FC = () => {
 
         const ordersResponse = await AxiosClientGet('/Home/orderlist', true);
 
-        const ordersFromTodayAndForward = filterOrderByTodaysDate(ordersResponse);
-        const sortedOrders = ordersFromTodayAndForward.sort(
+        //const ordersFromTodayAndForward = filterOrderByTodaysDate(ordersResponse);
+        const sortedOrders = ordersResponse.sort(
           (a, b) =>
             parseDanishDateTime(b.locationstartdatetime).getTime() -
             parseDanishDateTime(a.locationstartdatetime).getTime()
         );
 
         setAllOrdersSorted(sortedOrders);
+setOrders(sortedOrders);
 
-
-        if (selectedLocationId) {
+     /*    if (selectedLocationId) {
           const filteredByLocation = filterOrdersByLocation(sortedOrders, selectedLocationId);
           setOrders(filteredByLocation);
         } else {
           setOrders(sortedOrders);
-        }
+        } */
       } catch (err: any) {
         setError(err.message || 'Failed to load orders');
         console.error(err);
@@ -584,4 +584,4 @@ const AdminOrders: React.FC = () => {
 
 };
 
-export default AdminOrders;
+export default AdminAllOrders;
