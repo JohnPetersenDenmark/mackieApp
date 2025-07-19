@@ -7,6 +7,9 @@ import { da } from "date-fns/locale";
 import CustomInput from "../admin/CustomInput"; // Adjust path as needed
 import { addDays } from 'date-fns';
 import './TimePeriodSelector.css';
+import OkSvgButton from "./OkSvgButton"
+import NotOkSvgButton from "./NotOkSvgButton"
+
 
 interface TimePeriodSelectorProps {
     startDate: Date | null;
@@ -94,24 +97,9 @@ const TimePeriodSelector: React.FC<TimePeriodSelectorProps> = ({
                 />
             </div>
 
-            {/* Button */}
-            <div>
-                <button
-                    onClick={onSubmit}
-                    disabled={!isFormValid || submitting}
-                    style={{
-                        padding: '0.5rem',
-                        backgroundColor: isFormValid && !submitting ? '#8d4a5b' : 'grey',
-                        color: 'white',
-                        height: '30px',
-                        border: 'none',
-                        borderRadius: '0.25rem',
-                        cursor: isFormValid && !submitting ? 'pointer' : 'not-allowed',
-                    }}
-                >
-                    OK
-                </button>
-            </div>
+
+            {isFormValid ? <div><OkSvgButton onClick={onSubmit} />  </div> : <NotOkSvgButton onClick={onSubmit} />}
+
         </div>
     );
 };

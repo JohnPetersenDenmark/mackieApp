@@ -7,6 +7,7 @@ import TimePeriodSelector from "./TimePeriodSelector"
 import QuarterSelector from "./QuarterSelector"
 import FixedIntervalSelector from "./FixedIntervalSelector"
 
+
 import ClipLoader from 'react-spinners/ClipLoader';
 import {
     LineChart, PieChart, Pie, BarChart, Bar, Cell, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
