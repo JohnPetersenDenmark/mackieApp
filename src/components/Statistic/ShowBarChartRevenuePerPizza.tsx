@@ -4,17 +4,38 @@ import { da } from "date-fns/locale";
 import './charts.css';
 
 import {
-    LineChart, PieChart, Pie, BarChart, Bar, Cell, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
+    LineChart, PieChart, Pie, BarChart, Bar, Cell, Line, XAxis, YAxis, CartesianGrid, Tooltip, TooltipProps, Legend, ResponsiveContainer
 } from "recharts";
+
+
 
 
 interface ShowBarChartProps {
     dataToShow: any;
     colors: string[];
-     handleBarClick: (chartData: any ) => void;
+    handleBarClick: (chartData: any) => void;
 }
 
-const ShowBarChart: React.FC<ShowBarChartProps> = ({ dataToShow, colors , handleBarClick}) => {
+const ShowBarChartRevenuePerPizza: React.FC<ShowBarChartProps> = ({ dataToShow, colors, handleBarClick }) => {
+
+    const CustomTooltip = ({ active, payload, label }: any) => {
+         
+
+        if (active && payload && payload.length > 0) {
+
+            let value = payload[0].value;
+            value = value.toFixed(2).replace('.', ',') + ' kr. '
+            const quantity = payload[0].payload.quantity;
+
+            return (<div>
+                Omsætning:  {value}
+                Antal: {quantity}
+            </div>);
+        }
+
+        return (<></>);
+    };
+
 
     return (
         <ResponsiveContainer style={{ marginTop: '0px', marginLeft: '0px' }} width="100%" height={500}>
@@ -24,13 +45,11 @@ const ShowBarChart: React.FC<ShowBarChartProps> = ({ dataToShow, colors , handle
             >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
-                    dataKey="orderDate"
+                    dataKey="label"
                     angle={-30}
                     tick={{ fontSize: 18 }} // X-axis label size
                     textAnchor="end"
-                    tickFormatter={(dateStr) =>
-                        format(new Date(dateStr), "EEE d. MMM", { locale: da })
-                    }
+
                 />
 
                 <YAxis
@@ -40,16 +59,12 @@ const ShowBarChart: React.FC<ShowBarChartProps> = ({ dataToShow, colors , handle
                     }
                 />
 
-                <Tooltip
-                    formatter={(value: number, name: string) => [
-                        value.toFixed(2).replace('.', ',') + ' kr.',
-                        'Omsætning' // 👈 your custom label instead of "Revenue"
-                    ]}
-                />
+                <Tooltip content={<CustomTooltip />}/>
+
                 {/* <Legend /> */}
                 <Bar dataKey="Revenue" fill="#8884d8"
                     // onClick={(data) => handleBarClick(data, orders, setSelectedDate, setSelectedOrders)}
-                    onClick={(chartData) => handleBarClick(chartData)}
+                    onClick={(chartDdata) => handleBarClick(chartDdata)}
                 >
                     {dataToShow?.map((entry: any, index: any) => (
                         <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
@@ -62,4 +77,4 @@ const ShowBarChart: React.FC<ShowBarChartProps> = ({ dataToShow, colors , handle
     );
 };
 
-export default ShowBarChart;
+export default ShowBarChartRevenuePerPizza;

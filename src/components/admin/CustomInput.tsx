@@ -57,7 +57,7 @@ const CustomInput = React.forwardRef<HTMLButtonElement, CustomInputProps>(({ val
     <line x1="3" y1="10" x2="21" y2="10" />
   </svg>
     
-    <span style={{ marginLeft: '8px', color : '#8d4a5b' }}>{value || 'Vælg startdato'}</span>
+    <span style={{ marginLeft: '8px', color : '#8d4a5b' }}>{value || 'Vælg dato'}</span>
   </button>
   
   

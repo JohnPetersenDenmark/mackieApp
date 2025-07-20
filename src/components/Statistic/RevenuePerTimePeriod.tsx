@@ -9,6 +9,8 @@ import ShowLineChart from "./ShowLineChart"
 import ShowPieChart from "./ShowPieChart"
 import ShowBarChart from "./ShowBarChart"
 import ShowPizzasForSelectedDate from "./ShowPizzasForSelectedDate"
+import ShowBarChartRevenuePerPizza from "./ShowBarChartRevenuePerPizza"
+
 import ShowOrdersIncludingSelectedPizza from "./ShowOrdersIncludingSelectedPizza"
 
 
@@ -40,6 +42,8 @@ const RevenuePerTimePeriod: React.FC = () => {
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
     const [data, setData] = useState<any[] | undefined>([]);
+    const [groupedPizzasPerPizza, setGroupedPizzasPerPizza] = useState<any[] | undefined>([]);
+
     const [groupedPizzas, setGroupedPizzas] = useState<any[] | undefined>([]);
     const [orders, setOrders] = useState<Order[]>([]);
     const [loadingOrders, setLoadingOrders] = useState(false);
@@ -55,7 +59,8 @@ const RevenuePerTimePeriod: React.FC = () => {
 
     useEffect(() => {
 
-        colors = createAnalogousColorScale("#8d4a5b", "#ffffff", 7);
+        colors = createAnalogousColorScale("#8d4a5b", "#eedfe3", 10);
+        //  colors = createAnalogousColorScale("#ffffff", "#000000", 7);
 
     }, []);
 
@@ -112,6 +117,57 @@ const RevenuePerTimePeriod: React.FC = () => {
         revenues.sort((a, b) =>
             new Date(a.orderDate).getTime() - new Date(b.orderDate).getTime()
         );
+
+        return revenues;
+    }
+
+    function groupRevenuePerPizza(orders: Order[]) {
+
+        interface PizzaRevenue {
+            pizzaId: string
+            quantity: number;
+            totalPrice: number;
+            displayLabel: string;
+            onOrders: Order[];
+        }
+        const revenueByPizza: Record<string, PizzaRevenue> = {};
+
+
+        orders.forEach(order => {
+            order.orderlines.forEach(orderLine => {
+
+                const pizzaIdKey = orderLine.productid.toString();
+
+
+                if (!revenueByPizza[pizzaIdKey]) {
+                    revenueByPizza[pizzaIdKey] = {
+                        pizzaId: pizzaIdKey,
+                        totalPrice: orderLine.unitprice * orderLine.quantity,
+                        quantity: orderLine.quantity,
+                        displayLabel: orderLine.productname.trim(),
+                        onOrders: []
+                    }
+                    revenueByPizza[pizzaIdKey].onOrders.push(order);
+
+                }
+                else {
+                    revenueByPizza[pizzaIdKey].quantity += orderLine.quantity;
+                    revenueByPizza[pizzaIdKey].totalPrice += orderLine.unitprice * orderLine.quantity;
+                    revenueByPizza[pizzaIdKey].displayLabel = orderLine.productname.trim();
+                    revenueByPizza[pizzaIdKey].onOrders.push(order);
+                }
+            });
+
+
+        });
+
+        const revenues = Object.entries(revenueByPizza).map(([pizzaId, pizzaRevenue]) => ({
+            pizzaId,
+            order: pizzaRevenue.onOrders,
+            label: pizzaRevenue.displayLabel,
+            quantity: pizzaRevenue.quantity,
+            Revenue: pizzaRevenue.totalPrice,
+        }));
 
         return revenues;
     }
@@ -224,6 +280,10 @@ const RevenuePerTimePeriod: React.FC = () => {
             const response = await AxiosClientPost('/Home/orderlistbydateinterval', dateRange, true);
             setOrders(response)
             let groupedOrders = groupRevenuePerDay(response);
+
+            let groupPerPizza = groupRevenuePerPizza(response);
+            setGroupedPizzasPerPizza(groupPerPizza)
+
             setData(groupedOrders);
             setLoadingOrders(false)
         } catch (error) {
@@ -275,18 +335,19 @@ const RevenuePerTimePeriod: React.FC = () => {
                 {/*   </div>
 
             <div className="chart-wrapper">     */}
-                
+
                 {selectedDate && (
-                   <ShowPizzasForSelectedDate groupedPizzas={groupedPizzas} selectedDate={selectedDate} handlePizzaClick={handlePizzaClick} />                   
+                    <ShowPizzasForSelectedDate groupedPizzas={groupedPizzas} selectedDate={selectedDate} handlePizzaClick={handlePizzaClick} />
                 )}
 
 
 
                 {ordersIncludingSelectedPizza && (
-                    <ShowOrdersIncludingSelectedPizza ordersIncludingSelectedPizza ={ordersIncludingSelectedPizza } selectedPizzaName={selectedPizzaName} />
+                    <ShowOrdersIncludingSelectedPizza ordersIncludingSelectedPizza={ordersIncludingSelectedPizza} selectedPizzaName={selectedPizzaName} />
                 )}
 
-
+<br /><br />
+                <ShowBarChartRevenuePerPizza dataToShow={groupedPizzasPerPizza} colors={colors} handleBarClick={handleBarClick} />
 
                 <button onClick={() => setSelectedDate(null)}>Luk</button>
             </div>
