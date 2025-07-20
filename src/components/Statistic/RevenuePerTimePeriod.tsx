@@ -5,6 +5,14 @@ import { da } from "date-fns/locale";
 import { parseISO, format, subDays, isAfter } from "date-fns";
 import TimePeriodSelector from "./TimePeriodSelector"
 import QuarterSelector from "./QuarterSelector"
+import ShowLineChart from "./ShowLineChart"
+import ShowPieChart from "./ShowPieChart"
+import ShowBarChart from "./ShowBarChart"
+import ShowPizzasForSelectedDate from "./ShowPizzasForSelectedDate"
+import ShowOrdersIncludingSelectedPizza from "./ShowOrdersIncludingSelectedPizza"
+
+
+
 import FixedIntervalSelector from "./FixedIntervalSelector"
 
 
@@ -229,16 +237,17 @@ const RevenuePerTimePeriod: React.FC = () => {
     return (
         <>
             <div className="chart-wrapper">
+
                 <div style={{ marginTop: '30px' }}>
                     Omsætning
 
-                    <QuarterSelector                      
+                    <QuarterSelector
                         onStartDateChange={setStartDate}
-                        onEndDateChange={setEndDate}                       
-                    / >
-                   
-                   <FixedIntervalSelector  onStartDateChange={setStartDate}
-                        onEndDateChange={setEndDate}      />
+                        onEndDateChange={setEndDate}
+                    />
+
+                    <FixedIntervalSelector onStartDateChange={setStartDate}
+                        onEndDateChange={setEndDate} />
 
                 </div>
                 <div style={{ marginTop: '50px' }}>
@@ -254,196 +263,27 @@ const RevenuePerTimePeriod: React.FC = () => {
                 </div>
             </div>
             <div className="chart-wrapper">
-                <ResponsiveContainer style={{ marginLeft: '0px', marginBottom: '0px' }} width="100%" height={400}>
-                    <LineChart
-                        data={data}
-                        margin={{ top: 20, right: 30, left: 40, bottom: 20 }}
-                    >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis
-                            dataKey="orderDate"
-                            tick={{ fontSize: 16 }} // X-axis label size
-                            tickFormatter={(dateStr) =>
-                                format(new Date(dateStr), "EEE d. MMM", { locale: da })
-                            }
 
-                        />
-                        <YAxis
-                            tick={{ fontSize: 16 }}
-                            tickFormatter={(value: number) =>
-                                value.toFixed(2).replace('.', ',')
-                            }
-                        />
-                        <Tooltip
-                            formatter={(value: number, name: string) => [
-                                value.toFixed(2).replace('.', ',') + ' kr.',
-                                'Omsætning' // 👈 your custom label instead of "Revenue"
-                            ]}
-                        />
-                        {/* <Legend /> */}
-                        <Line type="monotone" dataKey="Revenue" stroke="#8884d8" />
-                    </LineChart>
-                </ResponsiveContainer>
-                {/* </div>
+                <ShowLineChart dataToShow={data} />
 
-            <div className="chart-wrapper"> */}
-                <ResponsiveContainer style={{ marginTop: '0px', marginLeft: '0px' }} width="100%" height={600}>
-                    <PieChart margin={{ top: 40, right: 20, bottom: 20, left: 20 }}>
-                        <Pie
-                            data={data}
-                            dataKey="Revenue"   // numeric field
-                            nameKey="orderDate"    // label field
-                            cx="50%"
-                            cy="50%"
-                            outerRadius={150}
-                            fill="#8884d8"
-                            label={({ name, percent, x, y }) => (
-                                <text
-                                    x={x}
-                                    y={y}
-                                    fill="#333"
-                                    fontSize={14}
-                                    textAnchor="middle"
-                                    dominantBaseline="central"
-                                >
-                                    {`${name} (${((percent ?? 0) * 100).toFixed(0)}%)`}
-                                </text>
-                            )}
-                        >
-                            {data ? data.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
-                            )) : ''}
-                        </Pie>
-                        <Tooltip
-                            formatter={(value: number, name: string) => [
-                                value.toFixed(2).replace('.', ',') + ' kr.',
-                                'Omsætning' // 👈 replaces default "Revenue"
-                            ]}
-                        />
-                        {/* <Legend /> */}
-                    </PieChart>
-                </ResponsiveContainer>
+                <ShowPieChart dataToShow={data} colors={colors} />
+
+                <ShowBarChart dataToShow={data} colors={colors} handleBarClick={handleBarClick} />
+
+
+
                 {/*   </div>
 
             <div className="chart-wrapper">     */}
-                <ResponsiveContainer style={{ marginTop: '0px', marginLeft: '0px' }} width="100%" height={500}>
-                    <BarChart
-                        data={data}
-                        margin={{ top: 20, right: 30, left: 20, bottom: 40 }}
-                    >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis
-                            dataKey="orderDate"
-                            angle={-30}
-                            tick={{ fontSize: 18 }} // X-axis label size
-                            textAnchor="end"
-                            tickFormatter={(dateStr) =>
-                                format(new Date(dateStr), "EEE d. MMM", { locale: da })
-                            }
-                        />
-
-                        <YAxis
-                            tick={{ fontSize: 18 }} // X-axis label size
-                            tickFormatter={(value: number) =>
-                                value.toFixed(2).replace('.', ',')
-                            }
-                        />
-
-                        <Tooltip
-                            formatter={(value: number, name: string) => [
-                                value.toFixed(2).replace('.', ',') + ' kr.',
-                                'Omsætning' // 👈 your custom label instead of "Revenue"
-                            ]}
-                        />
-                        {/* <Legend /> */}
-                        <Bar dataKey="Revenue" fill="#8884d8"
-                            // onClick={(data) => handleBarClick(data, orders, setSelectedDate, setSelectedOrders)}
-                            onClick={(chartDdata) => handleBarClick(chartDdata)}
-                        >
-                            {data?.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
-                            ))}
-                        </Bar>
-
-                    </BarChart>
-                </ResponsiveContainer>
+                
                 {selectedDate && (
-                    <>
-                        <div style={{ marginTop: '2rem', color: '#000000', fontSize: '20px', textAlign: 'left' }}>
-                            <h3>Detaljer for {format(new Date(selectedDate), "EEE d. MMM", { locale: da })}</h3>
-
-                        </div>
-                        <div className="pizza-header-row">
-                            <div style={{ flex: 1 }}>Pizza</div>
-                            <div style={{ flex: 1, textAlign: 'right' }}>Antal</div>
-                            <div style={{ flex: 1, textAlign: 'right' }}>Pris</div>
-                            <div style={{ flex: 1, textAlign: 'right' }}>Total</div>
-                        </div>
-
-                        {groupedPizzas ? groupedPizzas.map(pizza => (
-                            <div style={{ fontSize: '20px' }} className="pizza-row" >
-                                <div style={{ flex: 1, cursor: 'pointer' }} onClick={() => handlePizzaClick(pizza.name)} >
-                                    {pizza.name}
-                                </div>
-                                <div style={{ flex: 1, textAlign: 'right' }}>{pizza.quantity}</div>
-                                <div style={{ flex: 1, textAlign: 'right' }}>{pizza.unitprice.toFixed(2).replace('.', ',')} kr.</div>
-                                <div style={{ flex: 1, textAlign: 'right' }}>{pizza.total.toFixed(2).replace('.', ',')} kr.</div>
-
-                            </div>
-                        )) : ''}
-                    </>
+                   <ShowPizzasForSelectedDate groupedPizzas={groupedPizzas} selectedDate={selectedDate} handlePizzaClick={handlePizzaClick} />                   
                 )}
 
 
 
                 {ordersIncludingSelectedPizza && (
-                    <>
-
-                        {ordersIncludingSelectedPizza ? ordersIncludingSelectedPizza.map(order => (
-                            <>
-                                <div className="order-wrapper">
-                                    <div style={{ fontSize: '20px', textAlign: 'center', marginTop: '20px' }}>
-                                        Bestillingsnummer: {order.customerorderCode}
-                                    </div>
-
-                                    <div className="ordersGridHeader" >
-
-
-                                        <div>Kunde: {order.customerName}</div>
-                                        <div>Telefon: {order.phone}</div>
-                                        <div>Email: {order.email}</div>
-                                        <div>Oprettet: {formatDateToDanish(new Date(order.createddatetime + "Z"))}</div>
-                                        <div>Ændret: {formatDateToDanish(new Date(order.modifieddatetime + "Z"))}</div>
-                                        <div>{order.payeddatetime ? "Betalt: " + formatDateToDanish(new Date(order.payeddatetime + "Z")) : ''}</div>
-
-                                    </div>
-
-                                    <div>
-                                        {order.orderlines.map((curOrderLine, lineIndex) => (
-
-                                            <div className={curOrderLine.productname.trim() === selectedPizzaName ? 'orderlineGridHeader-pizzaselected' : 'orderlineGridHeader'} >
-                                                <div className="orderline">{curOrderLine.productname}</div>
-                                                <div className="orderline">{curOrderLine.quantity} stk.</div>
-                                                <div className="orderline">
-                                                    {curOrderLine.pizzanumber}
-                                                </div>
-
-                                                <div className="orderline" style={{ textAlign: 'right' }}>{curOrderLine.unitprice.toFixed(2).replace('.', ',')} kr.</div>
-                                                <div className="orderline" style={{ textAlign: 'right' }}>
-                                                    {(curOrderLine.unitprice * curOrderLine.quantity)
-                                                        .toFixed(2)
-                                                        .replace('.', ',')} kr.
-                                                </div>
-                                            </div>
-                                        ))}
-
-                                    </div>
-                                </div>
-                            </>
-                        ))
-                            : ''}
-
-                    </>
+                    <ShowOrdersIncludingSelectedPizza ordersIncludingSelectedPizza ={ordersIncludingSelectedPizza } selectedPizzaName={selectedPizzaName} />
                 )}
 
 
