@@ -65,7 +65,7 @@ const AdminToppingCreateEdit: React.FC<ToppingModalProps> = ({ isOpen, onClose, 
             description: toppingDescription,
             imageurl: toppingImageurl,
             price: toppingPrice.replaceAll(',', '.'),
-            producttype: 0
+            producttype: 1
         }
 
        // const url = config.API_BASE_URL + '/Admin/addorupdatetopping'

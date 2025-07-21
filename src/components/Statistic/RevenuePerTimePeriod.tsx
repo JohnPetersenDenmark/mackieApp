@@ -231,6 +231,28 @@ const RevenuePerTimePeriod: React.FC = () => {
         }
     };
 
+      const handleBarClickRevenuePerPizza = (charbarData: any) => {
+
+        const isoDate = charbarData?.payload?.orderDate;
+
+        if (isoDate) {
+            const matchingOrders = orders.filter(order => {
+                const orderDate = format(
+                    toZonedTime(new Date(order.createddatetime), "Europe/Copenhagen"),
+                    "yyyy-MM-dd"
+                );
+                return orderDate === isoDate;
+            });
+
+            setSelectedDate(isoDate);
+            setSelectedOrders(matchingOrders);
+            const groupedPizzasArray = groupPizzasByNameWithTotals(selectedOrders)
+            setGroupedPizzas(groupedPizzasArray);
+
+
+        }
+    };
+
     const handlePizzaClick = (pizzaName: string) => {
 
         pizzaName = pizzaName.trim();
@@ -347,7 +369,7 @@ const RevenuePerTimePeriod: React.FC = () => {
                 )}
 
 <br /><br />
-                <ShowBarChartRevenuePerPizza dataToShow={groupedPizzasPerPizza} colors={colors} handleBarClick={handleBarClick} />
+                <ShowBarChartRevenuePerPizza dataToShow={groupedPizzasPerPizza} colors={colors} handleBarClick={handleBarClickRevenuePerPizza} />
 
                 <button onClick={() => setSelectedDate(null)}>Luk</button>
             </div>

@@ -191,16 +191,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
     }
   };
 
-  /* const preSetValueQuantity = (index: number) : string =>
-  { 
-    
-     let curQuantity = allOrderItems[index].quantity  
-     if (curQuantity === 0)
-     {
-      return "";
-     }
-    return curQuantity.toString();
-  } */
+ 
 
   const updateQuantity = (index: number, quantity: string) => {
 
@@ -547,7 +538,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
         </button>
 
 
-       <button
+     {/*   <button
           onClick={handleGoToPayment}
           disabled={!submittedOrderSuccessfully}
           className="close-btn"
@@ -556,7 +547,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
         </button>
 
         {goToPayment ? <FlatpayCheckout createdOrderA={createdOrder} onPaymentStatus={handlePaymentStatus} onClose={handleCloseCheckout} /> : ''} 
-
+ */}
       </div>
     </div >
 
