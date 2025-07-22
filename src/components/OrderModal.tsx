@@ -33,7 +33,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
 
   const [orderId, setOrderId] = useState<number>(0);
 
-  const [createdOrder, setCreatedOrder] = useState<Order | null>(null);
+  const [createdOrderData, setCreatedOrderData] = useState<any | null>(null);
 
   const [selectedLocationId, setSelectedLocationId] = useState<string>('');
   const [selectedLocation, setSelectedLocation] = useState<TruckLocation | null>(null);
@@ -56,6 +56,8 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
   const [submittedOrderSuccessfully, setSubmittedOrderSuccessfully] = useState(false);
 
   const [goToPayment, setGoToPayment] = useState(false);
+   const [paymentPerformed, setPaymentPerformed] = useState(false);
+  const [reload, setReload] = useState(0);
 
   const [enteredQuantity, setEnteredQuantity] = useState<string[]>([]);
 
@@ -191,7 +193,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
     }
   };
 
- 
+
 
   const updateQuantity = (index: number, quantity: string) => {
 
@@ -219,9 +221,22 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
   };
 
   const handleGoToPayment = () => {
-    if (submittedOrderSuccessfully) {
-      setGoToPayment(true);
-    }
+
+    const CustomerOrderCodeAsString = Math.floor(1000 + Math.random() * 9000).toString();
+
+    const orderData: any = {
+      id: CustomerOrderCodeAsString,
+      customerName: customerName.trim(),
+      customerId: email,
+      phone: phone,
+      email: email,
+      totalPrice: parseFloat(getTotal()),
+    };
+
+    setCreatedOrderData(orderData)
+    setGoToPayment(true);
+    setReload(prev => prev + 1);
+
   };
 
   const handleCloseCheckout = () => {
@@ -229,25 +244,34 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
   };
 
 
-  const handlePaymentStatus = (payment: Payment) => {
+  const handlePaymentStatus = async (payment: Payment) => {
 
-    try {
-      const response = AxiosClientPost('/Home/createorderpayment', payment, false);
+    if (payment.flatratepaymentsuccess) {
+      try {
 
-    } catch (error) {
+        let x = await SubmitOrder();
 
-      setSubmitError('Kunne ikke sende betalingsinfo. Prøv igen senere.');
-      console.error(error);
+        if (submittedOrderSuccessfully) {
+          const response = AxiosClientPost('/Home/createorderpayment', payment, false);
+        }
 
-    } finally {
+      } catch (error) {
 
+        setSubmitError('Kunne ikke sende betalingsinfo. Prøv igen senere.');
+        console.error(error);
+      }
     }
+    else{
+      
+    }
+
+    setPaymentPerformed(true)
   };
 
 
 
   const handleCloseThisWindow = () => {
-    setCreatedOrder(null);
+    setCreatedOrderData(null);
     setSubmittedOrderSuccessfully(false);
     onClose();
   };
@@ -277,21 +301,20 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
 
   const isFormValid = isNameValid && isLocationValid && isPhoneValid && isEmailValid && isOneOrderlineEntered && !isAnyOrderlineEnteredWithZeroQuantity;
 
-  // Submit handler
-  const handleSubmit = async () => {
+
+
+  // Submit order
+  const SubmitOrder = async () => {
     setLocationTouched(true);
     setNameTouched(true);
     setPhoneTouched(true);
     setEmailTouched(true);
 
-    if (!isFormValid) {
-      return;
-    }
 
     setSubmitting(true);
     setSubmitError(null);
     setSubmitSuccess(null);
-    setGoToPayment(false);
+    // setGoToPayment(false);
 
     let LocationIdAsNumber = Number(selectedLocationId);
     if (isNaN(LocationIdAsNumber)) {
@@ -299,9 +322,9 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
     }
 
     const orderData: Order = {
-      id: orderId,
+      id: existingOrder ? existingOrder.id : 0,
       customerName: customerName.trim(),
-      customerorderCode: "",
+      customerorderCode: existingOrder ? existingOrder.customerorderCode : createdOrderData.id,
       phone: phone,
       email: email,
       locationId: LocationIdAsNumber,
@@ -332,7 +355,6 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
 
       setSubmitSuccess('Bestilling sendt! Tak for din ordre.');
       setSubmittedOrderSuccessfully(true);
-      setCreatedOrder(response)
 
     } catch (error) {
       setSubmitError('Kunne ikke sende bestillingen. Prøv igen senere.');
@@ -341,6 +363,8 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
       setSubmitting(false);
     }
   };
+
+
 
   if (!isOpen) return null;
 
@@ -518,36 +542,29 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
 
         {/* Buttons */}
 
-        <button
-          onClick={handleSubmit}
-          disabled={!isFormValid || submitting || submittedOrderSuccessfully}
-          className="submit-btn"
-        >
-          {/* {submitting ? 'Sender...' : 'Send Bestilling'} */}
 
-          {submitting ? <div><ClipLoader size={50} color="#8d4a5b" /></div> : 'Send bestilling'}
-        </button>
+        {/* Insert Button Send bestilling below */}
 
 
         <button
           onClick={handleCloseThisWindow}
-          disabled={submitting}
+          disabled={submitting || goToPayment}
           className="close-btn"
         >
           Luk
         </button>
 
 
-     {/*   <button
+        <button
           onClick={handleGoToPayment}
-          disabled={!submittedOrderSuccessfully}
+          disabled={!isFormValid || paymentPerformed || goToPayment}
           className="close-btn"
         >
           Betaling
         </button>
 
-        {goToPayment ? <FlatpayCheckout createdOrderA={createdOrder} onPaymentStatus={handlePaymentStatus} onClose={handleCloseCheckout} /> : ''} 
- */}
+        {goToPayment ? <FlatpayCheckout createdOrderData={createdOrderData} onPaymentStatus={handlePaymentStatus} onClose={handleCloseCheckout} /> : ''}
+
       </div>
     </div >
 

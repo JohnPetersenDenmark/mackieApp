@@ -3,7 +3,7 @@ import axios from "axios";
 import config from "../config";
 import { Order } from "../types/Order";
 import { Payment } from "../types/Payment";
-import { AxiosClientGet, AxiosClientPost , AxiosClientDelete}  from '../types/AxiosClient';
+import { AxiosClientGet, AxiosClientPost, AxiosClientDelete } from '../types/AxiosClient';
 
 type CreateSessionPayload = {
     orderId: string;
@@ -24,29 +24,33 @@ declare global {
 
 
 interface CheckoutProps {
-    createdOrderA: Order | null;
+    createdOrderData: any | null;
     onClose: () => void;
     onPaymentStatus: (payment: Payment) => void;
 }
 
-const FlatpayCheckout: React.FC<CheckoutProps> = ({ createdOrderA, onPaymentStatus, onClose }) => {
+const FlatpayCheckout: React.FC<CheckoutProps> = ({ createdOrderData, onPaymentStatus, onClose }) => {
 
 
-    // const [submitting, setSubmitting] = useState(false);
-    const didRun = useRef(false);
+     const didRun = useRef(false);
 
     let rp: any;
 
     useEffect(() => {
-        if (!createdOrderA || didRun.current) return;
 
-        didRun.current = true;
+        if (createdOrderData == null || didRun.current) {
+            return;
+        }
+
+
+
+          didRun.current = true;
 
         const getFlatPaySessionId = async (payLoad: CreateSessionPayload) => {
             try {
 
-              
-                let response : any = await AxiosClientPost("/payments/create-session", payLoad, false)
+
+                let response: any = await AxiosClientPost("/payments/create-session", payLoad, false)
 
                 rp = new window.Reepay.EmbeddedCheckout(response.id, {
                     html_element: "rp_container",
@@ -65,7 +69,7 @@ const FlatpayCheckout: React.FC<CheckoutProps> = ({ createdOrderA, onPaymentStat
 
                 rp.addEventHandler(window.Reepay.Event.Error, (data: any) => {
                     console.error("❌ Payment error", data);
-                     handlePayment(true, data);
+                    handlePayment(true, data);
                 });
 
 
@@ -80,31 +84,33 @@ const FlatpayCheckout: React.FC<CheckoutProps> = ({ createdOrderA, onPaymentStat
 
         // Prepare payload once we have the order
         const payload: CreateSessionPayload = {
-            orderId: createdOrderA.id.toString(),
-            amount: createdOrderA.totalPrice * 100,
-            customerId: createdOrderA.customerorderCode,
-            email: createdOrderA.email,
+            orderId: createdOrderData.id.toString(),
+            amount: createdOrderData.totalPrice * 100,
+            customerId: createdOrderData.customerId,
+            email: createdOrderData.email,
             firstName: "",
-            lastName: createdOrderA.customerName,
+            lastName: createdOrderData.customerName,
             PaymentCancelUrl: config.PAYMENT_CANCEL_URL,
             PaymentSuccessUrl: config.PAYMENT_ACCEPT_URL,
         };
+
         getFlatPaySessionId(payload);
-    }, [createdOrderA]); // Runs only when createdOrderA changes
+
+    }, [createdOrderData]); // Runs only when createdOrderA changes
 
 
     const handlePayment = (status: boolean, responseData: any) => {
         const paymentData: Payment = {
 
-            id: 0,            
-            flatratepaymentsuccess : status,
-            orderid: createdOrderA?.id ? createdOrderA.id : 0,
-            flatrateinvoicenumber : responseData.invoice,
-            flatratecustomernumber : responseData.customer,
-            flatratepaymentid : responseData.id,
-            flatratepaymentmethod : responseData.payment_method,
-            flatratesubscription : responseData.subscription,
-            flatratestatusorerror : responseData.error
+            id: 0,
+            flatratepaymentsuccess: status,
+            orderid: createdOrderData?.id ? createdOrderData.id : 0,
+            flatrateinvoicenumber: responseData.invoice,
+            flatratecustomernumber: responseData.customer,
+            flatratepaymentid: responseData.id,
+            flatratepaymentmethod: responseData.payment_method,
+            flatratesubscription: responseData.subscription,
+            flatratestatusorerror: responseData.error
         }
 
         onPaymentStatus(paymentData);
@@ -118,7 +124,7 @@ const FlatpayCheckout: React.FC<CheckoutProps> = ({ createdOrderA, onPaymentStat
         onClose();
     };
 
-    if (!createdOrderA) return null;
+    if (!createdOrderData) return null;
 
     return (
         <>
