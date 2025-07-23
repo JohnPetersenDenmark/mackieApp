@@ -52,11 +52,12 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
 
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const [submittedOrderSuccessfully, setSubmittedOrderSuccessfully] = useState(false);
 
   const [goToPayment, setGoToPayment] = useState(false);
-   const [paymentPerformed, setPaymentPerformed] = useState(false);
+  const [paymentPerformed, setPaymentPerformed] = useState(false);
   const [reload, setReload] = useState(0);
 
   const [enteredQuantity, setEnteredQuantity] = useState<string[]>([]);
@@ -155,6 +156,8 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
       setEmail(existingOrder.email);
       setComment(existingOrder.comment)
       setSubmitError(null);
+      setPaymentError(null);
+      setPaymentPerformed(false)
       setOrderId(existingOrder.id)
       setSubmitSuccess(null);
       setSubmittedOrderSuccessfully(false)
@@ -174,6 +177,8 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
       setEmailTouched(false);
       setComment('');  // Reset comment on open
       setSubmitError(null);
+        setPaymentError(null);
+         setPaymentPerformed(false)
       setSubmitSuccess(null);
       setSubmittedOrderSuccessfully(false)
       setSubmitting(false);
@@ -249,9 +254,9 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
     if (payment.flatratepaymentsuccess) {
       try {
 
-        let x = await SubmitOrder();
+        let orderSucces = await SubmitOrder();
 
-        if (submittedOrderSuccessfully) {
+        if (orderSucces) {
           const response = AxiosClientPost('/Home/createorderpayment', payment, false);
         }
 
@@ -261,8 +266,8 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
         console.error(error);
       }
     }
-    else{
-      
+    else {
+        setPaymentError(payment.flatratestatusorerror )
     }
 
     setPaymentPerformed(true)
@@ -316,6 +321,8 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
     setSubmitSuccess(null);
     // setGoToPayment(false);
 
+    let orderSuccess = false;
+
     let LocationIdAsNumber = Number(selectedLocationId);
     if (isNaN(LocationIdAsNumber)) {
       LocationIdAsNumber = 0;
@@ -353,8 +360,9 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
         response = await AxiosClientPost('/Home/updateorder', orderData, false);
       }
 
-      setSubmitSuccess('Bestilling sendt! Tak for din ordre.');
+      setSubmitSuccess('Betalingen er godkendt og bestillingen er sendt! Tak for din ordre.');
       setSubmittedOrderSuccessfully(true);
+      orderSuccess = true;
 
     } catch (error) {
       setSubmitError('Kunne ikke sende bestillingen. Prøv igen senere.');
@@ -362,6 +370,8 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
     } finally {
       setSubmitting(false);
     }
+
+    return orderSuccess;
   };
 
 
@@ -539,6 +549,9 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
 
         {submitError && <p style={{ color: 'red' }}>{submitError}</p>}
         {submitSuccess && <p style={{ color: 'green' }}>{submitSuccess}</p>}
+
+        {paymentError && <p style={{ color: 'red' }}>{paymentError}</p>}
+        
 
         {/* Buttons */}
 
