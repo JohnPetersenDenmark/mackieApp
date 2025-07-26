@@ -128,10 +128,10 @@ const FlatpayCheckout: React.FC<CheckoutProps> = ({ createdOrderData, onPaymentS
 
     return (
         <>
-            <div id="rp_container" style={{ marginLeft: '50px', marginBottom: '-200px', width: "500px", height: "1000px" }} >
+            <div id="rp_container" style={{ marginBottom: '10px', marginTop: '50px', marginLeft: '40px', marginRight: '40px',  height: "700px" }} >
             </div>
 
-            <div style={{ marginLeft: '70px', width: "500px", height: "20px" }}>
+            <div style={{ marginLeft: '40px', width: "500px", height: "20px", marginBottom : '50px' }}>
                 <button
                     onClick={handleCloseThisWindow}
                     // disabled={submitting}

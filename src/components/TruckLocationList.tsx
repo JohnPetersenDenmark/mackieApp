@@ -35,22 +35,41 @@ const TruckLocationList: React.FC<TruckLocationListProps> = ({ locations }) => {
       year: "numeric",
     }).format(isoStartDate);
 
+
+
     let intervalStartDay = formattedStartDate.slice(0, 2)
     let intervalEndDay = formattedEndDate.slice(0, 2)
 
+    intervalStartDay = intervalStartDay.replaceAll('.', '');
+    intervalEndDay = intervalEndDay.replaceAll('.', '');
+
     const [endDay, endMonth, endYear] = formattedEndDate.split(" ")
     const [startDay, startMonth, startYear] = formattedStartDate.split(" ")
-  
 
-   interval = intervalStartDay + ' ' + startMonth + ' - ' + intervalEndDay + ' ' + endMonth;
+
+    interval = intervalStartDay + ' ' + startMonth + ' - ' + intervalEndDay + ' ' + endMonth;
   }
- 
+
+  function getWeekDayName(dateAsString: string) {
+
+    const [dayEnd, monthEnd, yearEnd] = dateAsString.split(" ")[0].split("-");
+    const date = new Date(`${yearEnd}-${monthEnd}-${dayEnd}`); // "2025-07-15"
+    let formattedWeekDayName = new Intl.DateTimeFormat("da-DK", {
+        day: "numeric",
+      month: "long",
+      weekday: "long",
+    }).format(date);
+
+    formattedWeekDayName = formattedWeekDayName.toUpperCase();
+    return formattedWeekDayName;
+  }
+
 
   return (
-    <div style={{ color: '#ffffff', display: 'grid', gridTemplateColumns: '1fr ', gap: '1rem', textAlign: 'center' }}>
+    <div style={{ color: '#ffffff', display: 'grid', gridTemplateColumns: '1fr ', textAlign: 'center' }}>
       <br />
       <div style={{ fontSize: '30px' }}>
-        {interval} finder du os her:
+        {interval}
         <br /><br />
         <hr
           style={{
@@ -65,11 +84,17 @@ const TruckLocationList: React.FC<TruckLocationListProps> = ({ locations }) => {
       {locations.map((loc, index) => (
         <React.Fragment key={index}>
 
-          <div>{loc.locationbeautifiedstartdatetime.slice(0, -5)} </div>
-          <div style={{ color: '#000000', }}>{loc.locationname}</div>
-          <div>
+          <div style={{ fontSize: '20px', marginTop: '15px' }}>
+            {/* {loc.locationbeautifiedstartdatetime.slice(0, -5)}  */}
+
+            {getWeekDayName(loc.startdatetime)}
+          </div>
+
+
+          <div style={{ color: '#000000', fontSize: '20px' }}>{loc.locationname}</div>
+          <div style={{ fontSize: '20px' }}>
             {loc.locationbeautifiedTimeInterval}
-            <br /><br /><br />
+            <br /><br />
             <hr
               style={{
                 height: '1px',

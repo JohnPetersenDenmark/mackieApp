@@ -291,9 +291,6 @@ const AdminOrders: React.FC = () => {
       setOrders(allOrdersSorted);
     }
 
-
-
-
     let location = locations.find(tmpLocation => tmpLocation.id === Number(locationId));
     if (location) {
       setSelectedLocation(location);
