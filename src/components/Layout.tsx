@@ -244,6 +244,7 @@ const location = useLocation();
                 style={{
                   flex: '1 1 250px',    // try to take at least 250px, can grow/shrink
                   background: '#8d4a5b',
+                  color: '#ffffff',
                   padding: '1rem',
                   fontSize: '24px',
                   margin: 0,
@@ -255,7 +256,7 @@ const location = useLocation();
               <div style={{ flex: '1 1 250px', background: '#8d4a5b', padding: '1rem', margin: 0, fontSize: '24px', }}>
                 <span
                   onClick={handleTermsOfSaleClick}
-                  style={{ cursor: 'pointer', color: '#22191b' }}
+                  style={{ cursor: 'pointer', color:  '#ffffff' }}
                 >
                   Handelsbetingelser
                 </span>
@@ -264,7 +265,7 @@ const location = useLocation();
               <div style={{ flex: '1 1 250px', background: '#8d4a5b', padding: '1rem', margin: 0, fontSize: '24px', }}>
                 <span
                   onClick={handlePrivacyClick}
-                  style={{ cursor: 'pointer', color: '#22191b' }}
+                  style={{ cursor: 'pointer', color: '#ffffff' }}
                 >
                   Privatlivspolitik
                 </span>
@@ -273,7 +274,7 @@ const location = useLocation();
               <div style={{ flex: '1 1 250px', background: '#8d4a5b', padding: '1rem', margin: 0, fontSize: '24px', }}>
                 <span
                   onClick={handleCheckOrderClick}
-                  style={{ cursor: 'pointer', color: '#22191b' }}
+                  style={{ cursor: 'pointer', color: '#ffffff' }}
                 >
                   Se min bestilling
                 </span>
@@ -326,13 +327,13 @@ const location = useLocation();
               }}
             >
               {/* Left empty column */}
-              <div style={{ flex: '1 1 0', background: '#c7a6ac', padding: '0rem' }} />
+              <div style={{ flex: '1 1 0', background: '#fe9abc', padding: '0rem' }} />
 
               {/* Middle column */}
               <div
                 style={{
                   flex: '2 1 400px',  // wider column for content
-                  background: '#c7a6ac',
+                  background: '#fe9abc',
                   padding: '0rem',
                   fontSize: '34px',
                   margin: 0,
@@ -368,16 +369,16 @@ const location = useLocation();
                     Bestil og bag selv
                   </button>
                 </p>
-                <p style={{ textAlign: 'center', fontSize: '20px', fontWeight: 700 }}>
+             {/*    <p style={{ color: '#ffffff', textAlign: 'center', fontSize: '20px', fontWeight: 700 }}>
                   Her finder du os
-                </p>
-                <p style={{ background: '#c7a6ac', textAlign: 'left', fontSize: '15px', fontWeight: 700 }}>
+                </p> */}
+                <p style={{ background: '#fe9abc', textAlign: 'left', fontSize: '15px', fontWeight: 700 }}>
                   <TruckLocationList locations={locations} />
                 </p>
-                <p style={{ textAlign: 'center', fontSize: '20px', fontWeight: 700, color: '#ffffff' }}>
+                <p style={{ textAlign: 'center', fontSize: '20px', fontWeight: 700, color: '#22191b' }}>
                   Den originale Mackie's Pizza
                 </p>
-                <p style={{ textAlign: 'center', fontSize: '15px', fontWeight: 700, color: '#ffffff' }}>
+                <p style={{ textAlign: 'center', fontSize: '15px', fontWeight: 700, color: '#22191b' }}>
                   Det er nemt og originalt
                 </p>
 
@@ -436,7 +437,7 @@ const location = useLocation();
 
 
               {/* Right empty column */}
-              <div style={{ flex: '1 1 0', background: '#c7a6ac', padding: '0rem', fontSize: '34px', margin: 0 }} />
+              <div style={{ flex: '1 1 0', background: '#fe9abc', padding: '0rem', fontSize: '34px', margin: 0 }} />
             </div>
 
 

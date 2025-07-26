@@ -1,6 +1,6 @@
 export interface Payment {
     id: number;
-    orderid: number;
+    orderid: string;
     flatratepaymentsuccess: boolean;
     flatrateinvoicenumber: string;
     flatratepaymentid: string;

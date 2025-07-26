@@ -4,6 +4,7 @@ import { Order } from '../../types/Order';
 import TestRealTimeUpdate from '../TestRealTimeUpdate';
 import config from '../../config';
 import { TruckLocation } from '../../types/TruckLocation';
+import { Payment } from "../../types/Payment";
 import { filterOrderByTodaysDate } from '../../types/MiscFunctions';
 import { filterTruckLocationsByTodaysDate } from '../../types/MiscFunctions';
 import { parseDanishDateTime } from '../../types/MiscFunctions';
@@ -16,6 +17,8 @@ const AdminOrders: React.FC = () => {
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [allOrdersSorted, setAllOrdersSorted] = useState<Order[]>([]);
+
+  const [payments, setPayments] = useState<Payment[]>([]);
 
   const [newOrderArrived, setNewOrderArrived] = useState(false);
 
@@ -30,6 +33,7 @@ const AdminOrders: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [loadingOrders, setLoadingOrders] = useState(false);
   const [loadingLocations, setLoadingLocations] = useState(false);
+  const [loadingPayments, setLoadingPayments] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -55,18 +59,32 @@ const AdminOrders: React.FC = () => {
 
         setAllOrdersSorted(sortedOrders);
 
-
         if (selectedLocationId) {
           const filteredByLocation = filterOrdersByLocation(sortedOrders, selectedLocationId);
           setOrders(filteredByLocation);
         } else {
           setOrders(sortedOrders);
         }
+
+
       } catch (err: any) {
         setError(err.message || 'Failed to load orders');
         console.error(err);
       } finally {
         setLoadingOrders(false);
+      }
+
+      try {
+        setLoadingPayments(true);
+        const paymentsResponse = await AxiosClientGet('/Admin/paymentlist', true);
+        setPayments(paymentsResponse);
+
+      } catch (err) {
+        setError('Failed to load payments');
+        console.error(err);
+
+      } finally {
+        setLoadingPayments(false);
       }
 
 
@@ -305,6 +323,10 @@ const AdminOrders: React.FC = () => {
     return filteredOrdersByComment
   })
 
+  function isOrderPaid(orderId : string) {
+    return payments.some(payment => payment.orderid === orderId && payment.flatratestatusorerror === null);
+  }
+
   // Responsive styles
   const styles = {
     container: {
@@ -530,6 +552,9 @@ const AdminOrders: React.FC = () => {
                     onClick={() => handleEditOrder(curOrder)}
                     style={styles.icon}
                   /></div> */}
+
+                  <div style={{ fontSize : 30 }}> { isOrderPaid(curOrder.customerorderCode ) ? "Betalt" : "ikke betalt"}</div>
+                  
                   <div> <img
                     src="/images/delete-icon.png"
                     alt="Delete"

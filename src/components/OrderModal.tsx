@@ -177,8 +177,8 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
       setEmailTouched(false);
       setComment('');  // Reset comment on open
       setSubmitError(null);
-        setPaymentError(null);
-         setPaymentPerformed(false)
+      setPaymentError(null);
+      setPaymentPerformed(false)
       setSubmitSuccess(null);
       setSubmittedOrderSuccessfully(false)
       setSubmitting(false);
@@ -254,10 +254,16 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
     if (payment.flatratepaymentsuccess) {
       try {
 
-        let orderSucces = await SubmitOrder();
+        if (payment.flatratestatusorerror === null) {
+           setSubmitSuccess('Betalingen er godkendt og bestillingen er sendt! Tak for din ordre ');
+          let orderSucces = await SubmitOrder();
 
-        if (orderSucces) {
-          const response = AxiosClientPost('/Home/createorderpayment', payment, false);
+          if (orderSucces) {
+            const response = AxiosClientPost('/Home/createorderpayment', payment, false);
+          }
+        }
+        else{
+           setSubmitError('Betalingen er ikke godkendt og bestillingen er annuleret! ');
         }
 
       } catch (error) {
@@ -267,7 +273,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
       }
     }
     else {
-        setPaymentError(payment.flatratestatusorerror )
+      setPaymentError(payment.flatratestatusorerror)
     }
 
     setPaymentPerformed(true)
@@ -317,9 +323,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
 
 
     setSubmitting(true);
-    setSubmitError(null);
-    setSubmitSuccess(null);
-    // setGoToPayment(false);
+   
 
     let orderSuccess = false;
 
@@ -360,7 +364,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
         response = await AxiosClientPost('/Home/updateorder', orderData, false);
       }
 
-      setSubmitSuccess('Betalingen er godkendt og bestillingen er sendt! Tak for din ordre.');
+
       setSubmittedOrderSuccessfully(true);
       orderSuccess = true;
 
@@ -551,7 +555,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
         {submitSuccess && <p style={{ color: 'green' }}>{submitSuccess}</p>}
 
         {paymentError && <p style={{ color: 'red' }}>{paymentError}</p>}
-        
+
 
         {/* Buttons */}
 
