@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';  // Make sure axios is installed and imported
 import { Pizza } from '../types/Pizza';
+
+import { MakeLogEntry } from '../types/MakeLogEntry';
+import { LogEntry } from '../types/LogEntry';
+
 import { OrderItem } from '../types/OrderItem';
 import { Topping } from '../types/Topping';
 import { Order } from '../types/Order';
@@ -251,21 +255,42 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
 
   const handlePaymentStatus = async (payment: Payment) => {
 
+    let logData: LogEntry = { modulename: "OrderModal.tsx", functionname: "handlePaymentStatus", description: "Entering the function" }
+    MakeLogEntry(logData);
+
     if (payment.flatratepaymentsuccess) {
       try {
 
+        let logData: LogEntry = { modulename: "OrderModal.tsx", functionname: "handlePaymentStatus", description: " if (payment.flatratepaymentsuccess) is true" }
+        await MakeLogEntry(logData);
+
         if (payment.flatratestatusorerror === null) {
-           setSubmitSuccess('Betalingen er godkendt og bestillingen er sendt! Tak for din ordre ');
+          let logData: LogEntry = { modulename: "OrderModal.tsx", functionname: "handlePaymentStatus", description: " payment.flatratestatusorerror === null is true" }
+          await MakeLogEntry(logData);
+
+          setSubmitSuccess('Betalingen er godkendt og bestillingen er sendt! Tak for din ordre ');
           let orderSucces = await SubmitOrder();
 
           if (orderSucces) {
-            const response = AxiosClientPost('/Home/createorderpayment', payment, false);
-          }
-        }
-        else{
-           setSubmitError('Betalingen er ikke godkendt og bestillingen er annuleret! ');
-        }
+            let logData: LogEntry = { modulename: "OrderModal.tsx", functionname: "handlePaymentStatus", description: " if (orderSucces) is true" }
+            await MakeLogEntry(logData);
 
+            try {
+              const response = await AxiosClientPost('/Home/createorderpayment', payment, false);
+              let logData: LogEntry = { modulename: "OrderModal.tsx", functionname: "handlePaymentStatus", description: " Payment created with succes" }
+              await MakeLogEntry(logData);
+            }
+            catch (error) {
+              let logData: LogEntry = { modulename: "OrderModal.tsx", functionname: "handlePaymentStatus", description: " Payment NOT created Error" }
+              await MakeLogEntry(logData);
+            }
+          }
+
+        }
+        else {
+          let logData: LogEntry = { modulename: "OrderModal.tsx", functionname: "handlePaymentStatus", description: " if (orderSucces) is false" }
+          await MakeLogEntry(logData);
+        }
       } catch (error) {
 
         setSubmitError('Kunne ikke sende betalingsinfo. Prøv igen senere.');
@@ -274,6 +299,8 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
     }
     else {
       setPaymentError(payment.flatratestatusorerror)
+      let logData: LogEntry = { modulename: "OrderModal.tsx", functionname: "handlePaymentStatus", description: " if (payment.flatratepaymentsuccess) is false. Error" }
+      await MakeLogEntry(logData);
     }
 
     setPaymentPerformed(true)
@@ -323,7 +350,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
 
 
     setSubmitting(true);
-   
+
 
     let orderSuccess = false;
 
@@ -364,11 +391,14 @@ const OrderModal: React.FC<OrderModalProps> = ({ existingOrder, isOpen, onClose,
         response = await AxiosClientPost('/Home/updateorder', orderData, false);
       }
 
-
+      let logData: LogEntry = { modulename: "OrderModal.tsx", functionname: "Submit (Order)", description: " AxiosClientPost('/Home/createorder'  returned Success" }
+      await MakeLogEntry(logData);
       setSubmittedOrderSuccessfully(true);
       orderSuccess = true;
 
     } catch (error) {
+      let logData: LogEntry = { modulename: "OrderModal.tsx", functionname: "Submit (Order)", description: " AxiosClientPost('/Home/createorder'  returned NOT Success" }
+       await MakeLogEntry(logData);
       setSubmitError('Kunne ikke sende bestillingen. Prøv igen senere.');
       console.error(error);
     } finally {
