@@ -8,7 +8,7 @@ interface TruckLocationListProps {
 
 const TruckLocationList: React.FC<TruckLocationListProps> = ({ locations }) => {
 
-  let interval = "ingen";
+  let interval = "Ingen planlagte stop i denne uge";
 
   if (locations.length > 0) {
     let lastDayLocation = locations[locations.length - 1];

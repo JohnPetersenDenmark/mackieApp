@@ -354,8 +354,8 @@ const location = useLocation();
                 <p style={{ textAlign: 'center', fontSize: '20px' }}>
                   Gør som de fleste - Bestil, tag med hjem og bag selv
                 </p>
-                <p style={{ textAlign: 'center', fontSize: '20px' }}>
-                  <button
+               {/*  <p style={{ textAlign: 'center', fontSize: '20px' }}>
+                  <button                  
                     onClick={handleOrderClick}
                     style={{
                       padding: '0.5rem 1rem',
@@ -368,7 +368,7 @@ const location = useLocation();
                   >
                     Bestil og bag selv
                   </button>
-                </p>
+                </p> */}
              {/*    <p style={{ color: '#ffffff', textAlign: 'center', fontSize: '20px', fontWeight: 700 }}>
                   Her finder du os
                 </p> */}
